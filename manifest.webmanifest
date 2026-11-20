@@ -1,0 +1,17 @@
+{
+  "name": "Socialink — Connect beyond the ordinary",
+  "short_name": "Socialink",
+  "description": "Connect beyond the ordinary.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0d091d",
+  "theme_color": "#100b25",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
