@@ -41,6 +41,9 @@
     /* Futuristic, Instagram-inspired inline post actions: no button boxes */
     .post-actions .action{border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;min-height:48px;padding:8px 4px;color:#fff;font-weight:850;letter-spacing:.1px}
     .post-actions .action .ico{font-size:25px;font-weight:900;line-height:1;text-shadow:0 0 10px rgba(255,255,255,.12)}
+    .post-actions .action .bubble-icon{display:inline-block;width:22px;height:18px;border:2.5px solid currentColor;border-radius:5px;position:relative;font-size:0;box-shadow:none}
+    .post-actions .action .bubble-icon:after{content:"";position:absolute;left:3px;bottom:-5px;width:7px;height:7px;border-left:2.5px solid currentColor;transform:skewY(-38deg);background:#100d19}
+    .post-actions .action .share-icon{font-size:29px;line-height:.8}
     .post-actions .action.liked{color:#ff78b5!important}
     .post-actions .action.liked .ico{filter:drop-shadow(0 0 7px rgba(255,120,181,.42))}
     .post-actions .action.saved{color:var(--gold)!important}
@@ -86,13 +89,13 @@
         <div class="post-head"><div class="avatar">🌙</div><div class="post-user"><strong>Amara K. ✦</strong><small>2 hours ago · Nairobi</small></div><button class="more" aria-label="More options">···</button></div>
         <div class="post-art"><div class="art-copy"><span class="orb">🌙</span><h3>Make room for<br>your own universe.</h3><p>Little steps. Big galaxies.</p></div></div>
         <div class="post-caption"><strong>Amara K.</strong> A reminder to keep creating your own path. ✨</div>
-        <div class="post-actions"><button class="action like"><span class="ico">♡</span><span>Like</span><span class="count">24</span></button><button class="action comment"><span class="ico">▱</span><span>Comment</span></button><button class="action share"><span class="ico">↗</span><span>Share</span></button><button class="action save"><span class="ico">▣</span><span>Save</span></button></div>
+        <div class="post-actions"><button class="action like"><span class="ico">♥</span><span>Like</span><span class="count">24</span></button><button class="action comment"><span class="ico bubble-icon" aria-hidden="true"></span><span>Comment</span></button><button class="action share"><span class="ico share-icon">⤴</span><span>Share</span></button><button class="action save"><span class="ico">▣</span><span>Save</span></button></div>
       </article>
       <article class="post">
         <div class="post-head"><div class="avatar">🪐</div><div class="post-user"><strong>Jayden M.</strong><small>5 hours ago</small></div><button class="more" aria-label="More options">···</button></div>
         <div class="post-art" style="background:radial-gradient(circle at 50% 45%,rgba(49,203,222,.3),transparent 44%),linear-gradient(135deg,#1c3450,#17102c 70%,#121025)"><div class="art-copy"><span class="orb">🪐</span><h3>Stay curious.<br>Stay connected.</h3><p>There's always more to discover.</p></div></div>
         <div class="post-caption"><strong>Jayden M.</strong> What's one thing you learned this week?</div>
-        <div class="post-actions"><button class="action like"><span class="ico">♡</span><span>Like</span><span class="count">18</span></button><button class="action comment"><span class="ico">▢</span><span>Comment</span></button><button class="action share"><span class="ico">↗</span><span>Share</span></button><button class="action save"><span class="ico">♧</span><span>Save</span></button></div>
+        <div class="post-actions"><button class="action like"><span class="ico">♥</span><span>Like</span><span class="count">18</span></button><button class="action comment"><span class="ico">▢</span><span>Comment</span></button><button class="action share"><span class="ico share-icon">⤴</span><span>Share</span></button><button class="action save"><span class="ico">♧</span><span>Save</span></button></div>
       </article>
     </section>
     <section class="screen-note" id="other-screen"><h2 id="screen-title">Reels</h2><p>This part of Socialink is being prepared. The home feed is our first build.</p></section>
@@ -111,7 +114,7 @@
   function toast(message){toastEl.textContent=message;toastEl.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>toastEl.classList.remove('show'),2100)}
   document.querySelectorAll('[data-toast]').forEach(el=>el.addEventListener('click',e=>{e.preventDefault();toast(el.dataset.toast)}));
   document.querySelectorAll('.follow').forEach(btn=>btn.addEventListener('click',()=>{const on=btn.classList.toggle('following');btn.textContent=on?'Following':'Follow';toast(on?'Following account':'Unfollowed account')}));
-  document.querySelectorAll('.like').forEach(btn=>btn.addEventListener('click',()=>{const on=btn.classList.toggle('liked');btn.querySelector('.ico').textContent=on?'♥':'♡';const count=btn.querySelector('.count');count.textContent=Number(count.textContent)+(on?1:-1)}));
+  document.querySelectorAll('.like').forEach(btn=>btn.addEventListener('click',()=>{const on=btn.classList.toggle('liked');btn.querySelector('.ico').textContent='♥';const count=btn.querySelector('.count');count.textContent=Number(count.textContent)+(on?1:-1)}));
   document.querySelectorAll('.save').forEach(btn=>btn.addEventListener('click',()=>{const on=btn.classList.toggle('saved');btn.querySelector('.ico').textContent=on?'★':'▣';btn.lastElementChild.textContent=on?'Saved':'Save';toast(on?'Post saved':'Post removed from saved')}));
   document.querySelectorAll('.comment').forEach(btn=>btn.addEventListener('click',()=>toast('Comments are coming soon')));
   document.querySelectorAll('.share').forEach(btn=>btn.addEventListener('click',async()=>{try{if(navigator.share)await navigator.share({title:'Socialink',text:'Connect beyond the ordinary.',url:location.href});else{await navigator.clipboard.writeText(location.href);toast('Link copied')}}catch(e){if(e.name!=='AbortError')toast('Sharing is unavailable here')}}));
