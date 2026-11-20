@@ -56,6 +56,28 @@
     .nav-item .nav-icon{font-weight:900;font-size:25px;color:#fff;text-shadow:0 0 1px currentColor}
     .nav-item.active,.nav-item.active .nav-icon{color:#fff}
     .create{box-shadow:none}
+
+    /* Socialink comment threads */
+    .comments-panel{display:none;padding:15px 15px 17px;border-top:1px solid var(--line);background:#0c0a14}
+    .comments-panel.open{display:block;animation:commentIn .18s ease-out}
+    @keyframes commentIn{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
+    .comments-heading{display:flex;align-items:center;justify-content:space-between;margin-bottom:13px;font-size:14px;font-weight:850}
+    .comments-heading small{font-size:11px;color:var(--muted);font-weight:600}
+    .comment-list{display:grid;gap:13px;max-height:230px;overflow:auto;padding:1px 2px 10px}
+    .comment-entry{display:flex;align-items:flex-start;gap:9px}
+    .comment-avatar{width:34px;height:38px;flex:0 0 34px;border-radius:48%/38%;display:grid;place-items:center;background:#211735;border:1px solid rgba(255,255,255,.09);font-size:16px}
+    .comment-bubble{min-width:0;flex:1;background:#171221;border:1px solid rgba(255,255,255,.055);border-radius:5px 14px 14px 14px;padding:8px 11px}
+    .comment-meta{display:flex;gap:7px;align-items:center;margin-bottom:3px}
+    .comment-meta strong{font-size:12px}.comment-meta small{font-size:10px;color:var(--muted)}
+    .comment-text{font-size:12px;color:#e5deee;overflow-wrap:anywhere}
+    .comment-compose{display:flex;gap:8px;align-items:center;margin-top:8px}
+    .comment-input{min-width:0;flex:1;height:43px;border-radius:14px;border:1px solid rgba(255,255,255,.11);background:#171221;color:#fff;padding:0 13px;font:inherit;font-size:12px;outline:none}
+    .comment-input:focus{border-color:rgba(243,201,107,.6)}
+    .comment-send{height:43px;padding:0 15px;border:0;border-radius:13px;background:linear-gradient(135deg,#f3d27b,#c18b42);color:#21152b;font-weight:900;font-size:12px}
+    .comment-send:disabled{opacity:.4}
+    .comment-empty{font-size:12px;color:var(--muted);padding:9px 0}
+    .post-actions .comment-count{font-size:11px;color:#c5b8d6;font-weight:700}
+
     @media(min-width:600px){main{padding:0 20px}.feed{margin:22px 0 0}.post{border:1px solid var(--line);border-radius:23px}.post-art{min-height:340px}.section{margin-top:25px}}
     @media(max-width:370px){.post-actions{gap:5px;padding-left:8px;padding-right:8px}.action{font-size:11px;gap:4px;min-height:54px}.action .ico{font-size:20px}.brand{font-size:23px}}
   </style>
@@ -88,7 +110,7 @@
         <div class="post-head"><div class="avatar">🌙</div><div class="post-user"><strong>Amara K. ✦</strong><small>2 hours ago · Nairobi</small></div><button class="more" aria-label="More options">···</button></div>
         <div class="post-art"><div class="art-copy"><span class="orb">🌙</span><h3>Make room for<br>your own universe.</h3><p>Little steps. Big galaxies.</p></div></div>
         <div class="post-caption"><strong>Amara K.</strong> A reminder to keep creating your own path. ✨</div>
-        <div class="post-actions"><button class="action like"><span class="ico">♥</span><span>Like</span><span class="count">24</span></button><button class="action comment"><span class="ico bubble-icon" aria-hidden="true"></span><span>Comment</span></button><button class="action share"><span class="ico share-icon">⤴</span><span>Share</span></button><button class="action save"><span class="ico">▣</span><span>Save</span></button></div>
+        <div class="post-actions"><button class="action like"><span class="ico">♥</span><span>Like</span><span class="count">24</span></button><button class="action comment"><span class="ico bubble-icon" aria-hidden="true"></span><span>Comment</span><span class="comment-count"></span></button><button class="action share"><span class="ico share-icon">⤴</span><span>Share</span></button><button class="action save"><span class="ico">▣</span><span>Save</span></button></div>
       </article>
       <article class="post">
         <div class="post-head"><div class="avatar">🪐</div><div class="post-user"><strong>Jayden M.</strong><small>5 hours ago</small></div><button class="more" aria-label="More options">···</button></div>
@@ -115,7 +137,33 @@
   document.querySelectorAll('.follow').forEach(btn=>btn.addEventListener('click',()=>{const on=btn.classList.toggle('following');btn.textContent=on?'Following':'Follow';toast(on?'Following account':'Unfollowed account')}));
   document.querySelectorAll('.like').forEach(btn=>btn.addEventListener('click',()=>{const on=btn.classList.toggle('liked');btn.querySelector('.ico').textContent='♥';const count=btn.querySelector('.count');count.textContent=Number(count.textContent)+(on?1:-1)}));
   document.querySelectorAll('.save').forEach(btn=>btn.addEventListener('click',()=>{const on=btn.classList.toggle('saved');btn.querySelector('.ico').textContent=on?'★':'▣';btn.lastElementChild.textContent=on?'Saved':'Save';toast(on?'Post saved':'Post removed from saved')}));
-  document.querySelectorAll('.comment').forEach(btn=>btn.addEventListener('click',()=>toast('Comments are coming soon')));
+
+  const starterComments=[
+    [{name:'Jayden M.',avatar:'🪐',text:'Needed this reminder today. Keep creating! ✨'},{name:'Nia W.',avatar:'🦋',text:'Your own universe. I love that. 💜'}],
+    [{name:'Amara K.',avatar:'🌙',text:'I learned that small progress still counts.'}]
+  ];
+  function escapeComment(value){return value.replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]))}
+  document.querySelectorAll('.post').forEach((post,index)=>{
+    const panel=document.createElement('section');panel.className='comments-panel';
+    panel.innerHTML='<div class="comments-heading"><span>Comments <small class="thread-total"></small></span><small>Be kind. Keep it cosmic ✦</small></div><div class="comment-list"></div><form class="comment-compose"><input class="comment-input" maxlength="240" autocomplete="off" aria-label="Write a comment" placeholder="Add a thoughtful comment..."><button class="comment-send" type="submit">Post</button></form>';
+    post.querySelector('.post-actions').after(panel);
+    const button=post.querySelector('.comment');const list=panel.querySelector('.comment-list');const total=panel.querySelector('.thread-total');const count=button.querySelector('.comment-count');
+    let comments=[];
+    try{comments=JSON.parse(localStorage.getItem('socialink-comments-'+index)||'null')||starterComments[index]||[]}catch(e){comments=starterComments[index]||[]}
+    function renderComments(){
+      total.textContent='· '+comments.length;
+      count.textContent=comments.length?comments.length:'';
+      list.innerHTML=comments.length?comments.map(item=>'<div class="comment-entry"><div class="comment-avatar">'+escapeComment(item.avatar||'✦')+'</div><div class="comment-bubble"><div class="comment-meta"><strong>'+escapeComment(item.name)+'</strong><small>just now</small></div><div class="comment-text">'+escapeComment(item.text)+'</div></div></div>').join(''):'<div class="comment-empty">No comments yet. Start the conversation ✨</div>';
+    }
+    renderComments();
+    button.addEventListener('click',()=>{panel.classList.toggle('open');if(panel.classList.contains('open'))panel.querySelector('.comment-input').focus()});
+    panel.querySelector('form').addEventListener('submit',event=>{
+      event.preventDefault();const input=panel.querySelector('.comment-input');const value=input.value.trim();if(!value)return;
+      comments.push({name:'You',avatar:'✦',text:value});try{localStorage.setItem('socialink-comments-'+index,JSON.stringify(comments))}catch(e){}
+      input.value='';renderComments();list.scrollTop=list.scrollHeight;
+    });
+  });
+
   document.querySelectorAll('.share').forEach(btn=>btn.addEventListener('click',async()=>{try{if(navigator.share)await navigator.share({title:'Socialink',text:'Connect beyond the ordinary.',url:location.href});else{await navigator.clipboard.writeText(location.href);toast('Link copied')}}catch(e){if(e.name!=='AbortError')toast('Sharing is unavailable here')}}));
   document.querySelectorAll('.nav-item').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));btn.classList.add('active');const home=btn.dataset.screen==='Home';document.querySelector('.spotlights').parentElement.style.display=home?'':'none';document.querySelector('.discover').parentElement.style.display=home?'':'none';document.querySelector('.feed').style.display=home?'':'none';document.getElementById('other-screen').classList.toggle('show',!home);document.getElementById('screen-title').textContent=btn.dataset.screen}));
 </script>
