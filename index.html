@@ -24,6 +24,28 @@
     .bottom-nav{position:fixed;z-index:30;bottom:0;left:50%;transform:translateX(-50%);width:min(100%,680px);padding:10px 12px calc(10px + env(safe-area-inset-bottom));display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr;align-items:center;background:rgba(17,11,34,.94);backdrop-filter:blur(20px);border-top:1px solid var(--line)}.nav-item{border:0;background:none;color:#9387a9;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;padding:3px 0}.nav-item .nav-icon{font-size:22px}.nav-item.active{color:var(--gold)}.create{width:49px;height:49px;border:0;border-radius:17px;background:linear-gradient(145deg,#f6d77f,#c18a39);color:#24142f;font-size:31px;font-weight:500;box-shadow:0 5px 22px rgba(243,201,107,.23);justify-self:center;margin-top:-19px}
     .toast{position:fixed;z-index:50;bottom:94px;left:50%;transform:translate(-50%,12px);opacity:0;pointer-events:none;background:#2a2043;border:1px solid rgba(243,201,107,.3);border-radius:14px;padding:11px 16px;font-size:13px;box-shadow:0 10px 30px #0008;transition:.2s;white-space:nowrap}.toast.show{opacity:1;transform:translate(-50%,0)}
     .screen-note{display:none;margin:40px auto;text-align:center;color:var(--muted);padding:30px 18px;background:var(--panel);border:1px solid var(--line);border-radius:20px}.screen-note.show{display:block}
+    /* Darker Radiant Galaxy refresh */
+    :root{--bg:#070611;--panel:#100d1c;--panel2:#171225;--purple:#6730b8;--purple2:#8a62c4;--line:rgba(255,255,255,.075);--white:#fff}
+    body{background:linear-gradient(180deg,#100b1b 0%,#090712 38%,#070611 100%)}
+    header{background:rgba(8,7,17,.96);backdrop-filter:blur(12px)}
+    .brand{text-shadow:none}
+    .icon-btn{background:#151020;border-color:rgba(255,255,255,.08)}
+    .portrait{width:76px;height:98px;background:linear-gradient(145deg,#d6b45d,#7650a6 62%,#317b83)}
+    .person .portrait{width:66px;height:86px}
+    .avatar{width:50px;height:62px}
+    .person{background:#120e1e;border-color:rgba(255,255,255,.075)}
+    .post{background:#100d19;box-shadow:0 8px 24px rgba(0,0,0,.24)}
+    .post-art{background:radial-gradient(circle at 50% 38%,rgba(110,72,151,.16),transparent 43%),linear-gradient(135deg,#21182d,#100c1b 68%,#0b0913)}
+    .post-art:before,.post-art:after{border-color:rgba(243,201,107,.12)}
+    .art-copy .orb{filter:none}
+    .post-actions .action{border-radius:9px;background:#171321;border-color:rgba(255,255,255,.09)}
+    .post-actions .action.liked{background:rgba(255,75,140,.1)}
+    .post-actions .action.saved{background:rgba(243,201,107,.09)}
+    .bottom-nav{background:rgba(8,7,16,.98);backdrop-filter:blur(12px)}
+    .nav-item{color:#fff}
+    .nav-item .nav-icon{font-weight:900;font-size:25px;color:#fff;text-shadow:0 0 1px currentColor}
+    .nav-item.active,.nav-item.active .nav-icon{color:#fff}
+    .create{box-shadow:none}
     @media(min-width:600px){main{padding:0 20px}.feed{margin:22px 0 0}.post{border:1px solid var(--line);border-radius:23px}.post-art{min-height:340px}.section{margin-top:25px}}
     @media(max-width:370px){.post-actions{gap:5px;padding-left:8px;padding-right:8px}.action{font-size:11px;gap:4px;min-height:54px}.action .ico{font-size:20px}.brand{font-size:23px}}
   </style>
