@@ -38,7 +38,14 @@
     .post-art{background:radial-gradient(circle at 50% 38%,rgba(110,72,151,.16),transparent 43%),linear-gradient(135deg,#21182d,#100c1b 68%,#0b0913)}
     .post-art:before,.post-art:after{border-color:rgba(243,201,107,.12)}
     .art-copy .orb{filter:none}
-    .post-actions .action{border-radius:0;background:#171321;border-color:rgba(255,255,255,.09)}
+    /* Futuristic, Instagram-inspired inline post actions: no button boxes */
+    .post-actions .action{border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;min-height:48px;padding:8px 4px;color:#fff;font-weight:850;letter-spacing:.1px}
+    .post-actions .action .ico{font-size:25px;font-weight:900;line-height:1;text-shadow:0 0 10px rgba(255,255,255,.12)}
+    .post-actions .action.liked{color:#ff78b5!important}
+    .post-actions .action.liked .ico{filter:drop-shadow(0 0 7px rgba(255,120,181,.42))}
+    .post-actions .action.saved{color:var(--gold)!important}
+    .post-actions .action.saved .ico{filter:drop-shadow(0 0 7px rgba(243,201,107,.4))}
+    .post-actions .action:active{transform:scale(.94)}
     .post-actions .action.liked{background:rgba(255,75,140,.1)}
     .post-actions .action.saved{background:rgba(243,201,107,.09)}
     .bottom-nav{background:rgba(8,7,16,.98);backdrop-filter:blur(12px)}
@@ -79,7 +86,7 @@
         <div class="post-head"><div class="avatar">🌙</div><div class="post-user"><strong>Amara K. ✦</strong><small>2 hours ago · Nairobi</small></div><button class="more" aria-label="More options">···</button></div>
         <div class="post-art"><div class="art-copy"><span class="orb">🌙</span><h3>Make room for<br>your own universe.</h3><p>Little steps. Big galaxies.</p></div></div>
         <div class="post-caption"><strong>Amara K.</strong> A reminder to keep creating your own path. ✨</div>
-        <div class="post-actions"><button class="action like"><span class="ico">♡</span><span>Like</span><span class="count">24</span></button><button class="action comment"><span class="ico">▢</span><span>Comment</span></button><button class="action share"><span class="ico">↗</span><span>Share</span></button><button class="action save"><span class="ico">♧</span><span>Save</span></button></div>
+        <div class="post-actions"><button class="action like"><span class="ico">♡</span><span>Like</span><span class="count">24</span></button><button class="action comment"><span class="ico">▱</span><span>Comment</span></button><button class="action share"><span class="ico">↗</span><span>Share</span></button><button class="action save"><span class="ico">▣</span><span>Save</span></button></div>
       </article>
       <article class="post">
         <div class="post-head"><div class="avatar">🪐</div><div class="post-user"><strong>Jayden M.</strong><small>5 hours ago</small></div><button class="more" aria-label="More options">···</button></div>
@@ -105,7 +112,7 @@
   document.querySelectorAll('[data-toast]').forEach(el=>el.addEventListener('click',e=>{e.preventDefault();toast(el.dataset.toast)}));
   document.querySelectorAll('.follow').forEach(btn=>btn.addEventListener('click',()=>{const on=btn.classList.toggle('following');btn.textContent=on?'Following':'Follow';toast(on?'Following account':'Unfollowed account')}));
   document.querySelectorAll('.like').forEach(btn=>btn.addEventListener('click',()=>{const on=btn.classList.toggle('liked');btn.querySelector('.ico').textContent=on?'♥':'♡';const count=btn.querySelector('.count');count.textContent=Number(count.textContent)+(on?1:-1)}));
-  document.querySelectorAll('.save').forEach(btn=>btn.addEventListener('click',()=>{const on=btn.classList.toggle('saved');btn.querySelector('.ico').textContent=on?'★':'♧';btn.lastElementChild.textContent=on?'Saved':'Save';toast(on?'Post saved':'Post removed from saved')}));
+  document.querySelectorAll('.save').forEach(btn=>btn.addEventListener('click',()=>{const on=btn.classList.toggle('saved');btn.querySelector('.ico').textContent=on?'★':'▣';btn.lastElementChild.textContent=on?'Saved':'Save';toast(on?'Post saved':'Post removed from saved')}));
   document.querySelectorAll('.comment').forEach(btn=>btn.addEventListener('click',()=>toast('Comments are coming soon')));
   document.querySelectorAll('.share').forEach(btn=>btn.addEventListener('click',async()=>{try{if(navigator.share)await navigator.share({title:'Socialink',text:'Connect beyond the ordinary.',url:location.href});else{await navigator.clipboard.writeText(location.href);toast('Link copied')}}catch(e){if(e.name!=='AbortError')toast('Sharing is unavailable here')}}));
   document.querySelectorAll('.nav-item').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));btn.classList.add('active');const home=btn.dataset.screen==='Home';document.querySelector('.spotlights').parentElement.style.display=home?'':'none';document.querySelector('.discover').parentElement.style.display=home?'':'none';document.querySelector('.feed').style.display=home?'':'none';document.getElementById('other-screen').classList.toggle('show',!home);document.getElementById('screen-title').textContent=btn.dataset.screen}));
