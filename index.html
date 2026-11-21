@@ -234,16 +234,19 @@
     .reel-follow{border:1px solid rgba(243,201,107,.65);border-radius:8px;background:rgba(12,9,22,.35);color:var(--gold);font-size:10px;font-weight:850;padding:5px 9px}
     .reel-caption{font-size:12px;line-height:1.4;margin:10px 0 7px}
     .reel-audio{font-size:10px;color:#F7FBFD}
-    /* Reels use the same full-width black action bar as Home posts */
-    .reel-actions{position:absolute;z-index:4;left:0;right:0;bottom:0;width:100%;min-height:47px;padding:3px 16px;background:#000;display:flex;align-items:center;justify-content:flex-start;gap:20px}
-    .reel-action{flex:0 0 auto;min-width:0;min-height:48px;padding:8px 4px;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;color:#F7FBFD;display:flex;align-items:center;justify-content:center;gap:5px;font-weight:850;font-size:12px;text-shadow:none}
-    .reel-action .glyph{font-size:25px;font-weight:900;line-height:1}
-    .reel-action[data-reel-save]{margin-left:auto}
-    .reel-action[data-reel-comment] .glyph{font-size:0;display:inline-block;width:22px;height:18px;border:2.5px solid currentColor;border-radius:5px;position:relative}
-    .reel-action[data-reel-comment] .glyph:after{content:"";position:absolute;left:3px;bottom:-5px;width:7px;height:7px;border-left:2.5px solid currentColor;transform:skewY(-38deg);background:#100d19}
-    .reel-action[data-reel-share] .glyph{font-size:29px;line-height:.8}
-    .reel-action.liked{color:#ff78b5}.reel-action.saved{color:var(--gold)}
-    .reel-action:active{transform:scale(.94)}
+    /* Reels reuse the exact Home post action-button design */
+    .reel-actions.post-actions{position:absolute;z-index:4;left:0;right:0;bottom:0;width:100%;max-width:100%;margin:0;padding:3px 16px;min-height:47px;background:#000!important;border:0;border-radius:0;display:flex;align-items:center;justify-content:flex-start;gap:20px}
+    .reel-actions.post-actions .action{flex:0 0 auto;min-width:0;min-height:48px;padding:8px 4px;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;color:#F7FBFD;font-weight:850;letter-spacing:.1px;display:flex;align-items:center;justify-content:center;gap:5px;font-size:12px;text-shadow:none}
+    .reel-actions.post-actions .action .ico{font-size:25px;font-weight:900;line-height:1;text-shadow:0 0 10px rgba(255,255,255,.12)}
+    .reel-actions.post-actions .action .bubble-icon{display:inline-block;width:22px;height:18px;border:2.5px solid currentColor;border-radius:5px;position:relative;font-size:0;box-shadow:none}
+    .reel-actions.post-actions .action .bubble-icon:after{content:"";position:absolute;left:3px;bottom:-5px;width:7px;height:7px;border-left:2.5px solid currentColor;transform:skewY(-38deg);background:#100d19}
+    .reel-actions.post-actions .action .share-icon{font-size:29px;line-height:.8}
+    .reel-actions.post-actions .action.save{margin-left:auto}
+    .reel-actions.post-actions .action.liked{color:#ff78b5!important}
+    .reel-actions.post-actions .action.liked .ico{filter:drop-shadow(0 0 7px rgba(255,120,181,.42))}
+    .reel-actions.post-actions .action.saved{color:var(--gold)!important}
+    .reel-actions.post-actions .action.saved .ico{filter:drop-shadow(0 0 7px rgba(243,201,107,.4))}
+    .reel-actions.post-actions .action:active{transform:scale(.94)}
     .reel-comments{display:none;background:#100d19;border:1px solid rgba(255,255,255,.08);border-radius:15px;padding:12px;margin-top:9px}
     .reel-comments.open{display:block}
     .reel-comments p{margin:0 0 8px;font-size:12px;color:#F7FBFD}
@@ -251,7 +254,7 @@
     .reel-comments input{flex:1;min-width:0;border:1px solid #ffffff22;border-radius:10px;background:#080712;color:#F7FBFD;padding:9px;font:inherit;font-size:12px}
     .reel-comments button{border:0;border-radius:9px;background:var(--gold);color:#21152b;font-size:11px;font-weight:900;padding:0 12px}
     .reel-empty-note{font-size:11px;color:#bcb2ca;text-align:center;padding:8px}
-    @media(max-width:420px){.reel-card{height:70vh;min-height:450px;border-radius:14px}.reels-screen{padding-left:7px;padding-right:7px}.reel-actions{padding-left:8px;padding-right:8px;gap:12px}.reel-action{font-size:11px;gap:4px}.reel-action .glyph{font-size:23px}}
+    @media(max-width:420px){.reel-card{height:70vh;min-height:450px;border-radius:14px}.reels-screen{padding-left:7px;padding-right:7px}.reel-actions.post-actions{padding-left:8px;padding-right:8px;gap:12px}.reel-actions.post-actions .action{font-size:11px;gap:4px}.reel-actions.post-actions .action .ico{font-size:23px}}
 
   </style>
 </head>
@@ -297,7 +300,7 @@
         <article class="reel-card" data-reel-id="r1">
           <div class="reel-scene one"><span class="reel-emoji">🌙</span><div class="reel-quote">MAKE YOUR<br>OWN UNIVERSE.</div></div><div class="reel-shade"></div>
           <div class="reel-info"><div class="reel-author"><span class="mini-avatar">🌙</span><span>Amara K. ✦</span><button class="reel-follow">Follow</button></div><p class="reel-caption">A little reminder to keep creating your own path. ✨ #YourUniverse</p><div class="reel-audio">♫ Original audio · Amara K.</div></div>
-          <div class="reel-actions"><button class="reel-action" data-reel-like><span class="glyph">♥</span><span class="reel-like-count">2.4K</span></button><button class="reel-action" data-reel-comment><span class="glyph">▢</span><span>Comment</span></button><button class="reel-action" data-reel-share><span class="glyph">⤴</span><span>Share</span></button><button class="reel-action" data-reel-save><span class="glyph">▣</span><span>Save</span></button></div>
+          <div class="reel-actions post-actions"><button class="action like reel-action" data-reel-like><span class="ico">♥</span><span>Like</span><span class="reel-like-count">2.4K</span></button><button class="action comment reel-action" data-reel-comment><span class="ico bubble-icon" aria-hidden="true"></span><span>Comment</span></button><button class="action share reel-action" data-reel-share><span class="ico share-icon">⤴</span><span>Share</span></button><button class="action save reel-action" data-reel-save><span class="ico">▣</span><span>Save</span></button></div>
         </article>
         <div class="reel-comments" data-reel-comments><p>Start the conversation ✨</p><form><input maxlength="180" placeholder="Add a comment..." aria-label="Reel comment"><button type="submit">Post</button></form></div>
         <article class="reel-card" data-reel-id="r2">
