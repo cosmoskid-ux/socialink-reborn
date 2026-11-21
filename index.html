@@ -1009,7 +1009,70 @@
 .call-stage.video-active .call-remote-waiting{z-index:3}
 .call-stage.video-active .call-remote-video{z-index:2}
 
-</style>
+
+/* Floating chat composer: sits above the keyboard instead of being attached to it. */
+#thread-panel .message-compose{
+  position:fixed!important;
+  z-index:1005!important;
+  left:50%!important;
+  right:auto!important;
+  bottom:calc(var(--chat-keyboard-inset,0px) + 9px + env(safe-area-inset-bottom))!important;
+  transform:translateX(-50%)!important;
+  width:calc(100vw - 18px)!important;
+  max-width:662px!important;
+  min-height:0!important;
+  flex:0 0 auto!important;
+  align-items:flex-end!important;
+  gap:7px!important;
+  padding:7px 9px!important;
+  border:1px solid rgba(190,157,231,.2)!important;
+  border-radius:28px!important;
+  background:rgba(18,14,31,.94)!important;
+  box-shadow:0 8px 28px rgba(0,0,0,.38),0 0 18px rgba(135,91,190,.12)!important;
+  backdrop-filter:blur(18px)!important;
+}
+#thread-panel .message-compose textarea{
+  min-height:34px!important;
+  height:34px!important;
+  max-height:120px!important;
+  overflow-y:hidden;
+  border:1px solid rgba(185,148,232,.22)!important;
+  border-radius:19px!important;
+  background:linear-gradient(120deg,#252039,#202237)!important;
+  padding:7px 12px!important;
+  line-height:19px!important;
+}
+#thread-panel .message-compose textarea:focus{
+  border-color:rgba(190,150,255,.65)!important;
+  box-shadow:0 0 0 2px rgba(145,91,213,.12)!important;
+}
+#thread-panel .message-compose button{
+  flex-shrink:0!important;
+}
+#thread-panel .reply-preview{
+  position:fixed!important;
+  z-index:1004!important;
+  left:50%!important;
+  bottom:calc(var(--chat-keyboard-inset,0px) + var(--chat-compose-height,52px) + 17px + env(safe-area-inset-bottom))!important;
+  transform:translateX(-50%)!important;
+  width:calc(100vw - 22px)!important;
+  max-width:658px!important;
+  border:1px solid rgba(214,182,108,.28)!important;
+  border-radius:15px!important;
+  box-shadow:0 8px 24px rgba(0,0,0,.28)!important;
+}
+#thread-panel .thread-messages{
+  padding-bottom:calc(var(--chat-compose-height,58px) + 28px)!important;
+}
+#thread-panel .message-compose.is-recording{
+  min-height:70px!important;
+  padding:8px 10px!important;
+}
+@media(min-width:681px){
+  #thread-panel .message-compose{width:min(662px,calc(100vw - 30px))!important}
+}
+
+  </style>
 </head>
 <body>
 <div class="app">
@@ -1690,8 +1753,26 @@
   deleteVoice.addEventListener('click',()=>{voiceSendAfterStop=false;if(voiceRecorder&&voiceRecorder.state!=='inactive')voiceRecorder.stop();else resetVoiceStudio();toast('Recording deleted')});
   sendVoice.addEventListener('click',()=>{if(!voiceRecorder)return;voiceSendAfterStop=true;finishVoiceRecording()});
   const messageInput=document.getElementById('message-input');
-  function resizeMessageInput(){messageInput.style.height='auto';messageInput.style.height=Math.min(messageInput.scrollHeight,90)+'px';}
+  function resizeMessageInput(){messageInput.style.height='auto';messageInput.style.height=Math.min(messageInput.scrollHeight,120)+'px';messageInput.style.overflowY=messageInput.scrollHeight>120?'auto':'hidden';syncFloatingComposer();}
   messageInput.addEventListener('input',resizeMessageInput);
+  // Keep the composer floating above the on-screen keyboard and track its growing height.
+  const chatComposer=document.getElementById('message-compose');
+  const chatThread=document.getElementById('thread-panel');
+  function syncFloatingComposer(){
+    if(!chatComposer)return;
+    document.documentElement.style.setProperty('--chat-compose-height',Math.ceil(chatComposer.getBoundingClientRect().height)+'px');
+  }
+  function syncKeyboardInset(){
+    const viewport=window.visualViewport;
+    const inset=viewport?Math.max(0,window.innerHeight-viewport.height-viewport.offsetTop):0;
+    document.documentElement.style.setProperty('--chat-keyboard-inset',Math.round(inset)+'px');
+    syncFloatingComposer();
+  }
+  if(window.ResizeObserver&&chatComposer){new ResizeObserver(syncFloatingComposer).observe(chatComposer)}
+  if(window.visualViewport){window.visualViewport.addEventListener('resize',syncKeyboardInset);window.visualViewport.addEventListener('scroll',syncKeyboardInset)}
+  window.addEventListener('resize',syncKeyboardInset);
+  syncKeyboardInset();
+  messageInput.addEventListener('focus',()=>{setTimeout(()=>{syncKeyboardInset();messageInput.scrollIntoView({block:'nearest',behavior:'smooth'})},80)});
   document.getElementById('message-compose').addEventListener('submit',event=>{event.preventDefault();const value=messageInput.value.trim();if(!value)return;const message={text:value,mine:true};if(replyTarget)message.replyTo=replyTarget.text;(chats[activeThread]||(chats[activeThread]=[])).push(message);messageInput.value='';resizeMessageInput();replyTarget=null;drawThread()});
   document.getElementById('message-search-input').addEventListener('input',event=>{const query=event.target.value.toLowerCase(),results=document.getElementById('search-results');results.innerHTML='';document.querySelectorAll('[data-chat]').forEach(btn=>{if(btn.textContent.toLowerCase().includes(query)){const clone=btn.cloneNode(true);clone.addEventListener('click',()=>openThread(clone.dataset.chat));results.append(clone)}});document.querySelectorAll('[data-group]').forEach(btn=>{if(btn.textContent.toLowerCase().includes(query)){const clone=btn.cloneNode(true);clone.addEventListener('click',()=>openGroup(clone.dataset.group));results.append(clone)}})});
   document.querySelectorAll('[data-room]').forEach(btn=>btn.addEventListener('click',()=>openThread(activeGroup+' · '+btn.dataset.room)));
