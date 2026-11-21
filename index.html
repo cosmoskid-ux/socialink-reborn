@@ -365,6 +365,17 @@
     .message-people-heading span{font-size:9px;letter-spacing:1px;color:#b7a9c9;font-weight:800}
     .message-people-list{display:flex;gap:15px;overflow-x:auto;scrollbar-width:none;padding:2px 1px 4px}
     .message-people-list::-webkit-scrollbar{display:none}
+    /* Profiles float directly on the Messages screen — no profile cards or tiles */
+    #messages-screen .message-people-dashboard,
+    #messages-screen .message-people-list,
+    #messages-screen .message-person,
+    #messages-screen .message-person-avatar{box-shadow:none!important;outline:0!important}
+    #messages-screen .message-people-dashboard{background:transparent!important;border:0!important;border-radius:0!important}
+    #messages-screen .message-people-list{background:transparent!important;border:0!important}
+    #messages-screen .message-person{background:transparent!important;border:0!important;border-radius:0!important;padding:0!important}
+    #messages-screen .message-person-avatar{background:transparent!important;border:0!important;border-radius:50% / 42%!important}
+    #messages-screen .message-person:before,#messages-screen .message-person:after{content:none!important;display:none!important}
+
     .message-person{flex:0 0 62px;display:flex;flex-direction:column;align-items:center;gap:4px;border:0;background:transparent;padding:0;color:#F7FBFD}
     .message-person-avatar{width:54px;height:68px;position:relative;display:grid;place-items:center;border-radius:50% / 42%;border:1px solid #62536d;background:linear-gradient(145deg,#352448,#171321);font-size:25px}
     .message-person-avatar i{position:absolute;right:-2px;bottom:3px;width:11px;height:11px;border-radius:50%;background:#f3c96b;border:2px solid #100d19}
