@@ -558,6 +558,21 @@
   margin:0!important;padding:0!important;
 }
 
+
+/* Chat bubbles: compact WhatsApp-style width that hugs the message text */
+#thread-panel .message-bubble{
+  display:block!important;
+  width:fit-content!important;
+  max-width:min(72%, 420px)!important;
+  padding:9px 12px!important;
+  white-space:pre-wrap!important;
+  overflow-wrap:anywhere!important;
+  word-break:normal!important;
+}
+#thread-panel .message-bubble.mine{
+  margin-left:auto!important;
+  margin-right:0!important;
+}
 </style>
 </head>
 <body>
