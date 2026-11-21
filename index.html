@@ -217,6 +217,16 @@
     .reels-tabs{display:flex;gap:18px;font-size:13px;font-weight:800;color:#9e94ae}
     .reels-tabs button{border:0;background:none;color:inherit;padding:5px 0}
     .reels-tabs button.active{color:#F7FBFD;border-bottom:2px solid var(--gold)}
+    .reels-tabs{gap:7px;padding:4px;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.07);border-radius:999px}
+    .reels-tabs button{padding:8px 14px;border-radius:999px;font-size:12px;font-weight:850;transition:background .2s, color .2s}
+    .reels-tabs button.active{color:#171020;background:linear-gradient(135deg,#ffe3a0,#d9a94d);border:0;box-shadow:0 3px 12px rgba(217,169,77,.2)}
+    .following-empty{margin:14px 4px;padding:30px 22px 26px;text-align:center;border:1px solid rgba(243,201,107,.2);border-radius:24px;background:radial-gradient(ellipse at 50% 0%,rgba(130,73,220,.22),transparent 68%),linear-gradient(145deg,#171126,#0b0a16);color:#F7FBFD}
+    .following-empty[hidden]{display:none!important}
+    .following-orbit{width:58px;height:58px;margin:0 auto 14px;display:grid;place-items:center;border-radius:50%;font-size:28px;color:#ffe3a0;background:radial-gradient(circle,rgba(243,201,107,.22),rgba(130,73,220,.18));border:1px solid rgba(243,201,107,.42);box-shadow:0 0 28px rgba(160,105,255,.2)}
+    .following-empty strong{display:block;font-size:17px;font-weight:900;letter-spacing:.1px}
+    .following-empty p{max-width:245px;margin:8px auto 17px;color:#c9c0d8;font-size:12px;line-height:1.55}
+    .following-empty button{border:0;border-radius:999px;padding:10px 18px;background:linear-gradient(135deg,#ffe3a0,#d9a94d);color:#21162c;font-size:12px;font-weight:900}
+    .reels-screen.following-view .reel-card:not(.is-followed),.reels-screen.following-view .reel-card:not(.is-followed)+.reel-comments{display:none!important}
     .reel-list{display:grid;gap:14px}
     .reel-card{height:min(72vh,650px);min-height:470px;position:relative;overflow:hidden;border-radius:20px;background:#090817;isolation:isolate;scroll-snap-align:start;border:1px solid rgba(255,255,255,.08)}
     .reel-scene{position:absolute;inset:0;display:grid;place-items:center;overflow:hidden}
@@ -343,6 +353,7 @@
     </section>
     <section class="reels-screen" id="reels-screen" aria-label="Reels">
       <div class="reels-top"><h2>Reels</h2><div class="reels-tabs"><button class="active" data-reel-tab="For You">For You</button><button data-reel-tab="Following">Following</button></div></div>
+      <div class="following-empty" id="following-empty" hidden><div class="following-orbit">✦</div><strong>Your orbit starts here</strong><p>Follow creators you enjoy and their Reels will gather here.</p><button type="button" id="explore-creators">Explore creators</button></div>
       <div class="reel-list">
         <article class="reel-card" data-reel-id="r1">
           <div class="reel-scene one"><span class="reel-emoji">🌙</span><div class="reel-quote">MAKE YOUR<br>OWN UNIVERSE.</div></div><div class="reel-shade"></div>
@@ -570,20 +581,31 @@
   navObserver.observe(reelsScreen,{attributes:true,attributeFilter:['class']});
   syncReelsMode();
 
+  const followingEmpty=document.getElementById('following-empty');
+  const syncFollowingView=()=>{
+    const followingMode=document.querySelector('[data-reel-tab].active')?.dataset.reelTab==='Following';
+    reelsScreen.classList.toggle('following-view',followingMode);
+    const followedCount=document.querySelectorAll('.reel-card.is-followed').length;
+    followingEmpty.hidden=!(followingMode&&followedCount===0);
+  };
   document.querySelectorAll('[data-reel-tab]').forEach(tab=>tab.addEventListener('click',()=>{
     document.querySelectorAll('[data-reel-tab]').forEach(x=>x.classList.toggle('active',x===tab));
-    toast(tab.dataset.reelTab==='Following'?'Following Reels will appear here as you follow creators':'Showing Reels for you');
+    syncFollowingView();
+    toast(tab.dataset.reelTab==='Following'?'Showing Reels from creators you follow':'Showing Reels for you');
   }));
+  document.getElementById('explore-creators').addEventListener('click',()=>{
+    document.querySelector('[data-reel-tab="For You"]').click();
+  });
   document.querySelectorAll('.reel-card').forEach(card=>{
     const id=card.dataset.reelId,like=card.querySelector('[data-reel-like]'),save=card.querySelector('[data-reel-save]'),follow=card.querySelector('.reel-follow');
     const stateKey='socialink-reel-'+id;
     let state={liked:false,saved:false,following:false};
     try{state={...state,...JSON.parse(localStorage.getItem(stateKey)||'{}')}}catch(e){}
     const persist=()=>{try{localStorage.setItem(stateKey,JSON.stringify(state))}catch(e){}};
-    like.classList.toggle('liked',state.liked);save.classList.toggle('saved',state.saved);follow.textContent=state.following?'Following':'Follow';
+    like.classList.toggle('liked',state.liked);save.classList.toggle('saved',state.saved);follow.textContent=state.following?'Following':'Follow';card.classList.toggle('is-followed',state.following);syncFollowingView();
     like.addEventListener('click',()=>{state.liked=!state.liked;like.classList.toggle('liked',state.liked);persist();toast(state.liked?'Reel liked':'Like removed')});
     save.addEventListener('click',()=>{state.saved=!state.saved;save.classList.toggle('saved',state.saved);persist();toast(state.saved?'Reel saved':'Reel removed from saved')});
-    follow.addEventListener('click',()=>{state.following=!state.following;follow.textContent=state.following?'Following':'Follow';persist();toast(state.following?'Following creator':'Unfollowed creator')});
+    follow.addEventListener('click',()=>{state.following=!state.following;follow.textContent=state.following?'Following':'Follow';card.classList.toggle('is-followed',state.following);persist();syncFollowingView();toast(state.following?'Following creator':'Unfollowed creator')});
     card.querySelector('.rail-follow-plus').addEventListener('click',()=>follow.click());
     card.querySelector('[data-reel-comment]').addEventListener('click',()=>{const panel=card.nextElementSibling;panel.classList.toggle('open');if(panel.classList.contains('open'))panel.querySelector('input').focus()});
     card.querySelector('[data-reel-share]').addEventListener('click',async()=>{try{if(navigator.share)await navigator.share({title:'Socialink Reel',text:'Check out this Reel on Socialink',url:location.href+'#'+id});else{await navigator.clipboard.writeText(location.href+'#'+id);toast('Reel link copied')}}catch(e){if(e.name!=='AbortError')toast('Sharing is unavailable here')}});
