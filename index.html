@@ -1470,41 +1470,42 @@ button,a,[role="button"]{
     </section>
 
     <section class="screen-note" id="other-screen"><h2 id="screen-title">Reels</h2><p>This part of Socialink is being prepared. The home feed is our first build.</p></section>
-    <section class="profile-screen" id="profile-screen" aria-label="Your profile" hidden>
-      <div class="profile-cover"><span class="cover-orbit orbit-one"></span><span class="cover-orbit orbit-two"></span><span class="cover-wordmark">YOUR UNIVERSE</span></div>
-      <div class="profile-identity">
-        <div class="profile-avatar-wrap"><div class="profile-avatar" id="profile-avatar">✦</div><span class="profile-spotlight-star" title="Spotlight">✦</span></div>
-        <div class="profile-name-row"><h2 id="profile-name">Your Name</h2><span class="profile-verified" aria-label="Socialink profile">✦</span></div>
-        <p class="profile-handle" id="profile-handle">@youruniverse</p>
-        <p class="profile-bio" id="profile-bio">Write a little something about yourself and let your universe speak. ✨</p>
-        <div class="profile-stats">
-          <div><strong id="profile-post-count">0</strong><span>Posts</span></div>
-          <div><strong>0</strong><span>Followers</span></div>
-          <div><strong>0</strong><span>Following</span></div>
-        </div>
-        <div class="profile-actions">
-          <button type="button" class="profile-edit-button" id="profile-edit">Edit profile</button>
-          <button type="button" class="profile-share-button" id="profile-share">Share profile</button>
-          <button type="button" class="profile-settings-button" id="profile-settings" aria-label="Profile settings">⚙</button>
-        </div>
-      </div>
-      <button type="button" class="profile-spotlight-card" id="profile-spotlight">
-        <span class="profile-spotlight-icon">✦</span><span><strong>Your Spotlight</strong><small>Your daily moment belongs here</small></span><span class="profile-card-arrow">›</span>
-      </button>
-      <div class="profile-tabs" role="tablist" aria-label="Profile content">
-        <button type="button" class="profile-tab active" data-profile-tab="posts" role="tab" aria-selected="true">▦ <span>Posts</span></button>
-        <button type="button" class="profile-tab" data-profile-tab="reels" role="tab" aria-selected="false">▷ <span>Reels</span></button>
-        <button type="button" class="profile-tab" data-profile-tab="saved" role="tab" aria-selected="false">▣ <span>Saved</span></button>
-      </div>
-      <div class="profile-content" id="profile-content"><div class="profile-empty"><span>✧</span><strong>Your story starts here</strong><small>Your posts will appear here when you share them.</small></div></div>
-    </section>
+
   </main>
+  <section class="profile-screen" id="profile-screen" aria-label="Your profile" hidden>
+    <div class="profile-cover"><span class="cover-orbit orbit-one"></span><span class="cover-orbit orbit-two"></span><span class="cover-wordmark">YOUR UNIVERSE</span></div>
+    <div class="profile-identity">
+      <div class="profile-avatar-wrap"><div class="profile-avatar" id="profile-avatar">✦</div><span class="profile-spotlight-star" title="Spotlight">✦</span></div>
+      <div class="profile-name-row"><h2 id="profile-name">Your Name</h2><span class="profile-verified" aria-label="Socialink profile">✦</span></div>
+      <p class="profile-handle" id="profile-handle">@youruniverse</p>
+      <p class="profile-bio" id="profile-bio">Write a little something about yourself and let your universe speak. ✨</p>
+      <div class="profile-stats">
+        <div><strong id="profile-post-count">0</strong><span>Posts</span></div>
+        <div><strong>0</strong><span>Followers</span></div>
+        <div><strong>0</strong><span>Following</span></div>
+      </div>
+      <div class="profile-actions">
+        <button type="button" class="profile-edit-button" id="profile-edit">Edit profile</button>
+        <button type="button" class="profile-share-button" id="profile-share">Share profile</button>
+        <button type="button" class="profile-settings-button" id="profile-settings" aria-label="Profile settings">⚙</button>
+      </div>
+    </div>
+    <button type="button" class="profile-spotlight-card" id="profile-spotlight">
+      <span class="profile-spotlight-icon">✦</span><span><strong>Your Spotlight</strong><small>Your daily moment belongs here</small></span><span class="profile-card-arrow">›</span>
+    </button>
+    <div class="profile-tabs" role="tablist" aria-label="Profile content">
+      <button type="button" class="profile-tab active" data-profile-tab="posts" role="tab" aria-selected="true">▦ <span>Posts</span></button>
+      <button type="button" class="profile-tab" data-profile-tab="reels" role="tab" aria-selected="false">▷ <span>Reels</span></button>
+      <button type="button" class="profile-tab" data-profile-tab="saved" role="tab" aria-selected="false">▣ <span>Saved</span></button>
+    </div>
+    <div class="profile-content" id="profile-content"><div class="profile-empty"><span>✧</span><strong>Your story starts here</strong><small>Your posts will appear here when you share them.</small></div></div>
+  </section>
   <nav class="bottom-nav" aria-label="Main navigation">
     <button class="nav-item active" data-screen="Home"><span class="nav-icon">⌂</span><span>Home</span></button>
     <button class="nav-item" data-screen="Reels"><span class="nav-icon">▷</span><span>Reels</span></button>
     <button class="create" id="create-button" aria-label="Open create menu" aria-haspopup="menu" aria-expanded="false">＋</button>
     <button class="nav-item" data-screen="Messages"><span class="nav-icon">✉</span><span>Messages</span></button>
-    <button class="nav-item" data-screen="Your Page"><span class="nav-icon">♙</span><span>Your Page</span></button>
+    <button class="nav-item" data-screen="Your Page" onclick="(function(){var p=document.getElementById(\'profile-screen\');if(p){p.hidden=false;p.removeAttribute(\'hidden\');p.style.setProperty(\'display\',\'block\',\'important\');p.style.setProperty(\'visibility\',\'visible\',\'important\');}document.body.classList.add(\'socialink-profile-open\');document.querySelectorAll(\'.nav-item\').forEach(function(n){n.classList.toggle(\'active\',n===event.currentTarget);});document.querySelectorAll(\'main > .section,main > .feed\').forEach(function(n){n.style.display=\'none\';});})();"><span class="nav-icon">♙</span><span>Your Page</span></button>
   </nav>
   <div class="create-menu-backdrop" id="create-menu-backdrop" hidden></div>
   <div class="create-menu" id="create-menu" role="menu" aria-label="Create new content" hidden>
@@ -2660,6 +2661,23 @@ window.addEventListener('DOMContentLoaded', () => {
 
 
 <style>
+/* My Page is a sibling screen, not nested in the home feed. */
+#profile-screen.socialink-profile-visible,
+body.socialink-profile-open #profile-screen{
+  position:fixed!important;
+  z-index:26!important;
+  display:block!important;
+  visibility:visible!important;
+  opacity:1!important;
+  top:76px!important;
+  bottom:calc(76px + env(safe-area-inset-bottom,0px))!important;
+  left:50%!important;
+  transform:translateX(-50%)!important;
+  width:min(100%,680px)!important;
+  overflow-y:auto!important;
+  background:#0b0813!important;
+  padding:0 0 24px!important;
+}
 /* My Page visibility must win over hidden-state and screen utility styles. */
 body.socialink-profile-open #profile-screen{
   display:block!important;
