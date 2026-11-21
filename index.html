@@ -106,6 +106,7 @@
     .post-user small{font-size:10px}
     .post-follow{margin-left:auto;flex:0 0 auto;border:1px solid rgba(243,201,107,.5);border-radius:7px;background:rgba(243,201,107,.1);color:var(--gold);padding:5px 10px;font-size:10px;font-weight:800}
     .post-follow:active{transform:scale(.96)}
+    .post-follow.following{background:rgba(135,60,255,.2);border-color:#8652c9;color:#d9c3ff}
 
     /* Larger full-width photo and video canvas */
     .post-art{width:100%;min-height:390px}
@@ -371,7 +372,37 @@
   });
   function toast(message){toastEl.textContent=message;toastEl.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>toastEl.classList.remove('show'),2100)}
   document.querySelectorAll('[data-toast]').forEach(el=>el.addEventListener('click',e=>{e.preventDefault();toast(el.dataset.toast)}));
-  document.querySelectorAll('.follow').forEach(btn=>btn.addEventListener('click',()=>{const on=btn.classList.toggle('following');btn.textContent=on?'Following':'Follow';toast(on?'Following account':'Unfollowed account')}));
+  // Follow state is shared between discovery cards and every post by the same account.
+  const followKey=name=>String(name||'').replace(/✦/g,'').replace(/[^a-z0-9 ]/gi,'').trim().toLowerCase().replace(/\\s+/g,' ');
+  const followedAccounts=(()=>{try{return new Set(JSON.parse(localStorage.getItem('socialink-following')||'[]'))}catch(e){return new Set()}})();
+  function accountNameFor(button){
+    const post=button.closest('.post');
+    return post?.querySelector('.post-user strong')?.textContent
+      ||button.closest('.person')?.querySelector('strong')?.textContent||'';
+  }
+  function syncFollowButtons(key){
+    document.querySelectorAll('.follow,.post-follow').forEach(button=>{
+      if(followKey(accountNameFor(button))!==key)return;
+      const on=followedAccounts.has(key);
+      button.classList.toggle('following',on);
+      button.textContent=on?'Following':'Follow';
+      button.setAttribute('aria-pressed',String(on));
+    });
+  }
+  document.querySelectorAll('.follow,.post-follow').forEach(button=>{
+    const key=followKey(accountNameFor(button));
+    const on=followedAccounts.has(key);
+    button.classList.toggle('following',on);
+    button.textContent=on?'Following':'Follow';
+    button.setAttribute('aria-pressed',String(on));
+    button.addEventListener('click',()=>{
+      const active=!followedAccounts.has(key);
+      if(active)followedAccounts.add(key);else followedAccounts.delete(key);
+      try{localStorage.setItem('socialink-following',JSON.stringify([...followedAccounts]))}catch(e){}
+      syncFollowButtons(key);
+      toast(active?'Following account':'Unfollowed account');
+    });
+  });
   document.querySelectorAll('.like').forEach(btn=>btn.addEventListener('click',()=>{const on=btn.classList.toggle('liked');btn.querySelector('.ico').textContent='♥';const count=btn.querySelector('.count');count.textContent=Number(count.textContent)+(on?1:-1)}));
   document.querySelectorAll('.save').forEach(btn=>btn.addEventListener('click',()=>{const on=btn.classList.toggle('saved');btn.querySelector('.ico').textContent=on?'★':'▣';btn.lastElementChild.textContent=on?'Saved':'Save';toast(on?'Post saved':'Post removed from saved')}));
 
