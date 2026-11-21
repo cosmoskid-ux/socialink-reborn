@@ -162,7 +162,8 @@
   <main id="home">
     <section class="section spotlight-section">
       <div class="spotlights">
-        <div class="story"><div class="portrait"><div class="portrait-inner">🌙</div><span class="star" aria-label="Spotlight badge"></span></div><span class="story-name">Amara</span></div>
+        <button class="story story-add" id="add-spotlight" type="button" aria-label="Upload your Spotlight"><div class="portrait"><div class="portrait-inner"><span>＋</span></div></div><span class="story-name">Add Spotlight</span></button>
+        <div class="story" data-spotlight-name="Amara" data-spotlight-avatar="🌙"><div class="portrait"><div class="portrait-inner">🌙</div><span class="star" aria-label="Spotlight badge"></span></div><span class="story-name">Amara</span></div>
         <div class="story"><div class="portrait"><div class="portrait-inner">🪐</div><span class="star" aria-label="Spotlight badge"></span></div><span class="story-name">Jayden</span></div>
         <div class="story"><div class="portrait"><div class="portrait-inner">🦋</div><span class="star" aria-label="Spotlight badge"></span></div><span class="story-name">Nia</span></div>
         <div class="story"><div class="portrait"><div class="portrait-inner">🌌</div><span class="star" aria-label="Spotlight badge"></span></div><span class="story-name">Leo</span></div>
@@ -203,8 +204,68 @@
   </nav>
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
+<input id="spotlight-upload" type="file" accept="video/*" hidden>
+<div class="spotlight-viewer" id="spotlight-viewer" aria-hidden="true">
+  <button class="spotlight-close" id="spotlight-close" aria-label="Close Spotlight">×</button>
+  <div class="spotlight-progress"><span></span></div>
+  <div class="spotlight-viewer-content" id="spotlight-viewer-content"></div>
+  <div class="spotlight-viewer-bottom"><div id="spotlight-viewer-user"></div><button id="spotlight-like" class="spotlight-like" type="button">♡ Like</button></div>
+  <button class="spotlight-prev" id="spotlight-prev" aria-label="Previous Spotlight">‹</button>
+  <button class="spotlight-next" id="spotlight-next" aria-label="Next Spotlight">›</button>
+</div>
 <script>
   const toastEl=document.getElementById('toast');let toastTimer;
+  // Spotlight viewer and local video upload
+  const spotlightViewer=document.getElementById('spotlight-viewer');
+  const spotlightContent=document.getElementById('spotlight-viewer-content');
+  const spotlightUser=document.getElementById('spotlight-viewer-user');
+  const spotlightLike=document.getElementById('spotlight-like');
+  const spotlightUpload=document.getElementById('spotlight-upload');
+  const spotlightItems=()=>[...document.querySelectorAll('.spotlights .story:not(.story-add)')];
+  let spotlightIndex=0, ownSpotlightUrl=null, spotlightLiked=new Set();
+  function openSpotlight(index){
+    const items=spotlightItems();if(!items.length)return;
+    spotlightIndex=(index+items.length)%items.length;
+    const item=items[spotlightIndex],name=item.dataset.spotlightName||'You',avatar=item.dataset.spotlightAvatar||'✦';
+    spotlightContent.innerHTML='';
+    if(item.dataset.videoUrl){
+      const video=document.createElement('video');video.src=item.dataset.videoUrl;video.controls=true;video.autoplay=true;video.playsInline=true;spotlightContent.append(video);
+    }else{
+      const placeholder=document.createElement('div');placeholder.className='spotlight-placeholder';
+      placeholder.innerHTML='<span class="emoji">'+avatar+'</span><strong>'+name+'</strong><p>This Spotlight has no video yet.</p>';spotlightContent.append(placeholder);
+    }
+    spotlightUser.innerHTML='<strong>'+name+'</strong><small>Spotlight ✦</small>';
+    spotlightLike.classList.toggle('liked',spotlightLiked.has(item));
+    spotlightLike.textContent=spotlightLiked.has(item)?'♥ Liked':'♡ Like';
+    spotlightViewer.classList.add('open');spotlightViewer.setAttribute('aria-hidden','false');
+  }
+  function closeSpotlight(){spotlightViewer.classList.remove('open');spotlightViewer.setAttribute('aria-hidden','true');const video=spotlightContent.querySelector('video');if(video)video.pause()}
+  document.querySelectorAll('.spotlights .story:not(.story-add)').forEach((item,index)=>item.addEventListener('click',()=>openSpotlight(index)));
+  document.getElementById('add-spotlight').addEventListener('click',()=>spotlightUpload.click());
+  spotlightUpload.addEventListener('change',()=>{
+    const file=spotlightUpload.files&&spotlightUpload.files[0];if(!file)return;
+    if(!file.type.startsWith('video/')){toast('Please choose a video');return}
+    if(ownSpotlightUrl)URL.revokeObjectURL(ownSpotlightUrl);
+    ownSpotlightUrl=URL.createObjectURL(file);
+    let own=document.querySelector('.story-own');
+    if(!own){
+      own=document.createElement('button');own.type='button';own.className='story story-own';
+      own.innerHTML='<div class="portrait"><div class="portrait-inner">✦</div><span class="star" aria-label="Spotlight badge"></span></div><span class="story-name">You</span>';
+      document.querySelector('.spotlights').append(own);
+    }
+    own.dataset.spotlightName='You';own.dataset.spotlightAvatar='✦';own.dataset.videoUrl=ownSpotlightUrl;
+    own.onclick=()=>openSpotlight(spotlightItems().indexOf(own));
+    openSpotlight(spotlightItems().indexOf(own));spotlightUpload.value='';
+    toast('Your Spotlight is ready on this device');
+  });
+  document.getElementById('spotlight-close').addEventListener('click',closeSpotlight);
+  document.getElementById('spotlight-prev').addEventListener('click',()=>openSpotlight(spotlightIndex-1));
+  document.getElementById('spotlight-next').addEventListener('click',()=>openSpotlight(spotlightIndex+1));
+  spotlightLike.addEventListener('click',()=>{const item=spotlightItems()[spotlightIndex];if(!item)return;if(spotlightLiked.has(item))spotlightLiked.delete(item);else spotlightLiked.add(item);const liked=spotlightLiked.has(item);spotlightLike.classList.toggle('liked',liked);spotlightLike.textContent=liked?'♥ Liked':'♡ Like'});
+  document.addEventListener('keydown',event=>{if(!spotlightViewer.classList.contains('open'))return;if(event.key==='Escape')closeSpotlight();if(event.key==='ArrowRight')openSpotlight(spotlightIndex+1);if(event.key==='ArrowLeft')openSpotlight(spotlightIndex-1)});
+  let spotlightTouchX=0;spotlightViewer.addEventListener('touchstart',event=>{spotlightTouchX=event.changedTouches[0].clientX},{passive:true});
+  spotlightViewer.addEventListener('touchend',event=>{const dx=event.changedTouches[0].clientX-spotlightTouchX;if(Math.abs(dx)>65)openSpotlight(spotlightIndex+(dx<0?1:-1))},{passive:true});
+
   function toast(message){toastEl.textContent=message;toastEl.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>toastEl.classList.remove('show'),2100)}
   document.querySelectorAll('[data-toast]').forEach(el=>el.addEventListener('click',e=>{e.preventDefault();toast(el.dataset.toast)}));
   document.querySelectorAll('.follow').forEach(btn=>btn.addEventListener('click',()=>{const on=btn.classList.toggle('following');btn.textContent=on?'Following':'Follow';toast(on?'Following account':'Unfollowed account')}));
