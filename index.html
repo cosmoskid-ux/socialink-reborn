@@ -1099,8 +1099,8 @@
         <section class="call-stage" id="call-stage" role="dialog" aria-modal="true" aria-label="Socialink call" hidden>
           <div class="call-stage-head"><strong id="call-stage-title">Socialink Call</strong><button class="call-stage-close" id="call-stage-close" type="button" aria-label="Close call">×</button></div>
           <div class="call-stage-status" id="call-stage-status">Preparing your call…</div>
-          <div class="call-code-card" id="call-code-card" hidden><div class="call-code-label">YOUR TEMPORARY CALL CODE</div><div class="call-code-value" id="call-code-value">••••••••</div><button class="call-copy-button" id="call-copy-code" type="button">Copy call code</button><p class="call-stage-note">Share this code only with the person you intend to call. It expires when you close this call room.</p></div>
-          <div id="call-join-card"><div class="call-code-label" style="margin-bottom:8px;text-align:center">Or join someone else's call</div><div class="call-join-row"><input class="call-join-input" id="call-join-input" inputmode="numeric" autocomplete="one-time-code" maxlength="8" placeholder="Enter 8-digit code" aria-label="Enter call code"><button class="call-primary-button" id="call-join-button" type="button">Join</button></div></div>
+          <div class="call-code-card" id="call-code-card" hidden><div class="call-code-label">YOUR TEMPORARY CALL CODE</div><div class="call-code-value" id="call-code-value">••••</div><button class="call-copy-button" id="call-copy-code" type="button">Copy call code</button><p class="call-stage-note">Share this code only with the person you intend to call. It expires when you close this call room.</p></div>
+          <div id="call-join-card"><div class="call-code-label" style="margin-bottom:8px;text-align:center">Or join someone else's call</div><div class="call-join-row"><input class="call-join-input" id="call-join-input" inputmode="numeric" autocomplete="one-time-code" maxlength="4" placeholder="Enter 4-digit code" aria-label="Enter call code"><button class="call-primary-button" id="call-join-button" type="button">Join</button></div></div>
           <div class="call-video-stage" id="call-video-stage" hidden><video class="call-remote-video" id="call-remote-video" autoplay playsinline></video><video class="call-local-video" id="call-local-video" autoplay muted playsinline></video></div>
           <div class="call-audio-avatar" id="call-audio-avatar" hidden>☎</div>
           <audio id="call-remote-audio" autoplay></audio>
@@ -1693,7 +1693,7 @@
     callStageTitle.textContent=mode==='video'?'Start a video call':'Start a voice call';
     callCodeCard.hidden=true;callJoinCard.hidden=false;callControls.hidden=true;callIncomingActions.hidden=true;
     setCallStatus('Creating your temporary call room…');openCallStage();
-    callRoomCode=String(Math.floor(10000000+Math.random()*90000000));
+    callRoomCode=String(Math.floor(1000+Math.random()*9000));
     callPeer=new Peer('si-'+callRoomCode+'-x');
     callPeer.on('open',id=>{
       callCodeValue.textContent=callRoomCode;callCodeCard.hidden=false;
@@ -1712,7 +1712,7 @@
   }
   async function joinCallRoom(mode,code){
     if(!window.Peer){setCallStatus('Call library did not load. Check your connection and refresh.');return}
-    if(!/^\d{8}$/.test(code)){setCallStatus('Enter the full 8-digit call code.');return}
+    if(!/^\d{4}$/.test(code)){setCallStatus('Enter the full 4-digit call code.');return}
     callIsHost=false;activeCallMode=mode;callStageTitle.textContent=mode==='video'?'Joining video call':'Joining voice call';
     callJoinCard.hidden=true;callCodeCard.hidden=true;setCallStatus('Connecting to the call room…');
     try{
@@ -1740,7 +1740,7 @@
     catch(e){callJoinInput.value=callRoomCode;callJoinInput.focus();toast('Select and copy the code above')}
   });
   document.getElementById('call-join-button').addEventListener('click',()=>joinCallRoom(activeCallMode,callJoinInput.value.trim()));
-  document.getElementById('call-join-input').addEventListener('input',event=>{event.target.value=event.target.value.replace(/\D/g,'').slice(0,8)});
+  document.getElementById('call-join-input').addEventListener('input',event=>{event.target.value=event.target.value.replace(/\D/g,'').slice(0,4)});
   document.getElementById('call-accept').addEventListener('click',async()=>{
     if(!incomingMediaCall)return;
     const incoming=incomingMediaCall,mode=activeCallMode;
