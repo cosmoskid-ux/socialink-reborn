@@ -1721,14 +1721,17 @@
   const callControls=document.getElementById('call-controls');
   const callIncomingActions=document.getElementById('call-incoming-actions');
   let callPeer=null,activeMediaCall=null,localCallStream=null,incomingMediaCall=null,activeCallMode='voice',callRoomCode='',callIsHost=false;
-  let micEnabled=true,cameraEnabled=true,callConnectedAt=0,callTimerInterval=null;
+  let micEnabled=true,cameraEnabled=true,callConnectedAt=0,callTimerInterval=null,ringVibrationInterval=null;
   const callAcceptButton=document.getElementById('call-accept');
   const callDeclineButton=document.getElementById('call-decline');
   const callConnectedTimer=document.getElementById('call-connected-timer');
   function formatCallDuration(total){const minutes=Math.floor(total/60),seconds=total%60;return String(minutes).padStart(2,'0')+':'+String(seconds).padStart(2,'0')}
   function stopCallTimer(){clearInterval(callTimerInterval);callTimerInterval=null;callConnectedAt=0;callConnectedTimer.hidden=true;callConnectedTimer.textContent='00:00'}
+  function stopRingVibration(){clearInterval(ringVibrationInterval);ringVibrationInterval=null;try{if(navigator.vibrate)navigator.vibrate(0)}catch(error){}}
+  function startRingVibration(){stopRingVibration();try{if(navigator.vibrate)navigator.vibrate([220,180,220]);ringVibrationInterval=setInterval(()=>{try{if(navigator.vibrate)navigator.vibrate([220,180,220])}catch(error){}},1800)}catch(error){}}
   function markCallConnected(){
-    if(!callConnectedAt){callConnectedAt=Date.now();callConnectedTimer.hidden=false;callConnectedTimer.textContent='00:00';callTimerInterval=setInterval(()=>{callConnectedTimer.textContent=formatCallDuration(Math.floor((Date.now()-callConnectedAt)/1000))},1000);try{if(navigator.vibrate)navigator.vibrate([90,45,90])}catch(error){}}
+    stopRingVibration();
+    if(!callConnectedAt){callConnectedAt=Date.now();callConnectedTimer.hidden=false;callConnectedTimer.textContent='00:00';callTimerInterval=setInterval(()=>{callConnectedTimer.textContent=formatCallDuration(Math.floor((Date.now()-callConnectedAt)/1000))},1000)}
     callAcceptButton.textContent='✓ Call connected';callAcceptButton.classList.add('is-connected');callAcceptButton.disabled=true;callDeclineButton.hidden=true;callIncomingActions.hidden=false;
     setCallStatus('Call connected');
     const ringtone=document.getElementById('call-ringtone');if(ringtone){ringtone.pause();ringtone.currentTime=0}
@@ -1738,7 +1741,7 @@
   function openCallStage(){callStageBackdrop.hidden=false;callStage.hidden=false}
   function stopLocalCallStream(){if(localCallStream){localCallStream.getTracks().forEach(track=>track.stop());localCallStream=null}}
   function cleanupCallRoom(){
-    stopCallTimer();callAcceptButton.textContent='Accept call';callAcceptButton.classList.remove('is-connected');callAcceptButton.disabled=false;callDeclineButton.hidden=false;
+    stopRingVibration();stopCallTimer();callAcceptButton.textContent='Accept call';callAcceptButton.classList.remove('is-connected');callAcceptButton.disabled=false;callDeclineButton.hidden=false;
     if(activeMediaCall){try{activeMediaCall.close()}catch(e){}activeMediaCall=null}
     if(incomingMediaCall){try{incomingMediaCall.close()}catch(e){}incomingMediaCall=null}
     stopLocalCallStream();
@@ -1771,6 +1774,7 @@
       if(incomingMediaCall){try{incoming.close()}catch(error){}return}
       incomingMediaCall=incoming;
       const mode=incoming.metadata?.mode==='video'?'video':'voice';
+      startRingVibration();
       activeCallMode=mode;callStageTitle.textContent='Incoming '+mode+' call';
       callCodeCard.hidden=true;callJoinCard.hidden=true;callIncomingActions.hidden=false;
       setCallStatus('Incoming '+mode+' call · accept or decline.');
@@ -1854,6 +1858,7 @@
   document.getElementById('call-accept').addEventListener('click',async()=>{
     if(!incomingMediaCall)return;
     const incoming=incomingMediaCall,mode=activeCallMode;
+    stopRingVibration();
     try{
       setCallStatus('Connecting your microphone'+(mode==='video'?' and camera':'')+'…');
       localCallStream=await acquireCallMedia(mode);
