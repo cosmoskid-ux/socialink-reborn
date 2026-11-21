@@ -22,6 +22,14 @@
     .post-art{min-height:280px;display:grid;place-items:center;text-align:center;padding:28px 24px;background:radial-gradient(circle at 50% 38%,rgba(161,91,255,.42),transparent 45%),linear-gradient(135deg,#342052,#17102c 65%,#121025);position:relative;overflow:hidden}.post-art:before,.post-art:after{content:"";position:absolute;border:1px solid rgba(243,201,107,.22);width:230px;height:230px;border-radius:50%;transform:rotate(-25deg) scaleX(1.6)}.post-art:after{width:175px;height:175px;transform:rotate(35deg) scaleX(1.6);border-color:rgba(166,111,255,.3)}.art-copy{position:relative;z-index:1}.art-copy .orb{font-size:56px;display:block;filter:drop-shadow(0 0 22px rgba(243,201,107,.5))}.art-copy h3{font-size:25px;line-height:1.12;margin:12px 0 7px}.art-copy p{color:#d4c6e8;margin:0;font-size:13px}
     .post-caption{padding:12px 15px 2px;color:#e7e0f1;font-size:13px}.post-caption strong{color:white}.post-actions{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;padding:13px 12px 15px}.action{min-height:58px;border-radius:16px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.055);display:flex;align-items:center;justify-content:center;gap:7px;font-weight:750;font-size:13px;transition:transform .15s,background .15s,border-color .15s}.action:active{transform:scale(.97)}.action .ico{font-size:22px;line-height:1}.action.liked{color:#ff86b4;background:rgba(255,75,140,.13);border-color:rgba(255,134,180,.38)}.action.saved{color:var(--gold);background:rgba(243,201,107,.12);border-color:rgba(243,201,107,.42)}
     .bottom-nav{position:fixed;z-index:30;bottom:0;left:50%;transform:translateX(-50%);width:min(100%,680px);padding:10px 12px calc(10px + env(safe-area-inset-bottom));display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr;align-items:center;background:rgba(17,11,34,.94);backdrop-filter:blur(20px);border-top:1px solid var(--line)}.nav-item{border:0;background:none;color:#9387a9;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;padding:3px 0}.nav-item .nav-icon{font-size:22px}.nav-item.active{color:var(--gold)}.create{width:49px;height:49px;border:0;border-radius:17px;background:linear-gradient(145deg,#f6d77f,#c18a39);color:#24142f;font-size:31px;font-weight:500;box-shadow:0 5px 22px rgba(243,201,107,.23);justify-self:center;margin-top:-19px}
+    .create-menu-backdrop{position:fixed;inset:0;z-index:42;background:rgba(3,2,9,.38);backdrop-filter:blur(2px)}
+    .create-menu{position:fixed;z-index:43;left:50%;bottom:calc(82px + env(safe-area-inset-bottom));transform:translateX(-50%);width:min(calc(100% - 28px),390px);padding:14px;border:1px solid rgba(243,201,107,.28);border-radius:22px;background:linear-gradient(155deg,#201632 0%,#100d1c 72%);box-shadow:0 18px 55px rgba(0,0,0,.62),0 0 28px rgba(137,83,210,.14);color:#F7FBFD;animation:createMenuIn .18s ease-out}
+    .create-menu[hidden],.create-menu-backdrop[hidden]{display:none!important}
+    @keyframes createMenuIn{from{opacity:0;transform:translate(-50%,10px) scale(.98)}to{opacity:1;transform:translate(-50%,0) scale(1)}}
+    .create-menu-heading{padding:3px 5px 12px;display:flex;flex-direction:column;gap:3px}.create-menu-heading strong{font-size:16px;font-weight:900;color:#F7FBFD}.create-menu-heading span{font-size:11px;color:#c9c0d8}
+    .create-option{width:100%;display:flex;align-items:center;gap:12px;padding:10px 9px;border:0;border-radius:14px;background:transparent;color:#F7FBFD;text-align:left;cursor:pointer;transition:background .15s}.create-option+.create-option{margin-top:3px}.create-option:active{background:rgba(255,255,255,.08);transform:scale(.99)}
+    .create-option-icon{width:42px;height:42px;flex:0 0 42px;border-radius:13px;display:grid;place-items:center;font-size:21px;font-weight:900;border:1px solid rgba(243,201,107,.2);background:rgba(243,201,107,.09);color:#f6d77f}.reel-icon{color:#c8a7ff;background:rgba(142,91,220,.16);border-color:rgba(173,129,255,.22)}.spotlight-icon{color:#ffe3a0;background:rgba(243,201,107,.14)}.moments-icon{color:#9ee8e6;background:rgba(70,190,190,.12);border-color:rgba(100,220,210,.2)}
+    .create-option>span:nth-child(2){display:flex;flex:1;min-width:0;flex-direction:column;gap:3px}.create-option strong{font-size:13px;font-weight:850;color:#F7FBFD}.create-option small{font-size:10px;color:#c9c0d8}.create-option-arrow{font-size:24px;color:#a99ab9;padding:0 5px}
     .toast{position:fixed;z-index:50;bottom:94px;left:50%;transform:translate(-50%,12px);opacity:0;pointer-events:none;background:#2a2043;border:1px solid rgba(243,201,107,.3);border-radius:14px;padding:11px 16px;font-size:13px;box-shadow:0 10px 30px #0008;transition:.2s;white-space:nowrap}.toast.show{opacity:1;transform:translate(-50%,0)}
     .screen-note{display:none;margin:40px auto;text-align:center;color:var(--muted);padding:30px 18px;background:var(--panel);border:1px solid var(--line);border-radius:20px}.screen-note.show{display:block}
     /* Darker Radiant Galaxy refresh */
@@ -381,10 +389,18 @@
   <nav class="bottom-nav" aria-label="Main navigation">
     <button class="nav-item active" data-screen="Home"><span class="nav-icon">⌂</span><span>Home</span></button>
     <button class="nav-item" data-screen="Reels"><span class="nav-icon">▷</span><span>Reels</span></button>
-    <button class="create" aria-label="Create" data-toast="Create post is coming soon">＋</button>
+    <button class="create" id="create-button" aria-label="Open create menu" aria-haspopup="menu" aria-expanded="false">＋</button>
     <button class="nav-item" data-screen="Messages"><span class="nav-icon">✉</span><span>Messages</span></button>
     <button class="nav-item" data-screen="Your Page"><span class="nav-icon">♙</span><span>Your Page</span></button>
   </nav>
+  <div class="create-menu-backdrop" id="create-menu-backdrop" hidden></div>
+  <div class="create-menu" id="create-menu" role="menu" aria-label="Create new content" hidden>
+    <div class="create-menu-heading"><strong>Create something</strong><span>Share with your universe</span></div>
+    <button type="button" class="create-option" role="menuitem" data-create-option="Post"><span class="create-option-icon post-icon">✎</span><span><strong>Post</strong><small>Share a photo or update</small></span><span class="create-option-arrow">›</span></button>
+    <button type="button" class="create-option" role="menuitem" data-create-option="Reel"><span class="create-option-icon reel-icon">▷</span><span><strong>Reel</strong><small>Share a short video</small></span><span class="create-option-arrow">›</span></button>
+    <button type="button" class="create-option" role="menuitem" data-create-option="Spotlight"><span class="create-option-icon spotlight-icon">✦</span><span><strong>Spotlight</strong><small>Share your daily spotlight</small></span><span class="create-option-arrow">›</span></button>
+    <button type="button" class="create-option" role="menuitem" data-create-option="Moments"><span class="create-option-icon moments-icon">◷</span><span><strong>Moments</strong><small>Capture a moment to share</small></span><span class="create-option-arrow">›</span></button>
+  </div>
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <div class="spotlight-viewer" id="spotlight-viewer" aria-hidden="true">
@@ -588,6 +604,16 @@
     const followedCount=document.querySelectorAll('.reel-card.is-followed').length;
     followingEmpty.hidden=!(followingMode&&followedCount===0);
   };
+  const createButton=document.getElementById('create-button');
+  const createMenu=document.getElementById('create-menu');
+  const createBackdrop=document.getElementById('create-menu-backdrop');
+  function closeCreateMenu(){createMenu.hidden=true;createBackdrop.hidden=true;createButton.setAttribute('aria-expanded','false')}
+  function openCreateMenu(){createMenu.hidden=false;createBackdrop.hidden=false;createButton.setAttribute('aria-expanded','true')}
+  createButton.addEventListener('click',()=>createMenu.hidden?openCreateMenu():closeCreateMenu());
+  createBackdrop.addEventListener('click',closeCreateMenu);
+  document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!createMenu.hidden){closeCreateMenu();createButton.focus()}});
+  document.querySelectorAll('[data-create-option]').forEach(option=>option.addEventListener('click',()=>{const type=option.dataset.createOption;closeCreateMenu();toast(type+' creation is coming next ✨')}));
+
   document.querySelectorAll('[data-reel-tab]').forEach(tab=>tab.addEventListener('click',()=>{
     document.querySelectorAll('[data-reel-tab]').forEach(x=>x.classList.toggle('active',x===tab));
     syncFollowingView();
