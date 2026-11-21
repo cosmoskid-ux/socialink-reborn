@@ -775,6 +775,25 @@
       padding:4px 11px!important
     }
 
+
+    /* Compact floating conversation window instead of a full-screen takeover */
+    #thread-panel.active{
+      position:fixed!important;top:6dvh!important;bottom:6dvh!important;
+      left:10px!important;right:10px!important;
+      width:auto!important;min-width:0!important;max-width:none!important;
+      height:88dvh!important;max-height:88dvh!important;min-height:0!important;
+      margin:0!important;padding:0!important;
+      border:1px solid rgba(190,157,231,.24)!important;
+      border-radius:22px!important;overflow:hidden!important;
+      box-shadow:0 18px 55px rgba(0,0,0,.55)!important;
+    }
+    #thread-panel .chat-screen-head{flex:0 0 58px!important}
+    #thread-panel .thread-messages{min-height:0!important;flex:1 1 auto!important}
+    #thread-panel .message-compose{flex:0 0 auto!important}
+    @media(max-height:560px){
+      #thread-panel.active{top:3dvh!important;bottom:3dvh!important;height:94dvh!important;max-height:94dvh!important}
+    }
+
 </style>
 </head>
 <body>
