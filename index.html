@@ -198,25 +198,24 @@
 </body>
 </html>
 
-    /* Strong, visible profile-header overlap: half the avatar sits over the post */
+    /* Thin, top-left profile header with half-overlapping portrait */
     .post-head{
-      width:90%;
-      min-height:72px;
-      margin:10px auto 0;
-      padding:10px 12px 10px 0;
+      width:100%;
+      min-height:44px;
+      margin:0;
+      padding:5px 12px 5px 0;
       position:relative;
       z-index:5;
       display:flex;
       align-items:center;
-      gap:10px;
+      gap:8px;
       background:#151020;
-      border:1px solid rgba(255,255,255,.08);
-      border-bottom:0;
-      border-radius:15px 15px 0 0;
+      border:0;
+      border-radius:0;
     }
     .post-head .avatar{
       position:absolute;
-      left:10px;
+      left:12px;
       bottom:-36px;
       z-index:7;
       width:60px!important;
@@ -224,7 +223,7 @@
       border:2px solid #151020!important;
       box-shadow:0 3px 10px rgba(0,0,0,.6);
     }
-    .post-head .post-user{margin-left:80px;align-self:center}
+    .post-head .post-user{margin-left:82px;align-self:center}
     .post-head .more{margin-left:auto;align-self:center}
     .post-art{position:relative;z-index:1}
 
