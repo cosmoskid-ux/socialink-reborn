@@ -498,7 +498,60 @@
     #messages-screen .message-person strong{font-size:12px!important}
     #messages-screen .message-person small{font-size:10px!important}
 
-  </style>
+  
+/* Dedicated WhatsApp-style conversation view */
+#thread-panel.active{
+  position:fixed!important;inset:0!important;z-index:999!important;
+  display:flex!important;flex-direction:column!important;
+  width:100vw!important;height:100dvh!important;max-height:100dvh!important;
+  margin:0!important;padding:0!important;overflow:hidden!important;
+  background:#080b16!important;color:#F7FBFD!important;
+}
+.chat-screen-head{
+  flex:0 0 62px;display:flex;align-items:center;gap:10px;
+  padding:0 13px;background:#111827;border-bottom:1px solid rgba(247,251,253,.08);
+}
+.chat-screen-back,.chat-screen-more{
+  width:32px;height:40px;border:0;background:transparent;color:#F7FBFD;
+  font-size:28px;display:grid;place-items:center;padding:0;
+}
+.chat-screen-avatar{width:39px;height:46px;flex:0 0 39px;border-radius:50% / 42%;display:grid;place-items:center;background:#29223a;border:1px solid rgba(243,201,107,.38);font-size:21px}
+.chat-screen-person{min-width:0;flex:1}
+.chat-screen-person h3{margin:0;color:#F7FBFD;font-size:14px;font-weight:850}
+.chat-screen-person small{display:block;margin-top:2px;color:#aeb8c9;font-size:10px}
+#thread-panel .thread-messages{
+  flex:1;min-height:0;max-height:none!important;overflow-y:auto;
+  padding:18px 13px 20px;gap:9px;
+  background-color:#080b16;
+  background-image:radial-gradient(ellipse at 20% 10%,rgba(76,62,112,.16),transparent 48%);
+}
+#thread-panel .message-bubble{
+  width:fit-content;max-width:82%;padding:9px 12px;
+  border-radius:5px 15px 15px 15px;background:#202b3a;
+  color:#F7FBFD;font-size:13px;line-height:1.4;
+}
+#thread-panel .message-bubble.mine{
+  margin-left:auto;background:#49376a;border:0;
+  border-radius:15px 5px 15px 15px;color:#F7FBFD;
+}
+#thread-panel .empty-state{color:#aeb8c9;text-align:center;padding:20px;font-size:12px}
+#thread-panel .message-compose{
+  flex:0 0 auto;display:flex;gap:8px;align-items:center;
+  padding:9px 11px calc(9px + env(safe-area-inset-bottom));
+  background:#111827;border-top:1px solid rgba(247,251,253,.08);
+}
+#thread-panel .message-compose input{
+  height:43px;border:0;border-radius:22px;background:#263244;
+  color:#F7FBFD;padding:0 16px;font-size:13px;
+}
+#thread-panel .message-compose input::placeholder{color:#b5c0d0}
+#thread-panel .message-compose button{
+  width:43px;height:43px;flex:0 0 43px;border:0;border-radius:50%;
+  background:#d8b66b;color:#171321!important;font-size:20px;font-weight:900;padding:0;
+}
+@media(min-width:700px){#thread-panel.active{left:50%!important;transform:translateX(-50%);max-width:480px!important;border-left:1px solid rgba(247,251,253,.1);border-right:1px solid rgba(247,251,253,.1)}}
+
+</style>
 </head>
 <body>
 <div class="app">
@@ -625,8 +678,10 @@
         <div class="rooms-hero"><div class="rooms-orbit">✦</div><h3>Galaxy Rooms</h3><p>Step into smaller spaces inside your group. Every room has its own conversation.</p></div>
         <div class="room-list"><div class="room-card"><span class="room-icon">💬</span><span><strong>General Orbit</strong><small>Everyday conversations</small></span><button class="room-join" data-room="General Orbit">Open</button></div><div class="room-card"><span class="room-icon">💡</span><span><strong>Ideas Lab</strong><small>Share thoughts and inspiration</small></span><button class="room-join" data-room="Ideas Lab">Open</button></div><div class="room-card"><span class="room-icon">🎯</span><span><strong>Plans & Events</strong><small>Make things happen together</small></span><button class="room-join" data-room="Plans & Events">Open</button></div></div>
       </div>
-      <div class="messages-panel" id="thread-panel">
-        <button class="back-link" id="thread-back">‹ Back</button><div class="thread-card"><div class="messages-section-title"><h3 id="thread-title">Conversation</h3></div><div class="thread-messages" id="thread-messages"><div class="message-bubble">Welcome to your conversation ✨</div></div><form class="message-compose" id="message-compose"><input id="message-input" maxlength="300" placeholder="Write a message..." aria-label="Write a message" required><button type="submit">Send</button></form></div>
+      <div class="messages-panel" id="thread-panel" aria-label="Private conversation">
+        <header class="chat-screen-head"><button class="chat-screen-back" id="thread-back" aria-label="Back to messages">‹</button><span class="chat-screen-avatar" id="thread-avatar">🌙</span><div class="chat-screen-person"><h3 id="thread-title">Conversation</h3><small>Socialink chat</small></div><button class="chat-screen-more" type="button" aria-label="More options">⋮</button></header>
+        <div class="thread-messages" id="thread-messages"><div class="message-bubble">Welcome to your conversation ✨</div></div>
+        <form class="message-compose" id="message-compose"><input id="message-input" maxlength="300" placeholder="Message..." aria-label="Write a message" required><button type="submit" aria-label="Send message">➤</button></form>
       </div>
       <div class="messages-panel" id="education-panel"><button class="back-link" id="education-back">‹ Back</button><div class="rooms-hero"><div class="rooms-orbit">🎓</div><h3>Education Dashboard</h3><p>A dedicated space for learning with your groups.</p></div><div class="room-list"><div class="room-card"><span class="room-icon">📚</span><span><strong>Study rooms</strong><small>Focused group learning</small></span></div><div class="room-card"><span class="room-icon">📝</span><span><strong>Shared notes</strong><small>Keep useful ideas together</small></span></div></div></div>
     </section>
@@ -914,7 +969,7 @@
   document.getElementById('follower-search').addEventListener('input',event=>{const q=event.target.value.toLowerCase();document.querySelectorAll('.follower-select-row').forEach(row=>row.style.display=row.textContent.toLowerCase().includes(q)?'flex':'none')});
   document.getElementById('new-group-form').addEventListener('submit',event=>{event.preventDefault();const input=document.getElementById('new-group-name'),name=input.value.trim(),selected=followerChecks.filter(x=>x.checked).map(x=>x.value);if(!name)return;if(groupMeta[name]){toast('That group already exists');return}if(!selected.length){toast('Select at least one person');return}groupMeta[name]={icon:'✦',members:(selected.length+1)+' members',people:selected};const row=document.createElement('button');row.className='group-row';row.dataset.group=name;row.innerHTML='<span class="group-avatar">✦</span><span class="group-copy"><strong></strong><small></small></span><span class="group-open-arrow">›</span>';row.querySelector('strong').textContent=name;row.querySelector('small').textContent=(selected.length+1)+' members · '+selected.join(', ');row.addEventListener('click',()=>openGroup(name));document.getElementById('group-list').append(row);input.value='';followerChecks.forEach(x=>x.checked=false);updateSelectedMembers();document.getElementById('follower-search').value='';document.querySelectorAll('.follower-select-row').forEach(row=>row.style.display='flex');openGroup(name);toast('Group created with '+selected.length+' people ✨')});
   const chats={'Amara K.':[],'Jayden M.':[],'Nia W.':[]};
-  function openThread(name){activeThread=name;document.getElementById('thread-title').textContent=name;drawThread();showMessagePanel('thread-panel')}
+  function openThread(name){activeThread=name;document.getElementById('thread-title').textContent=name;const avatars={'Amara K.':'🌙','Jayden M.':'🪐','Nia W.':'🦋','Leo R.':'🌠','Zuri A.':'✨'};document.getElementById('thread-avatar').textContent=avatars[name]||'✦';drawThread();showMessagePanel('thread-panel')}
   function drawThread(){const box=document.getElementById('thread-messages'),items=chats[activeThread]||[];box.innerHTML=items.length?items.map(item=>{const bubble=document.createElement('div');bubble.className='message-bubble'+(item.mine?' mine':'');bubble.textContent=item.text;return bubble.outerHTML}).join(''):'<div class="empty-state">Start a conversation with '+activeThread+' ✨</div>';box.scrollTop=box.scrollHeight}
   document.querySelectorAll('[data-chat]').forEach(btn=>btn.addEventListener('click',()=>openThread(btn.dataset.chat)));
   document.getElementById('thread-back').addEventListener('click',()=>activateMessageTool('inbox'));
