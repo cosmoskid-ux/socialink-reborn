@@ -794,6 +794,38 @@
       #thread-panel.active{top:3dvh!important;bottom:3dvh!important;height:94dvh!important;max-height:94dvh!important}
     }
 
+
+    /* Restore Instagram-style full-screen chat; keep the content compact */
+    #thread-panel.active{
+      position:fixed!important;inset:0!important;top:0!important;right:0!important;
+      bottom:0!important;left:0!important;width:100vw!important;min-width:100vw!important;
+      max-width:none!important;height:100vh!important;height:100dvh!important;
+      min-height:100dvh!important;max-height:100dvh!important;
+      margin:0!important;padding:0!important;border:0!important;border-radius:0!important;
+      overflow:hidden!important;box-shadow:none!important;transform:none!important;
+    }
+    #thread-panel .chat-screen-head{flex:0 0 62px!important}
+    #thread-panel .thread-messages{
+      flex:1 1 auto!important;min-height:0!important;max-height:none!important;
+      justify-content:flex-start!important;gap:5px!important;
+      padding:7px 12px 1px!important;overflow-y:auto!important;
+    }
+    #thread-panel .message-line{margin:0!important}
+    #thread-panel .message-content{gap:2px!important}
+    #thread-panel .message-compose{
+      flex:0 0 auto!important;min-height:0!important;
+      padding:4px 10px calc(4px + env(safe-area-inset-bottom))!important;
+      gap:7px!important;
+    }
+    #thread-panel .message-compose textarea{
+      min-height:30px!important;height:30px!important;max-height:90px!important;
+      padding:4px 10px!important;
+    }
+    #thread-panel .message-compose button{
+      width:34px!important;height:34px!important;flex:0 0 34px!important;
+      border-radius:12px!important;font-size:18px!important;
+    }
+
 </style>
 </head>
 <body>
