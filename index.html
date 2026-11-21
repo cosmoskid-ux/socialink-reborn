@@ -324,6 +324,15 @@
 
 
     /* Messages + Groups + Galaxy Rooms */
+
+    .messages-head-actions{display:flex;align-items:center;justify-content:flex-end;gap:5px;flex-wrap:nowrap}
+    .messages-mini-action{height:29px;min-width:0;padding:0 8px;border:1px solid rgba(243,201,107,.27);border-radius:9px;background:#1b1428;color:#F7FBFD!important;font-size:10px;font-weight:850;white-space:nowrap}
+    .messages-mini-action.active{background:linear-gradient(135deg,#4a345e,#21172f);border-color:rgba(243,201,107,.65);color:#f3c96b!important}
+    .messages-mini-action.rooms-mini-action{color:#f3c96b!important;background:rgba(243,201,107,.1)}
+    .messages-heading{gap:8px}
+    .messages-heading h2{font-size:24px}
+    @media(max-width:390px){.messages-mini-action{height:27px;padding:0 6px;font-size:9px}.messages-head-actions{gap:4px}.education-btn{width:34px;height:34px;border-radius:11px;font-size:17px}}
+
     .messages-screen{display:none;margin:0 -14px;padding:18px 14px 110px;min-height:72vh;background:linear-gradient(180deg,#100b1d,#090712 72%)}
     .messages-screen.active{display:block}
     .messages-heading{display:flex;align-items:center;justify-content:space-between;margin:3px 2px 17px}
@@ -447,11 +456,9 @@
     </section>
     
     <section class="messages-screen" id="messages-screen" aria-label="Messages">
-      <div class="messages-heading"><div><small>YOUR CONNECTIONS</small><h2>Messages</h2></div><button class="education-btn" id="education-open" aria-label="Education Dashboard">🎓</button></div>
+      <div class="messages-heading"><div><small>YOUR CONNECTIONS</small><h2>Messages</h2></div><div class="messages-head-actions"><button class="messages-mini-action active" data-message-view="groups">Groups</button><button class="messages-mini-action" data-message-view="games">Games</button><button class="messages-mini-action rooms-mini-action" id="messages-rooms-open">✦ Rooms</button><button class="education-btn" id="education-open" aria-label="Education Dashboard">🎓</button></div></div>
       <div class="messages-toolbar">
-        <button class="messages-tool active" data-message-view="groups"><span class="tool-icon">♧</span><span>Groups</span></button>
-        <button class="messages-tool" data-message-view="search"><span class="tool-icon">⌕</span><span>Search</span></button>
-        <button class="messages-tool" data-message-view="games"><span class="tool-icon">♟</span><span>Games</span></button>
+        <button class="messages-tool active" data-message-view="search"><span class="tool-icon">⌕</span><span>Search</span></button>
         <button class="messages-tool" id="new-group-open"><span class="tool-icon">＋</span><span>New Group</span></button>
       </div>
       <div class="messages-panel" id="inbox-panel">
@@ -773,6 +780,9 @@
   document.getElementById('message-compose').addEventListener('submit',event=>{event.preventDefault();const input=document.getElementById('message-input'),value=input.value.trim();if(!value)return;(chats[activeThread]||(chats[activeThread]=[])).push({text:value,mine:true});input.value='';drawThread()});
   document.getElementById('message-search-input').addEventListener('input',event=>{const query=event.target.value.toLowerCase(),results=document.getElementById('search-results');results.innerHTML='';document.querySelectorAll('[data-chat]').forEach(btn=>{if(btn.textContent.toLowerCase().includes(query)){const clone=btn.cloneNode(true);clone.addEventListener('click',()=>openThread(clone.dataset.chat));results.append(clone)}});document.querySelectorAll('[data-group]').forEach(btn=>{if(btn.textContent.toLowerCase().includes(query)){const clone=btn.cloneNode(true);clone.addEventListener('click',()=>openGroup(clone.dataset.group));results.append(clone)}})});
   document.querySelectorAll('[data-room]').forEach(btn=>btn.addEventListener('click',()=>openThread(activeGroup+' · '+btn.dataset.room)));
+
+
+  document.getElementById('messages-rooms-open').addEventListener('click',()=>{openGroup(activeGroup);showMessagePanel('rooms-panel')});
 
 </script>
 </body>
