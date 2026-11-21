@@ -379,6 +379,8 @@
     .message-person{flex:0 0 62px;display:flex;flex-direction:column;align-items:center;gap:4px;border:0;background:transparent;padding:0;color:#F7FBFD}
     .message-person-avatar{width:54px;height:68px;position:relative;display:grid;place-items:center;border-radius:50% / 42%;border:1px solid #62536d;background:linear-gradient(145deg,#352448,#171321);font-size:25px}
     .message-person-avatar i{position:absolute;right:-2px;bottom:3px;width:11px;height:11px;border-radius:50%;background:#f3c96b;border:2px solid #100d19}
+    /* Active now: clean green status dot only, no text label */
+    #messages-screen .message-person-avatar i{background:#35d07f;border-color:#100d19;box-shadow:0 0 8px rgba(53,208,127,.55)}
     .message-person strong{font-size:11px;font-weight:850;color:#F7FBFD}
     .message-person small{font-size:9px;color:#a99bb9}
     .message-person:active{transform:scale(.96)}
