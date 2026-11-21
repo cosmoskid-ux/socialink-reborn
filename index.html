@@ -931,7 +931,7 @@
 
 .gif-attribution{text-align:center;padding:7px 0 2px;color:#F7FBFD;font-size:10px;font-weight:700;opacity:.75}\n
 /* Four creative tools in the chat attachment panel */
-#thread-panel .creative-tools{position:absolute;z-index:10021;left:10px;right:10px;bottom:calc(62px + env(safe-area-inset-bottom));display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;padding:13px;border:1px solid rgba(243,201,107,.3);border-radius:19px;background:linear-gradient(155deg,#211735,#0c0a15 78%);box-shadow:0 16px 50px #000b}
+#thread-panel .creative-tools{position:fixed!important;z-index:10030!important;left:9px;right:9px;bottom:calc(var(--chat-keyboard-inset,0px) + 76px + env(safe-area-inset-bottom));max-width:662px;margin-inline:auto;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;padding:13px;border:1px solid rgba(243,201,107,.3);border-radius:19px;background:linear-gradient(155deg,#211735,#0c0a15 78%);box-shadow:0 16px 50px #000b}
 #thread-panel .creative-tools[hidden]{display:none!important}
 #thread-panel .creative-tool{min-width:0;min-height:76px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;border:1px solid rgba(247,251,253,.12);border-radius:13px;background:rgba(135,60,255,.12);color:#F7FBFD;font-size:10px;font-weight:850}
 #thread-panel .creative-tool:active{transform:scale(.97);border-color:rgba(243,201,107,.65)}
