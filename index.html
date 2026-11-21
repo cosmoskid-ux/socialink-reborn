@@ -1340,6 +1340,34 @@
     if(content)showMessageReactions([...line.parentElement.children].indexOf(line),content);
   });
   let lastTouchAt=0,lastTouchBubble=null;
+  let longPressTimer=null,longPressTriggered=false;
+  function deleteSentMessageFromBubble(bubble){
+    const line=bubble?.closest('.message-line');
+    if(!line?.classList.contains('mine'))return false;
+    const index=[...line.parentElement.children].indexOf(line);
+    const item=(chats[activeThread]||[])[index];
+    if(!item?.mine)return false;
+    if(!confirm('Delete this sent message?'))return false;
+    if(item.audioUrl)URL.revokeObjectURL(item.audioUrl);
+    chats[activeThread].splice(index,1);replyTarget=null;drawThread();toast('Message deleted');return true;
+  }
+  threadMessages.addEventListener('touchstart',event=>{
+    const bubble=event.target.closest('.message-bubble');
+    if(!bubble?.closest('.message-line')?.classList.contains('mine'))return;
+    longPressTriggered=false;clearTimeout(longPressTimer);
+    longPressTimer=setTimeout(()=>{longPressTriggered=true;deleteSentMessageFromBubble(bubble)},650);
+  },{passive:true});
+  threadMessages.addEventListener('touchmove',()=>clearTimeout(longPressTimer),{passive:true});
+  threadMessages.addEventListener('touchcancel',()=>clearTimeout(longPressTimer),{passive:true});
+  threadMessages.addEventListener('contextmenu',event=>{
+    const bubble=event.target.closest('.message-bubble');
+    if(!bubble?.closest('.message-line')?.classList.contains('mine'))return;
+    event.preventDefault();deleteSentMessageFromBubble(bubble);
+  });
+  threadMessages.addEventListener('touchend',event=>{
+    clearTimeout(longPressTimer);
+    if(longPressTriggered){longPressTriggered=false;lastTouchAt=0;lastTouchBubble=null;return;}
+  },{passive:true});
   threadMessages.addEventListener('touchend',event=>{
     const bubble=event.target.closest('.message-bubble');if(!bubble)return;
     const now=Date.now();
