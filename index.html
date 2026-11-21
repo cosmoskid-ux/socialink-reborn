@@ -2854,5 +2854,68 @@ body.socialink-profile-open #profile-screen{
   document.addEventListener('pointerup',openMyPage,true);
 })();
 </script>
+
+<script>
+/* Socialink main-screen horizontal swipe navigation. */
+(function(){
+  const screens=['Home','Reels','Messages','Your Page'];
+  const nav=[...document.querySelectorAll('.bottom-nav .nav-item[data-screen]')];
+  let startX=0,startY=0,startTarget=null;
+  function showScreen(name){
+    if(!screens.includes(name))return;
+    const home=name==='Home',reels=name==='Reels',messages=name==='Messages',profile=name==='Your Page';
+    document.body.classList.remove('socialink-profile-open');
+    const profileEl=document.getElementById('profile-screen');
+    if(profileEl){
+      profileEl.hidden=!profile;
+      profileEl.style.removeProperty('display');
+      profileEl.style.removeProperty('visibility');
+      profileEl.style.removeProperty('position');
+      profileEl.style.removeProperty('top');
+      profileEl.style.removeProperty('bottom');
+      profileEl.style.removeProperty('left');
+      profileEl.style.removeProperty('transform');
+      profileEl.style.removeProperty('width');
+      profileEl.style.removeProperty('overflow-y');
+      profileEl.style.removeProperty('background');
+      profileEl.style.removeProperty('padding');
+    }
+    const spot=document.querySelector('.spotlights')?.parentElement;
+    const discover=document.querySelector('.discover')?.parentElement;
+    const feed=document.querySelector('.feed');
+    if(spot)spot.style.display=home?'':'none';
+    if(discover)discover.style.display=home?'':'none';
+    if(feed)feed.style.display=home?'':'none';
+    document.getElementById('reels-screen')?.classList.toggle('active',reels);
+    document.getElementById('messages-screen')?.classList.toggle('active',messages);
+    document.getElementById('other-screen')?.classList.toggle('show',false);
+    const title=document.getElementById('screen-title');
+    if(title)title.textContent=name;
+    nav.forEach(button=>button.classList.toggle('active',button.dataset.screen===name));
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+  document.addEventListener('touchstart',event=>{
+    if(event.touches.length!==1)return;
+    const target=event.target;
+    if(!target.closest('.app, main, #profile-screen'))return;
+    if(target.closest('.spotlights,.discover,.message-people-list,.reels-tabs,.post-actions,.comment-list,input,textarea,select,[contenteditable="true"]'))return;
+    startX=event.touches[0].clientX;
+    startY=event.touches[0].clientY;
+    startTarget=target;
+  },{passive:true});
+  document.addEventListener('touchend',event=>{
+    if(startTarget===null||!event.changedTouches.length)return;
+    const dx=event.changedTouches[0].clientX-startX;
+    const dy=event.changedTouches[0].clientY-startY;
+    startTarget=null;
+    if(Math.abs(dx)<65||Math.abs(dx)<Math.abs(dy)*1.25)return;
+    const active=nav.find(button=>button.classList.contains('active'));
+    const current=active?.dataset.screen||'Home';
+    const index=screens.indexOf(current);
+    const next=screens[index+(dx<0?1:-1)];
+    if(next)showScreen(next);
+  },{passive:true});
+})();
+</script>
 </body>
 </html>
