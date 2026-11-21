@@ -593,6 +593,15 @@
 #thread-panel .message-bubble.mine{
   align-self:flex-end!important;
 }
+
+/* WhatsApp-style incoming message rows with tiny sender portraits and pointed tails */
+#thread-panel .thread-messages{display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:10px!important}
+#thread-panel .message-line{display:flex;align-items:flex-end;gap:6px;width:100%;flex:0 0 auto}
+#thread-panel .message-line.mine{justify-content:flex-end}
+#thread-panel .message-mini-avatar{width:22px;height:22px;flex:0 0 22px;border-radius:50% / 42%;display:grid;place-items:center;font-size:14px;line-height:1;background:#29223a;border:1px solid rgba(243,201,107,.32);margin-bottom:1px}
+#thread-panel .message-bubble{position:relative;flex:0 0 auto;align-self:auto!important;width:fit-content!important;height:auto!important;min-height:0!important;max-width:min(72%,420px)!important;box-sizing:border-box!important}
+#thread-panel .message-bubble:not(.mine):before{content:"";position:absolute;left:-6px;bottom:2px;width:0;height:0;border-top:0 solid transparent;border-bottom:7px solid transparent;border-right:7px solid #202b3a}
+#thread-panel .message-bubble.mine:after{content:"";position:absolute;right:-6px;bottom:2px;width:0;height:0;border-top:0 solid transparent;border-bottom:7px solid transparent;border-left:7px solid #49376a}
 </style>
 </head>
 <body>
@@ -1012,7 +1021,18 @@
   document.getElementById('new-group-form').addEventListener('submit',event=>{event.preventDefault();const input=document.getElementById('new-group-name'),name=input.value.trim(),selected=followerChecks.filter(x=>x.checked).map(x=>x.value);if(!name)return;if(groupMeta[name]){toast('That group already exists');return}if(!selected.length){toast('Select at least one person');return}groupMeta[name]={icon:'✦',members:(selected.length+1)+' members',people:selected};const row=document.createElement('button');row.className='group-row';row.dataset.group=name;row.innerHTML='<span class="group-avatar">✦</span><span class="group-copy"><strong></strong><small></small></span><span class="group-open-arrow">›</span>';row.querySelector('strong').textContent=name;row.querySelector('small').textContent=(selected.length+1)+' members · '+selected.join(', ');row.addEventListener('click',()=>openGroup(name));document.getElementById('group-list').append(row);input.value='';followerChecks.forEach(x=>x.checked=false);updateSelectedMembers();document.getElementById('follower-search').value='';document.querySelectorAll('.follower-select-row').forEach(row=>row.style.display='flex');openGroup(name);toast('Group created with '+selected.length+' people ✨')});
   const chats={'Amara K.':[],'Jayden M.':[],'Nia W.':[]};
   function openThread(name){activeThread=name;document.getElementById('thread-title').textContent=name;const avatars={'Amara K.':'🌙','Jayden M.':'🪐','Nia W.':'🦋','Leo R.':'🌠','Zuri A.':'✨'};document.getElementById('thread-avatar').textContent=avatars[name]||'✦';drawThread();showMessagePanel('thread-panel')}
-  function drawThread(){const box=document.getElementById('thread-messages'),items=chats[activeThread]||[];box.innerHTML=items.length?items.map(item=>{const bubble=document.createElement('div');bubble.className='message-bubble'+(item.mine?' mine':'');bubble.textContent=item.text;return bubble.outerHTML}).join(''):'<div class="empty-state">Start a conversation with '+activeThread+' ✨</div>';box.scrollTop=box.scrollHeight}
+  function drawThread(){
+    const box=document.getElementById('thread-messages'),items=chats[activeThread]||[];
+    const avatars={'Amara K.':'🌙','Jayden M.':'🪐','Nia W.':'🦋','Leo R.':'🌠','Zuri A.':'✨'};
+    box.replaceChildren();
+    if(!items.length){const empty=document.createElement('div');empty.className='empty-state';empty.textContent='Start a conversation with '+activeThread+' ✨';box.append(empty)}
+    items.forEach(item=>{
+      const line=document.createElement('div');line.className='message-line'+(item.mine?' mine':'');
+      if(!item.mine){const avatar=document.createElement('span');avatar.className='message-mini-avatar';avatar.textContent=avatars[activeThread]||'✦';line.append(avatar)}
+      const bubble=document.createElement('div');bubble.className='message-bubble'+(item.mine?' mine':'');bubble.textContent=item.text;line.append(bubble);box.append(line);
+    });
+    box.scrollTop=box.scrollHeight;
+  }
   document.querySelectorAll('[data-chat]').forEach(btn=>btn.addEventListener('click',()=>openThread(btn.dataset.chat)));
   document.getElementById('thread-back').addEventListener('click',()=>activateMessageTool('inbox'));
   document.getElementById('message-compose').addEventListener('submit',event=>{event.preventDefault();const input=document.getElementById('message-input'),value=input.value.trim();if(!value)return;(chats[activeThread]||(chats[activeThread]=[])).push({text:value,mine:true});input.value='';drawThread()});
