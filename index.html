@@ -1895,7 +1895,7 @@
     if(content)showMessageReactions([...line.parentElement.children].indexOf(line),content);
   });
   let lastTouchAt=0,lastTouchBubble=null;
-  let longPressTimer=null,longPressTriggered=false;
+  let longPressTimer=null,longPressTriggered=false,longPressStartX=0,longPressStartY=0;
   let messageActionMenu=null;
   function closeMessageActionMenu(){if(messageActionMenu){messageActionMenu.remove();messageActionMenu=null}}
   function showMessageActionMenu(bubble){
@@ -1964,17 +1964,28 @@
   }
   threadMessages.addEventListener('touchstart',event=>{
     const bubble=event.target.closest('.message-bubble');if(!bubble||event.target.closest('.meaning-word'))return;
+    const touch=event.touches[0];if(!touch)return;
     longPressTriggered=false;clearTimeout(longPressTimer);
-    longPressTimer=setTimeout(()=>{longPressTriggered=true;showMessageActionMenu(bubble)},550);
+    longPressStartX=touch.clientX;longPressStartY=touch.clientY;
+    // A short, steady hold opens the tools; text and empty bubble space both work.
+    longPressTimer=setTimeout(()=>{longPressTriggered=true;showMessageActionMenu(bubble)},320);
   },{passive:true});
-  threadMessages.addEventListener('touchmove',()=>clearTimeout(longPressTimer),{passive:true});
-  threadMessages.addEventListener('touchcancel',()=>clearTimeout(longPressTimer),{passive:true});
+  threadMessages.addEventListener('touchmove',event=>{
+    if(!longPressTimer)return;
+    const touch=event.touches[0];if(!touch)return;
+    // Ignore tiny finger drift, but cancel when the user is actually scrolling.
+    if(Math.abs(touch.clientX-longPressStartX)>12||Math.abs(touch.clientY-longPressStartY)>12){
+      clearTimeout(longPressTimer);longPressTimer=null;
+    }
+  },{passive:true});
+  threadMessages.addEventListener('touchcancel',()=>{clearTimeout(longPressTimer);longPressTimer=null;},{passive:true});
   threadMessages.addEventListener('contextmenu',event=>{
     const bubble=event.target.closest('.message-bubble');if(!bubble||event.target.closest('.meaning-word'))return;
-    event.preventDefault();showMessageActionMenu(bubble);
+    event.preventDefault();
+    if(!longPressTriggered){longPressTriggered=true;showMessageActionMenu(bubble)}
   });
   threadMessages.addEventListener('touchend',()=>{
-    clearTimeout(longPressTimer);
+    clearTimeout(longPressTimer);longPressTimer=null;
     if(longPressTriggered){longPressTriggered=false;lastTouchAt=0;lastTouchBubble=null;}
   },{passive:true});
   document.addEventListener('click',event=>{if(messageActionMenu&&!messageActionMenu.contains(event.target))closeMessageActionMenu()});
