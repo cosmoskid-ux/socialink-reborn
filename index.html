@@ -2103,9 +2103,8 @@ button,a,[role="button"]{
         const existing=(chats[activeThread]||[]).find(x=>x.pinned);if(existing&&existing!==current)existing.pinned=false;
         current.pinned=!current.pinned;drawThread();toast(current.pinned?'Message pinned':'Message unpinned');
       }else if(action==='delete'){
-        if(!confirm('Delete this sent message?'))return;
         if(current.audioUrl)URL.revokeObjectURL(current.audioUrl);
-        chats[activeThread].splice(index,1);replyTarget=null;drawThread();toast('Message deleted');
+        chats[activeThread].splice(index,1);replyTarget=null;drawThread();
       }
     });
   }
