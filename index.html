@@ -702,6 +702,24 @@
 }
 #thread-panel .message-line.mine .message-bubble{order:1!important}
 
+
+/* Message replies and quick reactions */
+#thread-panel .reply-preview{display:flex;align-items:center;gap:10px;padding:9px 14px;background:#211832;border-top:1px solid rgba(214,182,108,.22);color:#F7FBFD}
+#thread-panel .reply-preview[hidden]{display:none!important}
+#thread-panel .reply-preview-copy{min-width:0;flex:1;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border-left:3px solid #d6b66c;padding-left:9px}
+#thread-panel #cancel-reply{border:0;background:transparent;color:#F7FBFD;font-size:21px;padding:2px 7px}
+#thread-panel .message-content{display:flex;flex-direction:column;align-items:flex-start;gap:4px;max-width:78%;min-width:0}
+#thread-panel .message-line.mine .message-content{align-items:flex-end}
+#thread-panel .message-tools{display:flex;align-items:center;gap:12px;padding:0 3px;position:relative}
+#thread-panel .message-tool{border:0;background:transparent;color:#bdb1d1;font-size:10px;padding:3px 2px}
+#thread-panel .message-tool:active{color:#f3d27b}
+#thread-panel .reaction-picker{display:flex;gap:3px;padding:5px 7px;border:1px solid rgba(214,182,108,.25);border-radius:18px;background:#211832;box-shadow:0 5px 18px #0006;max-width:100%}
+#thread-panel .reaction-picker button{border:0;background:transparent;font-size:19px;padding:2px}
+#thread-panel .message-reaction{align-self:flex-start;margin-top:-2px;padding:2px 7px;border:1px solid rgba(214,182,108,.3);border-radius:12px;background:#211832;font-size:14px}
+#thread-panel .message-line.mine .message-reaction{align-self:flex-end}
+#thread-panel .message-reply-quote{max-width:100%;padding:5px 8px;border-left:2px solid #d6b66c;border-radius:5px;background:rgba(255,255,255,.07);color:#d9cde8;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#thread-panel .message-line .message-bubble{max-width:100%!important}
+
 </style>
 </head>
 <body>
@@ -832,7 +850,7 @@
       <div class="messages-panel" id="thread-panel" aria-label="Private conversation">
         <header class="chat-screen-head"><button class="chat-screen-back" id="thread-back" aria-label="Back to messages">‹</button><span class="chat-screen-avatar" id="thread-avatar">🌙</span><div class="chat-screen-person"><h3 id="thread-title">Conversation</h3><small>Socialink chat</small></div><button class="chat-screen-more" type="button" aria-label="More options">⋮</button></header>
         <div class="thread-messages" id="thread-messages"><div class="message-bubble">Welcome to your conversation ✨</div></div>
-        <form class="message-compose" id="message-compose"><input id="message-input" maxlength="300" placeholder="Message..." aria-label="Write a message" required><button type="submit" aria-label="Send message">➤</button></form>
+        <div class="reply-preview" id="reply-preview" hidden><span class="reply-preview-copy"></span><button type="button" id="cancel-reply" aria-label="Cancel reply">×</button></div><form class="message-compose" id="message-compose"><input id="message-input" maxlength="300" placeholder="Message..." aria-label="Write a message" required><button type="submit" aria-label="Send message">➤</button></form>
       </div>
       <div class="messages-panel" id="education-panel"><button class="back-link" id="education-back">‹ Back</button><div class="rooms-hero"><div class="rooms-orbit">🎓</div><h3>Education Dashboard</h3><p>A dedicated space for learning with your groups.</p></div><div class="room-list"><div class="room-card"><span class="room-icon">📚</span><span><strong>Study rooms</strong><small>Focused group learning</small></span></div><div class="room-card"><span class="room-icon">📝</span><span><strong>Shared notes</strong><small>Keep useful ideas together</small></span></div></div></div>
     </section>
@@ -1121,23 +1139,49 @@
   document.getElementById('new-group-form').addEventListener('submit',event=>{event.preventDefault();const input=document.getElementById('new-group-name'),name=input.value.trim(),selected=followerChecks.filter(x=>x.checked).map(x=>x.value);if(!name)return;if(groupMeta[name]){toast('That group already exists');return}if(!selected.length){toast('Select at least one person');return}groupMeta[name]={icon:'✦',members:(selected.length+1)+' members',people:selected};const row=document.createElement('button');row.className='group-row';row.dataset.group=name;row.innerHTML='<span class="group-avatar">✦</span><span class="group-copy"><strong></strong><small></small></span><span class="group-open-arrow">›</span>';row.querySelector('strong').textContent=name;row.querySelector('small').textContent=(selected.length+1)+' members · '+selected.join(', ');row.addEventListener('click',()=>openGroup(name));document.getElementById('group-list').append(row);input.value='';followerChecks.forEach(x=>x.checked=false);updateSelectedMembers();document.getElementById('follower-search').value='';document.querySelectorAll('.follower-select-row').forEach(row=>row.style.display='flex');openGroup(name);toast('Group created with '+selected.length+' people ✨')});
   const chats={'Amara K.':[{text:'Hey! How are you? ✨',mine:false}],'Jayden M.':[{text:'Did you see my new Reel? 🪐',mine:false}],'Nia W.':[{text:'Thanks for your message 💜',mine:false}],'Leo R.':[{text:'Hey, are you around?',mine:false}],'Zuri A.':[{text:'Hello! ✨',mine:false}]};
   function openThread(name){activeThread=name;document.getElementById('thread-title').textContent=name;const avatars={'Amara K.':'🌙','Jayden M.':'🪐','Nia W.':'🦋','Leo R.':'🌠','Zuri A.':'✨'};document.getElementById('thread-avatar').textContent=avatars[name]||'✦';drawThread();showMessagePanel('thread-panel')}
+  let replyTarget=null;
+  const reactionChoices=['❤️','😂','🔥','😍','👏','✨'];
+  function syncReplyPreview(){
+    const preview=document.getElementById('reply-preview');
+    preview.hidden=!replyTarget;
+    if(replyTarget)preview.querySelector('.reply-preview-copy').textContent='Replying to '+(replyTarget.mine?'yourself':activeThread)+': '+replyTarget.text;
+  }
   function drawThread(){
     const box=document.getElementById('thread-messages'),items=chats[activeThread]||[];
     const avatars={'Amara K.':'🌙','Jayden M.':'🪐','Nia W.':'🦋','Leo R.':'🌠','Zuri A.':'✨'};
     box.replaceChildren();
     if(!items.length){const empty=document.createElement('div');empty.className='empty-state';empty.textContent='Start a conversation with '+activeThread+' ✨';box.append(empty)}
-    items.forEach(item=>{
+    items.forEach((item,index)=>{
       const line=document.createElement('div');line.className='message-line'+(item.mine?' mine':'');
       if(!item.mine){const avatar=document.createElement('span');avatar.className='message-mini-avatar';avatar.textContent=avatars[activeThread]||'✦';avatar.setAttribute('aria-label',activeThread+' profile');line.append(avatar)}
-      const bubble=document.createElement('div');bubble.className='message-bubble'+(item.mine?' mine':'');bubble.textContent=item.text;line.append(bubble);
+      const content=document.createElement('div');content.className='message-content';
+      if(item.replyTo){const quote=document.createElement('div');quote.className='message-reply-quote';quote.textContent='↩ '+item.replyTo;content.append(quote)}
+      const bubble=document.createElement('div');bubble.className='message-bubble'+(item.mine?' mine':'');bubble.textContent=item.text;content.append(bubble);
+      const tools=document.createElement('div');tools.className='message-tools';
+      const reply=document.createElement('button');reply.type='button';reply.className='message-tool';reply.dataset.replyIndex=index;reply.textContent='↩ Reply';
+      const react=document.createElement('button');react.type='button';react.className='message-tool';react.dataset.reactIndex=index;react.textContent='☺ React';
+      tools.append(reply,react);content.append(tools);
+      if(item.reaction){const reaction=document.createElement('span');reaction.className='message-reaction';reaction.textContent=item.reaction;content.append(reaction)}
+      line.append(content);
       if(item.mine){const avatar=document.createElement('span');avatar.className='message-mini-avatar message-own-avatar';avatar.textContent='♙';avatar.setAttribute('aria-label','Your profile');line.append(avatar)}
       box.append(line);
     });
-    box.scrollTop=box.scrollHeight;
+    syncReplyPreview();box.scrollTop=box.scrollHeight;
   }
+  document.getElementById('thread-messages').addEventListener('click',event=>{
+    const reply=event.target.closest('[data-reply-index]');
+    if(reply){const item=(chats[activeThread]||[])[Number(reply.dataset.replyIndex)];if(item){replyTarget={text:item.text,mine:item.mine};syncReplyPreview();document.getElementById('message-input').focus()}return}
+    const react=event.target.closest('[data-react-index]');
+    if(react){const item=(chats[activeThread]||[])[Number(react.dataset.reactIndex)];if(!item)return;const existing=react.parentElement.querySelector('.reaction-picker');if(existing){existing.remove();return}
+      const picker=document.createElement('div');picker.className='reaction-picker';
+      reactionChoices.forEach(emoji=>{const choice=document.createElement('button');choice.type='button';choice.textContent=emoji;choice.addEventListener('click',()=>{item.reaction=item.reaction===emoji?'':emoji;drawThread()});picker.append(choice)});
+      react.parentElement.append(picker);
+    }
+  });
+  document.getElementById('cancel-reply').addEventListener('click',()=>{replyTarget=null;syncReplyPreview()});
   document.querySelectorAll('[data-chat]').forEach(btn=>btn.addEventListener('click',()=>openThread(btn.dataset.chat)));
   document.getElementById('thread-back').addEventListener('click',()=>activateMessageTool('inbox'));
-  document.getElementById('message-compose').addEventListener('submit',event=>{event.preventDefault();const input=document.getElementById('message-input'),value=input.value.trim();if(!value)return;(chats[activeThread]||(chats[activeThread]=[])).push({text:value,mine:true});input.value='';drawThread()});
+  document.getElementById('message-compose').addEventListener('submit',event=>{event.preventDefault();const input=document.getElementById('message-input'),value=input.value.trim();if(!value)return;const message={text:value,mine:true};if(replyTarget)message.replyTo=replyTarget.text;(chats[activeThread]||(chats[activeThread]=[])).push(message);input.value='';replyTarget=null;drawThread()});
   document.getElementById('message-search-input').addEventListener('input',event=>{const query=event.target.value.toLowerCase(),results=document.getElementById('search-results');results.innerHTML='';document.querySelectorAll('[data-chat]').forEach(btn=>{if(btn.textContent.toLowerCase().includes(query)){const clone=btn.cloneNode(true);clone.addEventListener('click',()=>openThread(clone.dataset.chat));results.append(clone)}});document.querySelectorAll('[data-group]').forEach(btn=>{if(btn.textContent.toLowerCase().includes(query)){const clone=btn.cloneNode(true);clone.addEventListener('click',()=>openGroup(clone.dataset.group));results.append(clone)}})});
   document.querySelectorAll('[data-room]').forEach(btn=>btn.addEventListener('click',()=>openThread(activeGroup+' · '+btn.dataset.room)));
 
