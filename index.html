@@ -734,6 +734,11 @@
 #thread-panel .reaction-picker button{border:0;background:transparent;font-size:20px;padding:2px 4px;line-height:1}
 @keyframes reactionPop{from{opacity:0;transform:translateY(5px) scale(.94)}to{opacity:1;transform:translateY(0) scale(1)}}
 
+
+    /* Keep each chat portrait anchored beside its message bubble, not the reaction controls */
+    #thread-panel .message-line{align-items:flex-start!important}
+    #thread-panel .message-mini-avatar{align-self:flex-start!important;margin-top:0!important}
+
 </style>
 </head>
 <body>
