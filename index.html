@@ -978,6 +978,9 @@
     .call-control.end{background:#b52d50;border-color:#e96c84}
     .call-incoming-actions{display:flex;gap:10px}.call-incoming-actions button{flex:1}
     .call-decline{height:44px;border:1px solid #e96c8466;border-radius:13px;background:#9e2945;color:#fff;font-weight:850}
+    .call-primary-button.is-connected{background:linear-gradient(135deg,#35d58a,#168b58)!important;color:#041b11!important;box-shadow:0 0 22px rgba(53,213,138,.24);border:1px solid #71f0b2}
+    .call-connected-timer{align-self:center;color:#42e695;font-size:27px;font-weight:950;letter-spacing:2px;font-variant-numeric:tabular-nums;text-shadow:0 0 18px rgba(53,213,138,.28);padding:2px 12px}
+    .call-connected-timer[hidden]{display:none!important}
     .call-stage-note{font-size:10px;line-height:1.5;color:#a99db8;text-align:center}
 
 
@@ -1139,6 +1142,7 @@
         <section class="call-stage" id="call-stage" role="dialog" aria-modal="true" aria-label="Socialink call" hidden>
           <div class="call-stage-head"><strong id="call-stage-title">Socialink Call</strong><button class="call-stage-close" id="call-stage-close" type="button" aria-label="Close call">×</button></div>
           <div class="call-stage-status" id="call-stage-status">Preparing your call…</div>
+          <div class="call-connected-timer" id="call-connected-timer" hidden>00:00</div>
           <div class="call-code-card" id="call-code-card" hidden><div class="call-code-label">YOUR TEMPORARY CALL CODE</div><div class="call-code-value" id="call-code-value">••••</div><button class="call-copy-button" id="call-copy-code" type="button">Copy call code</button><p class="call-stage-note">Share this code only with the person you intend to call. It expires when you close this call room.</p></div>
           <div id="call-join-card"><div class="call-code-label" style="margin-bottom:8px;text-align:center">Or join someone else's call</div><div class="call-join-row"><input class="call-join-input" id="call-join-input" inputmode="numeric" autocomplete="one-time-code" maxlength="4" placeholder="Enter 4-digit code" aria-label="Enter call code"><button class="call-primary-button" id="call-join-button" type="button">Join</button></div></div>
           <div class="call-video-stage" id="call-video-stage" hidden><div class="call-remote-waiting" id="call-remote-waiting"><div class="call-remote-orb">✦</div><strong id="call-remote-waiting-name">Waiting for your person</strong><span>Their live video will appear here when they join</span></div><video class="call-remote-video" id="call-remote-video" autoplay playsinline></video><video class="call-local-video" id="call-local-video" autoplay muted playsinline></video></div>
@@ -1717,12 +1721,24 @@
   const callControls=document.getElementById('call-controls');
   const callIncomingActions=document.getElementById('call-incoming-actions');
   let callPeer=null,activeMediaCall=null,localCallStream=null,incomingMediaCall=null,activeCallMode='voice',callRoomCode='',callIsHost=false;
-  let micEnabled=true,cameraEnabled=true;
+  let micEnabled=true,cameraEnabled=true,callConnectedAt=0,callTimerInterval=null;
+  const callAcceptButton=document.getElementById('call-accept');
+  const callDeclineButton=document.getElementById('call-decline');
+  const callConnectedTimer=document.getElementById('call-connected-timer');
+  function formatCallDuration(total){const minutes=Math.floor(total/60),seconds=total%60;return String(minutes).padStart(2,'0')+':'+String(seconds).padStart(2,'0')}
+  function stopCallTimer(){clearInterval(callTimerInterval);callTimerInterval=null;callConnectedAt=0;callConnectedTimer.hidden=true;callConnectedTimer.textContent='00:00'}
+  function markCallConnected(){
+    if(!callConnectedAt){callConnectedAt=Date.now();callConnectedTimer.hidden=false;callConnectedTimer.textContent='00:00';callTimerInterval=setInterval(()=>{callConnectedTimer.textContent=formatCallDuration(Math.floor((Date.now()-callConnectedAt)/1000))},1000);try{if(navigator.vibrate)navigator.vibrate([90,45,90])}catch(error){}}
+    callAcceptButton.textContent='✓ Call connected';callAcceptButton.classList.add('is-connected');callAcceptButton.disabled=true;callDeclineButton.hidden=true;callIncomingActions.hidden=false;
+    setCallStatus('Call connected');
+    const ringtone=document.getElementById('call-ringtone');if(ringtone){ringtone.pause();ringtone.currentTime=0}
+  }
   function closeCallSheet(){callSheet.hidden=true;callBackdrop.hidden=true}
   function setCallStatus(message){callStageStatus.textContent=message}
   function openCallStage(){callStageBackdrop.hidden=false;callStage.hidden=false}
   function stopLocalCallStream(){if(localCallStream){localCallStream.getTracks().forEach(track=>track.stop());localCallStream=null}}
   function cleanupCallRoom(){
+    stopCallTimer();callAcceptButton.textContent='Accept call';callAcceptButton.classList.remove('is-connected');callAcceptButton.disabled=false;callDeclineButton.hidden=false;
     if(activeMediaCall){try{activeMediaCall.close()}catch(e){}activeMediaCall=null}
     if(incomingMediaCall){try{incomingMediaCall.close()}catch(e){}incomingMediaCall=null}
     stopLocalCallStream();
@@ -1743,8 +1759,8 @@
       if(mode==='video'){callStage.classList.add('video-active');callVideoStage.hidden=false;callAudioAvatar.hidden=true;document.getElementById('call-remote-waiting').hidden=true;callRemoteVideo.srcObject=remoteStream;callRemoteVideo.play().catch(()=>{})}
       else{callVideoStage.hidden=true;callAudioAvatar.hidden=false;callRemoteAudio.srcObject=remoteStream;callRemoteAudio.play().catch(()=>{})}
       if(localCallStream&&mode==='video'){callLocalVideo.srcObject=localCallStream;callLocalVideo.play().catch(()=>{})}
-      callControls.hidden=false;callCodeCard.hidden=true;callJoinCard.hidden=true;callIncomingActions.hidden=true;
-      setCallStatus('Connected · '+document.getElementById('thread-title').textContent);
+      callControls.hidden=false;callCodeCard.hidden=true;callJoinCard.hidden=true;
+      markCallConnected();
     });
     mediaCall.on('close',()=>{if(activeMediaCall===mediaCall){setCallStatus('Call ended');cleanupCallRoom();toast('Call ended')}});
     mediaCall.on('error',error=>{setCallStatus('Call connection error: '+(error.message||'Please try again'));});
