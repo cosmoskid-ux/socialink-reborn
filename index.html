@@ -2954,5 +2954,110 @@ body.socialink-profile-open #profile-screen{
   #profile-screen .profile-spotlight-card{margin-top:7px!important;margin-bottom:7px!important}
 }
 </style>
+
+<style>
+/* Dedicated Socialink Edit Profile page */
+#socialink-edit-page{position:fixed;inset:0;z-index:10020;display:none;flex-direction:column;background:linear-gradient(180deg,#171025 0%,#090711 100%);color:#F7FBFD;overflow-y:auto;padding-bottom:calc(22px + env(safe-area-inset-bottom,0px))}
+#socialink-edit-page.open{display:flex}
+#socialink-edit-page .edit-top{height:62px;flex:0 0 62px;display:flex;align-items:center;gap:14px;padding:0 17px;border-bottom:1px solid rgba(255,255,255,.08);background:rgba(8,7,17,.96)}
+#socialink-edit-page .edit-back{width:38px;height:38px;border:1px solid rgba(255,255,255,.12);border-radius:12px;background:#211831;color:#F7FBFD;font-size:22px}
+#socialink-edit-page .edit-top strong{font-size:17px;font-weight:900}
+#socialink-edit-page .edit-body{width:min(100%,560px);margin:0 auto;padding:24px 20px;display:grid;gap:19px}
+#socialink-edit-page .edit-photo-area{display:flex;flex-direction:column;align-items:center;gap:10px;padding:8px 0 12px}
+#socialink-edit-page .edit-photo-preview{width:112px;height:112px;border-radius:34px;display:grid;place-items:center;overflow:hidden;background:linear-gradient(145deg,#5a3d78,#171321 72%);border:2px solid #d4b66e;color:#f3c96b;font-size:43px;background-position:center;background-size:cover}
+#socialink-edit-page .edit-photo-button{border:0;background:transparent;color:#e9c978;font-weight:850;font-size:13px;padding:8px}
+#socialink-edit-page .edit-field{display:grid;gap:7px}
+#socialink-edit-page .edit-field label{font-size:12px;font-weight:800;color:#d8cce8}
+#socialink-edit-page .edit-field input,#socialink-edit-page .edit-field textarea{width:100%;box-sizing:border-box;border:1px solid rgba(255,255,255,.12);border-radius:14px;background:#151020;color:#F7FBFD;padding:13px 14px;font:inherit;font-size:14px;outline:none}
+#socialink-edit-page .edit-field input:focus,#socialink-edit-page .edit-field textarea:focus{border-color:rgba(243,201,107,.65)}
+#socialink-edit-page .edit-field textarea{min-height:104px;resize:vertical}
+#socialink-edit-page .edit-hint{font-size:10px;color:#a99db7}
+#socialink-edit-page .edit-save{height:49px;border:0;border-radius:15px;background:linear-gradient(135deg,#f3d27b,#c18b42);color:#21162a;font-weight:950;font-size:14px;margin-top:4px}
+#socialink-edit-page .edit-cancel{height:43px;border:1px solid rgba(255,255,255,.12);border-radius:14px;background:#171321;color:#F7FBFD;font-weight:800}
+</style>
+<section id="socialink-edit-page" aria-label="Edit profile" aria-hidden="true">
+  <div class="edit-top"><button type="button" class="edit-back" id="socialink-edit-back" aria-label="Back">‹</button><strong>Edit profile</strong></div>
+  <div class="edit-body">
+    <div class="edit-photo-area">
+      <div class="edit-photo-preview" id="socialink-edit-photo-preview">✦</div>
+      <button type="button" class="edit-photo-button" id="socialink-choose-photo">Change profile photo</button>
+      <input type="file" id="socialink-photo-file" accept="image/*" hidden>
+      <span class="edit-hint">Choose a photo from your phone gallery</span>
+    </div>
+    <div class="edit-field"><label for="socialink-edit-name">Name</label><input id="socialink-edit-name" maxlength="40" autocomplete="name" placeholder="Your name"></div>
+    <div class="edit-field"><label for="socialink-edit-handle">Username</label><input id="socialink-edit-handle" maxlength="24" autocomplete="username" placeholder="yourusername"><span class="edit-hint">Your username appears with @ on your profile.</span></div>
+    <div class="edit-field"><label for="socialink-edit-bio">Bio</label><textarea id="socialink-edit-bio" maxlength="160" placeholder="Tell people a little about yourself"></textarea><span class="edit-hint">Up to 160 characters</span></div>
+    <button type="button" class="edit-save" id="socialink-edit-save">Save changes</button>
+    <button type="button" class="edit-cancel" id="socialink-edit-cancel">Cancel</button>
+  </div>
+</section>
+<script>
+/* Dedicated profile editor: local profile details and compressed gallery photo. */
+(function(){
+  const page=document.getElementById('socialink-edit-page');
+  if(!page)return;
+  const $=id=>document.getElementById(id);
+  const read=()=>{try{return JSON.parse(localStorage.getItem('socialink-profile-v1')||'{}')}catch(e){return {}}};
+  let chosenPhoto='';
+  function setPhoto(el,photo){
+    if(!el)return;
+    if(photo){el.style.backgroundImage='url("'+photo+'")';el.textContent='';}
+    else{el.style.backgroundImage='';el.textContent='✦';}
+  }
+  function applyProfile(data){
+    $('profile-name').textContent=data.name||'Your Name';
+    $('profile-handle').textContent='@'+(data.handle||'youruniverse');
+    $('profile-bio').textContent=data.bio||'No bio added yet.';
+    setPhoto($('profile-avatar'),data.photo||'');
+  }
+  function close(){page.classList.remove('open');page.setAttribute('aria-hidden','true');}
+  function open(){
+    const data=read();chosenPhoto=data.photo||'';
+    $('socialink-edit-name').value=data.name||$('profile-name').textContent||'';
+    $('socialink-edit-handle').value=(data.handle||$('profile-handle').textContent||'@youruniverse').replace(/^@/,'');
+    $('socialink-edit-bio').value=data.bio||'';
+    setPhoto($('socialink-edit-photo-preview'),chosenPhoto);
+    page.classList.add('open');page.setAttribute('aria-hidden','false');
+    page.scrollTop=0;
+  }
+  $('profile-edit').addEventListener('click',function(e){e.preventDefault();e.stopImmediatePropagation();open();},true);
+  $('socialink-edit-back').addEventListener('click',close);
+  $('socialink-edit-cancel').addEventListener('click',close);
+  $('socialink-choose-photo').addEventListener('click',()=>$('socialink-photo-file').click());
+  $('socialink-photo-file').addEventListener('change',event=>{
+    const file=event.target.files&&event.target.files[0];if(!file)return;
+    if(!file.type.startsWith('image/')){alert('Please choose an image file.');return;}
+    const reader=new FileReader();
+    reader.onload=()=>{
+      const img=new Image();
+      img.onload=()=>{
+        const canvas=document.createElement('canvas'),max=512,scale=Math.min(1,max/Math.max(img.width,img.height));
+        canvas.width=Math.round(img.width*scale);canvas.height=Math.round(img.height*scale);
+        canvas.getContext('2d').drawImage(img,0,0,canvas.width,canvas.height);
+        chosenPhoto=canvas.toDataURL('image/jpeg',.82);
+        setPhoto($('socialink-edit-photo-preview'),chosenPhoto);
+      };
+      img.onerror=()=>alert('That photo could not be opened. Please choose another.');
+      img.src=reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
+  $('socialink-edit-save').addEventListener('click',()=>{
+    const name=$('socialink-edit-name').value.trim();
+    const handle=$('socialink-edit-handle').value.trim().replace(/^@/,'').replace(/\s+/g,'');
+    const bio=$('socialink-edit-bio').value.trim();
+    if(!name){alert('Please enter your name.');return;}
+    if(!handle){alert('Please choose a username.');return;}
+    const updated={...read(),name,handle,bio,photo:chosenPhoto};
+    try{localStorage.setItem('socialink-profile-v1',JSON.stringify(updated));}
+    catch(e){alert('Your photo is too large to save on this device. Please choose a smaller image.');return;}
+    applyProfile(updated);close();
+    const toast=document.querySelector('.toast');
+    if(toast){toast.textContent='Profile updated ✦';toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),2200);}
+  });
+  const existing=read();if(existing.photo)applyProfile(existing);
+})();
+</script>
+
 </body>
 </html>
