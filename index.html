@@ -325,6 +325,22 @@
 
     /* Messages + Groups + Galaxy Rooms */
 
+    .create-group-hint{font-size:12px;color:#bdb3cc!important;margin:0 0 12px}
+    .follower-select-list{display:grid;gap:8px;margin-top:12px}
+    .follower-select-row{display:flex;align-items:center;gap:11px;min-height:62px;padding:9px 11px;border:1px solid rgba(243,201,107,.14);border-radius:14px;background:rgba(255,255,255,.025);cursor:pointer}
+    .follower-select-row:has(input:checked){border-color:rgba(243,201,107,.7);background:rgba(243,201,107,.09)}
+    .follower-select-row input{position:absolute;opacity:0;width:1px;height:1px}
+    .follower-select-avatar{width:42px;height:48px;display:grid;place-items:center;border:1px solid #45424a;border-radius:50% / 42%;background:#21172f;font-size:21px;flex:0 0 auto}
+    .follower-select-copy{display:grid;gap:3px;flex:1;min-width:0}
+    .follower-select-copy strong{font-size:12px;color:#F7FBFD}
+    .follower-select-copy small{font-size:10px;color:#aaa0b8}
+    .follower-check{width:21px;height:21px;border:1.5px solid #81758f;border-radius:7px;display:grid;place-items:center;flex:0 0 auto}
+    .follower-select-row input:checked~.follower-check{background:linear-gradient(135deg,#f3d27b,#c18b42);border-color:#f3c96b}
+    .follower-select-row input:checked~.follower-check:after{content:'✓';font-size:14px;font-weight:950;color:#21152b}
+    .selected-members-count{font-size:11px;color:#f3c96b;margin:13px 2px 0;font-weight:800}
+    .create-group-submit{margin-top:12px}
+
+
     .messages-head-actions{display:flex;align-items:center;justify-content:flex-end;gap:5px;flex-wrap:nowrap}
     .messages-mini-action{height:29px;min-width:0;padding:0 8px;border:1px solid rgba(243,201,107,.27);border-radius:9px;background:#1b1428;color:#F7FBFD!important;font-size:10px;font-weight:850;white-space:nowrap}
     .messages-mini-action.active{background:linear-gradient(135deg,#4a345e,#21172f);border-color:rgba(243,201,107,.65);color:#f3c96b!important}
@@ -477,7 +493,24 @@
           <button class="group-row" data-group="Orbit Crew"><span class="group-avatar">🌌</span><span class="group-copy"><strong>Orbit Crew</strong><small>8 members · Planning, ideas & daily chats</small></span><span class="group-open-arrow">›</span></button>
           <button class="group-row" data-group="Study Circle"><span class="group-avatar">📚</span><span class="group-copy"><strong>Study Circle</strong><small>6 members · Learn together</small></span><span class="group-open-arrow">›</span></button>
         </div>
-        <div class="new-group-card" style="margin-top:13px"><strong>Bring your people together</strong><p style="font-size:11px;color:#c8bfd5!important;margin:5px 0 0">Create a group for your favourite conversations.</p><form class="new-group-form" id="new-group-form"><input id="new-group-name" maxlength="32" placeholder="Name your group..." aria-label="New group name" required><button type="submit">Create</button></form></div>
+      </div>
+      <div class="messages-panel" id="create-group-panel">
+        <button class="back-link" id="create-group-back">‹ Back to Groups</button>
+        <div class="group-detail-card">
+          <div class="messages-section-title"><h3>New Group</h3><small>BRING YOUR PEOPLE TOGETHER</small></div>
+          <p class="create-group-hint">Choose followers to add to your group.</p>
+          <input class="messages-search" id="follower-search" placeholder="Search your followers..." aria-label="Search followers">
+          <div class="follower-select-list" id="follower-select-list">
+            <label class="follower-select-row"><input type="checkbox" value="Amara K."><span class="follower-select-avatar">🌙</span><span class="follower-select-copy"><strong>Amara K. ✦</strong><small>@amara.k</small></span><span class="follower-check"></span></label>
+            <label class="follower-select-row"><input type="checkbox" value="Jayden M."><span class="follower-select-avatar">🪐</span><span class="follower-select-copy"><strong>Jayden M.</strong><small>@jayden.m</small></span><span class="follower-check"></span></label>
+            <label class="follower-select-row"><input type="checkbox" value="Nia W."><span class="follower-select-avatar">🦋</span><span class="follower-select-copy"><strong>Nia W. ✦</strong><small>@nia.w</small></span><span class="follower-check"></span></label>
+            <label class="follower-select-row"><input type="checkbox" value="Leo R."><span class="follower-select-avatar">🌠</span><span class="follower-select-copy"><strong>Leo R.</strong><small>@leo.r</small></span><span class="follower-check"></span></label>
+            <label class="follower-select-row"><input type="checkbox" value="Zuri A."><span class="follower-select-avatar">✨</span><span class="follower-select-copy"><strong>Zuri A.</strong><small>@zuri.a</small></span><span class="follower-check"></span></label>
+          </div>
+          <div class="selected-members-count" id="selected-members-count">0 people selected</div>
+          <form class="new-group-form create-group-submit" id="new-group-form"><input id="new-group-name" maxlength="32" placeholder="Name your group..." aria-label="New group name" required><button type="submit">Create</button></form>
+        </div>
+      </div>
       </div>
       <div class="messages-panel" id="search-panel"><input class="messages-search" id="message-search-input" placeholder="Search people and conversations..." aria-label="Search messages"><div class="conversation-list" id="search-results"></div></div>
       <div class="messages-panel" id="games-panel"><div class="messages-section-title"><h3>Play together</h3><small>IN YOUR CHATS</small></div><div class="group-list"><div class="group-row"><span class="group-avatar">♟</span><span class="group-copy"><strong>Chess</strong><small>Challenge a friend to a thoughtful match</small></span><span class="group-open-arrow">›</span></div><div class="group-row"><span class="group-avatar">⭕</span><span class="group-copy"><strong>Tic-tac-toe</strong><small>A quick game with your people</small></span><span class="group-open-arrow">›</span></div></div></div>
@@ -772,8 +805,13 @@
   document.getElementById('education-open').addEventListener('click',()=>showMessagePanel('education-panel'));
   document.getElementById('education-groups').addEventListener('click',()=>showMessagePanel('education-panel'));
   document.getElementById('education-back').addEventListener('click',()=>showMessagePanel('groups-panel'));
-  document.getElementById('new-group-open')?.addEventListener('click',()=>{activateMessageTool('groups');document.getElementById('new-group-name').focus()});
-  document.getElementById('new-group-form').addEventListener('submit',event=>{event.preventDefault();const input=document.getElementById('new-group-name'),name=input.value.trim();if(!name)return;if(groupMeta[name]){toast('That group already exists');return}groupMeta[name]={icon:'✦',members:'1 member'};const row=document.createElement('button');row.className='group-row';row.dataset.group=name;row.innerHTML='<span class="group-avatar">✦</span><span class="group-copy"><strong></strong><small>1 member · Your new group</small></span><span class="group-open-arrow">›</span>';row.querySelector('strong').textContent=name;row.addEventListener('click',()=>openGroup(name));document.getElementById('group-list').append(row);input.value='';openGroup(name);toast('Group created ✨')});
+  document.getElementById('new-group-open')?.addEventListener('click',()=>{showMessagePanel('create-group-panel');document.getElementById('new-group-name').focus()});
+  document.getElementById('create-group-back').addEventListener('click',()=>activateMessageTool('groups'));
+  const followerChecks=[...document.querySelectorAll('#follower-select-list input[type="checkbox"]')];
+  function updateSelectedMembers(){document.getElementById('selected-members-count').textContent=followerChecks.filter(x=>x.checked).length+' people selected'}
+  followerChecks.forEach(input=>input.addEventListener('change',updateSelectedMembers));
+  document.getElementById('follower-search').addEventListener('input',event=>{const q=event.target.value.toLowerCase();document.querySelectorAll('.follower-select-row').forEach(row=>row.style.display=row.textContent.toLowerCase().includes(q)?'flex':'none')});
+  document.getElementById('new-group-form').addEventListener('submit',event=>{event.preventDefault();const input=document.getElementById('new-group-name'),name=input.value.trim(),selected=followerChecks.filter(x=>x.checked).map(x=>x.value);if(!name)return;if(groupMeta[name]){toast('That group already exists');return}if(!selected.length){toast('Select at least one person');return}groupMeta[name]={icon:'✦',members:(selected.length+1)+' members',people:selected};const row=document.createElement('button');row.className='group-row';row.dataset.group=name;row.innerHTML='<span class="group-avatar">✦</span><span class="group-copy"><strong></strong><small></small></span><span class="group-open-arrow">›</span>';row.querySelector('strong').textContent=name;row.querySelector('small').textContent=(selected.length+1)+' members · '+selected.join(', ');row.addEventListener('click',()=>openGroup(name));document.getElementById('group-list').append(row);input.value='';followerChecks.forEach(x=>x.checked=false);updateSelectedMembers();document.getElementById('follower-search').value='';document.querySelectorAll('.follower-select-row').forEach(row=>row.style.display='flex');openGroup(name);toast('Group created with '+selected.length+' people ✨')});
   const chats={'Amara K.':[],'Jayden M.':[],'Nia W.':[]};
   function openThread(name){activeThread=name;document.getElementById('thread-title').textContent=name;drawThread();showMessagePanel('thread-panel')}
   function drawThread(){const box=document.getElementById('thread-messages'),items=chats[activeThread]||[];box.innerHTML=items.length?items.map(item=>{const bubble=document.createElement('div');bubble.className='message-bubble'+(item.mine?' mine':'');bubble.textContent=item.text;return bubble.outerHTML}).join(''):'<div class="empty-state">Start a conversation with '+activeThread+' ✨</div>';box.scrollTop=box.scrollHeight}
