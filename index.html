@@ -2713,6 +2713,81 @@ body.socialink-profile-open #profile-screen{
   opacity:1!important;
   min-height:calc(100dvh - 190px)!important;
 }
+
+/* Final mobile voice-recorder layout override: controls always get their own row */
+#thread-panel .message-compose.is-recording{
+  display:block!important;
+  width:100%!important;
+  box-sizing:border-box!important;
+  min-height:0!important;
+  padding:12px!important;
+  overflow:visible!important;
+}
+#thread-panel .message-compose.is-recording .voice-recording-panel{
+  display:flex!important;
+  width:100%!important;
+  max-width:100%!important;
+  min-width:0!important;
+  flex-direction:row!important;
+  flex-wrap:wrap!important;
+  align-items:center!important;
+  gap:10px!important;
+  box-sizing:border-box!important;
+  visibility:visible!important;
+}
+#thread-panel .message-compose.is-recording .voice-wave-area{
+  display:flex!important;
+  flex:1 1 150px!important;
+  min-width:0!important;
+  flex-direction:column!important;
+}
+#thread-panel .message-compose.is-recording .voice-actions{
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  width:100%!important;
+  min-width:0!important;
+  gap:6px!important;
+  flex:1 1 100%!important;
+  padding-top:10px!important;
+  visibility:visible!important;
+}
+#thread-panel .message-compose.is-recording .voice-actions button{
+  display:flex!important;
+  position:relative!important;
+  visibility:visible!important;
+  opacity:1!important;
+  width:100%!important;
+  min-width:0!important;
+  max-width:none!important;
+  height:44px!important;
+  min-height:44px!important;
+  flex:initial!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:4px!important;
+  padding:0 3px!important;
+  border-radius:13px!important;
+  font-size:12px!important;
+  line-height:1!important;
+  white-space:nowrap!important;
+  overflow:visible!important;
+  color:#F7FBFD!important;
+  background:rgba(92,62,145,.35)!important;
+  border:1px solid rgba(190,150,255,.42)!important;
+}
+#thread-panel .message-compose.is-recording .voice-actions button span{
+  display:inline!important;
+  visibility:visible!important;
+  opacity:1!important;
+  font-size:10px!important;
+  color:#F7FBFD!important;
+}
+#thread-panel .message-compose.is-recording .voice-actions #voice-delete{color:#ff9eb5!important}
+#thread-panel .message-compose.is-recording .voice-actions #voice-preview{background:rgba(24,139,220,.22)!important}
+#thread-panel .message-compose.is-recording .voice-actions #voice-send{background:linear-gradient(110deg,#20c9ef,#9b39e8)!important;border:0!important}
+@media(max-width:360px){
+  #thread-panel .message-compose.is-recording .voice-actions{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
 </style>
 <script>
 /* My Page navigation: force the profile screen into view on mobile and desktop. */
