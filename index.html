@@ -790,7 +790,7 @@
   });
 
   // Messages, Groups and Galaxy Rooms — local prototype interactions
-  const messagePanels=['inbox-panel','groups-panel','search-panel','games-panel','group-detail-panel','rooms-panel','thread-panel','education-panel'];
+  const messagePanels=['inbox-panel','groups-panel','search-panel','games-panel','group-detail-panel','rooms-panel','thread-panel','education-panel','create-group-panel'];
   function showMessagePanel(id){messagePanels.forEach(key=>document.getElementById(key).classList.toggle('active',key===id))}
   function activateMessageTool(view){document.querySelectorAll('[data-message-view]').forEach(b=>b.classList.toggle('active',b.dataset.messageView===view));showMessagePanel(view==='groups'?'groups-panel':view==='search'?'search-panel':view==='games'?'games-panel':'inbox-panel')}
   document.querySelectorAll('[data-message-view]').forEach(btn=>btn.addEventListener('click',()=>activateMessageTool(btn.dataset.messageView)));
