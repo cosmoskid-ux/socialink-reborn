@@ -1847,24 +1847,15 @@
       setCallStatus('Joining call…');
     }catch(error){setCallStatus(error.name==='NotAllowedError'?'Permission was not granted.':'Could not access your microphone or camera.');}
   });
-  // Handle decline at document level so every newly displayed incoming-call
-  // prompt (including the second and later calls) responds reliably on mobile.
+  // One-tap decline ends the entire call session and closes the room.
+  // There is no reusable room or second incoming-call prompt after declining.
   document.addEventListener('click',event=>{
     const declineButton=event.target.closest&&event.target.closest('#call-decline');
     if(!declineButton)return;
     event.preventDefault();
     event.stopImmediatePropagation();
-    const declinedCall=incomingMediaCall;
-    incomingMediaCall=null;
-    if(declinedCall){try{declinedCall.close()}catch(error){}}
-    callIncomingActions.hidden=true;
-    callControls.hidden=true;
-    callVideoStage.hidden=true;
-    callAudioAvatar.hidden=true;
-    callCodeCard.hidden=false;
-    callJoinCard.hidden=true;
-    toast('Incoming call declined');
-    restoreHostCallRoom();
+    cleanupCallRoom();
+    toast('Call ended');
   },true);
   document.getElementById('call-mute').addEventListener('click',()=>{
     if(!localCallStream)return;micEnabled=!micEnabled;localCallStream.getAudioTracks().forEach(track=>track.enabled=micEnabled);
