@@ -1830,7 +1830,19 @@
       setCallStatus('Joining call…');
     }catch(error){setCallStatus(error.name==='NotAllowedError'?'Permission was not granted.':'Could not access your microphone or camera.');}
   });
-  document.getElementById('call-decline').addEventListener('click',()=>{if(incomingMediaCall){incomingMediaCall.close();incomingMediaCall=null}setCallStatus('Call declined');callIncomingActions.hidden=true;callJoinCard.hidden=false;});
+  document.getElementById('call-decline').addEventListener('click',()=>{
+    const declinedCall=incomingMediaCall;
+    incomingMediaCall=null;
+    if(declinedCall){try{declinedCall.close()}catch(error){}}
+    callIncomingActions.hidden=true;
+    callControls.hidden=true;
+    callVideoStage.hidden=true;
+    callAudioAvatar.hidden=true;
+    callCodeCard.hidden=false;
+    callJoinCard.hidden=true;
+    setCallStatus('Call declined · your room is still open if you want to receive another call.');
+    toast('Incoming call declined');
+  });
   document.getElementById('call-mute').addEventListener('click',()=>{
     if(!localCallStream)return;micEnabled=!micEnabled;localCallStream.getAudioTracks().forEach(track=>track.enabled=micEnabled);
     document.getElementById('call-mute').textContent=micEnabled?'🎙':'🔇';
