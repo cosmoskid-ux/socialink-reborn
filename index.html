@@ -846,6 +846,12 @@
       padding-bottom:calc(8px + env(safe-area-inset-bottom))!important;
     }
 
+
+/* Voice message control */
+#thread-panel .chat-audio-button{flex:0 0 38px;width:38px;height:38px;border:1px solid rgba(247,251,253,.13);border-radius:50%;background:rgba(126,83,190,.2);color:#F7FBFD;font-size:18px;display:grid;place-items:center;cursor:pointer}
+#thread-panel .chat-audio-button.is-recording{background:#9b315f;border-color:#ff8caf;animation:voicePulse 1s infinite alternate}
+#thread-panel .message-bubble audio{display:block;width:min(220px,58vw);height:38px;max-width:100%}
+@keyframes voicePulse{from{box-shadow:0 0 0 0 rgba(255,140,175,.15)}to{box-shadow:0 0 0 6px rgba(255,140,175,.18)}}
 </style>
 </head>
 <body>
@@ -976,7 +982,7 @@
       <div class="messages-panel" id="thread-panel" aria-label="Private conversation">
         <header class="chat-screen-head"><button class="chat-screen-back" id="thread-back" aria-label="Back to messages">‹</button><span class="chat-screen-avatar" id="thread-avatar">🌙</span><div class="chat-screen-person"><h3 id="thread-title">Conversation</h3><small>Socialink chat</small></div><button class="chat-screen-more" type="button" aria-label="More options">⋮</button></header>
         <div class="thread-messages" id="thread-messages"><div class="message-bubble">Welcome to your conversation ✨</div></div>
-        <div class="reply-preview" id="reply-preview" hidden><span class="reply-preview-copy"></span><button type="button" id="cancel-reply" aria-label="Cancel reply">×</button></div><form class="message-compose" id="message-compose"><textarea id="message-input" maxlength="300" rows="1" placeholder="Message..." aria-label="Write a message" required></textarea><button type="submit" aria-label="Send message">➤</button></form>
+        <div class="reply-preview" id="reply-preview" hidden><span class="reply-preview-copy"></span><button type="button" id="cancel-reply" aria-label="Cancel reply">×</button></div><form class="message-compose" id="message-compose"><button type="button" class="chat-audio-button" id="chat-audio-button" aria-label="Record voice message" title="Record voice message">🎙</button><textarea id="message-input" maxlength="300" rows="1" placeholder="Message..." aria-label="Write a message"></textarea><button type="submit" aria-label="Send message">➤</button></form>
       </div>
       <div class="messages-panel" id="education-panel"><button class="back-link" id="education-back">‹ Back</button><div class="rooms-hero"><div class="rooms-orbit">🎓</div><h3>Education Dashboard</h3><p>A dedicated space for learning with your groups.</p></div><div class="room-list"><div class="room-card"><span class="room-icon">📚</span><span><strong>Study rooms</strong><small>Focused group learning</small></span></div><div class="room-card"><span class="room-icon">📝</span><span><strong>Shared notes</strong><small>Keep useful ideas together</small></span></div></div></div>
     </section>
@@ -1282,7 +1288,7 @@
       if(!item.mine){const avatar=document.createElement('span');avatar.className='message-mini-avatar';avatar.textContent=avatars[activeThread]||'✦';avatar.setAttribute('aria-label',activeThread+' profile');line.append(avatar)}
       const content=document.createElement('div');content.className='message-content';
       if(item.replyTo){const quote=document.createElement('div');quote.className='message-reply-quote';quote.textContent='↩ '+item.replyTo;content.append(quote)}
-      const bubble=document.createElement('div');bubble.className='message-bubble'+(item.mine?' mine':'');bubble.textContent=item.text;content.append(bubble);
+      const bubble=document.createElement('div');bubble.className='message-bubble'+(item.mine?' mine':'');if(item.audioUrl){const audio=document.createElement('audio');audio.controls=true;audio.src=item.audioUrl;audio.setAttribute('aria-label','Voice message');bubble.append(audio)}else{bubble.textContent=item.text}content.append(bubble);
       const tools=document.createElement('div');tools.className='message-tools';
       const reply=document.createElement('button');reply.type='button';reply.className='message-tool';reply.dataset.replyIndex=index;reply.textContent='↩ Reply';
       tools.append(reply);content.append(tools);
@@ -1327,6 +1333,27 @@
   document.getElementById('cancel-reply').addEventListener('click',()=>{replyTarget=null;syncReplyPreview()});
   document.querySelectorAll('[data-chat]').forEach(btn=>btn.addEventListener('click',()=>openThread(btn.dataset.chat)));
   document.getElementById('thread-back').addEventListener('click',()=>activateMessageTool('inbox'));
+  // Voice messages: microphone permission is requested only after the user taps Record.
+  const audioButton=document.getElementById('chat-audio-button');
+  let voiceRecorder=null,voiceChunks=[];
+  audioButton.addEventListener('click',async()=>{
+    if(voiceRecorder&&voiceRecorder.state==='recording'){voiceRecorder.stop();return}
+    if(!navigator.mediaDevices?.getUserMedia||!window.MediaRecorder){toast('Voice recording is not supported in this browser');return}
+    try{
+      const stream=await navigator.mediaDevices.getUserMedia({audio:true});
+      voiceChunks=[];
+      voiceRecorder=new MediaRecorder(stream);
+      voiceRecorder.addEventListener('dataavailable',event=>{if(event.data.size)voiceChunks.push(event.data)});
+      voiceRecorder.addEventListener('stop',()=>{
+        const blob=new Blob(voiceChunks,{type:voiceRecorder.mimeType||'audio/webm'});
+        stream.getTracks().forEach(track=>track.stop());
+        if(blob.size){const audioUrl=URL.createObjectURL(blob);(chats[activeThread]||(chats[activeThread]=[])).push({mine:true,audioUrl,text:'Voice message'});drawThread()}
+        audioButton.textContent='🎙';audioButton.classList.remove('is-recording');audioButton.setAttribute('aria-label','Record voice message');audioButton.title='Record voice message';
+      });
+      voiceRecorder.start();
+      audioButton.textContent='■';audioButton.classList.add('is-recording');audioButton.setAttribute('aria-label','Stop and send voice message');audioButton.title='Stop and send voice message';
+    }catch(error){toast(error.name==='NotAllowedError'?'Microphone permission was not granted':'Could not start voice recording')}
+  });
   const messageInput=document.getElementById('message-input');
   function resizeMessageInput(){messageInput.style.height='auto';messageInput.style.height=Math.min(messageInput.scrollHeight,90)+'px';}
   messageInput.addEventListener('input',resizeMessageInput);
