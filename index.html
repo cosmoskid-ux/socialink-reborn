@@ -1214,6 +1214,9 @@
   #thread-panel .creative-tool{min-height:58px!important}
 }
 
+/* Meaning mode hint and action polish */
+#thread-panel .meaning-word{cursor:default;text-decoration:none}
+#thread-panel.meaning-select-mode .meaning-word{cursor:pointer;text-decoration:underline;text-decoration-color:#e8c16a;text-underline-offset:3px}
 /* Inline translation and tap-a-word meanings */
 #thread-panel .meaning-word{display:inline;padding:0;margin:0;border:0;background:transparent;color:inherit;font:inherit;cursor:pointer;text-decoration:underline;text-decoration-color:rgba(243,201,107,.42);text-underline-offset:3px}
 #thread-panel .meaning-word:focus-visible{outline:1px solid #e8c16a;border-radius:3px}
@@ -1782,7 +1785,7 @@
   function openThread(name){activeThread=name;document.getElementById('thread-title').textContent=name;const avatars={'Amara K.':'🌙','Jayden M.':'🪐','Nia W.':'🦋','Leo R.':'🌠','Zuri A.':'✨'};document.getElementById('thread-avatar').textContent=avatars[name]||'✦';drawThread();showMessagePanel('thread-panel')}
   let replyTarget=null;
   const reactionChoices=['❤️','😂','🔥','😍','👏','✨'];
-  let editingMessageIndex=null;
+  let editingMessageIndex=null,meaningSelectionMode=false;
   function syncReplyPreview(){
     const preview=document.getElementById('reply-preview');
     preview.hidden=!replyTarget&&editingMessageIndex===null;
@@ -1862,6 +1865,8 @@
   threadMessages.addEventListener('click',async event=>{
     const wordButton=event.target.closest('[data-meaning-word]');
     if(wordButton){
+      if(!meaningSelectionMode)return;
+      meaningSelectionMode=false;document.getElementById('thread-panel').classList.remove('meaning-select-mode');
       const word=wordButton.dataset.meaningWord;if(!word)return;
       const line=wordButton.closest('.message-line'),index=Number(line?.dataset.messageIndex),item=(chats[activeThread]||[])[index];if(!item)return;
       item.meaningResult={word,definition:'Looking up meaning…'};drawThread();
@@ -1893,6 +1898,7 @@
     const menu=document.createElement('div');menu.className='message-action-menu';menu.setAttribute('role','menu');
     const actions=[];
     if(item.mine)actions.push(['edit','✎','Edit']);
+    if(item.text&&!item.audioUrl&&!item.imageUrl&&!item.gifUrl&&!item.drawUrl)actions.push(['meaning','?','Meaning']);
     actions.push(['translate','文','Translate']);
     actions.push(['pin','⌖',item.pinned?'Unpin':'Pin']);
     if(item.mine)actions.push(['delete','⌫','Delete']);
@@ -1910,8 +1916,13 @@
       const current=(chats[activeThread]||[])[index];if(!current)return;
       if(action==='edit'){
         if(!current.mine)return;
+        if((current.editCount||0)>=6){toast('This message has reached its 6-edit limit.');return}
         editingMessageIndex=index;replyTarget=null;messageInput.value=current.text||'';resizeMessageInput();syncReplyPreview();messageInput.focus();toast('Message loaded into the text box');
+      }else if(action==='meaning'){
+        meaningSelectionMode=true;document.getElementById('thread-panel').classList.add('meaning-select-mode');toast('Meaning is ready. Tap the word you want explained.');
       }else if(action==='translate'){
+        if((current.translationCount||0)>=6){toast('This message has reached its 6-translation limit.');return}
+        current.translationCount=(current.translationCount||0)+1;
         const textToTranslate=current.text||'';
         if(!textToTranslate.trim()){toast('This message has no text to translate.');return}
         current.translation='Translating…';drawThread();
@@ -1965,7 +1976,7 @@
       lastTouchAt=0;lastTouchBubble=null;
     }else{lastTouchAt=now;lastTouchBubble=bubble}
   },{passive:false});
-  document.getElementById('cancel-reply').addEventListener('click',()=>{replyTarget=null;if(editingMessageIndex!==null){editingMessageIndex=null;messageInput.value='';resizeMessageInput()}syncReplyPreview()});
+  document.getElementById('cancel-reply').addEventListener('click',()=>{replyTarget=null;if(editingMessageIndex!==null){editingMessageIndex=null;messageInput.value='';resizeMessageInput()}meaningSelectionMode=false;syncReplyPreview()});
   document.querySelectorAll('[data-chat]').forEach(btn=>btn.addEventListener('click',()=>openThread(btn.dataset.chat)));
   document.getElementById('thread-back').addEventListener('click',()=>activateMessageTool('inbox'));
   // Voice recording studio: profile, animated waveform, pause, delete and send.
@@ -2032,7 +2043,7 @@
     event.preventDefault();const value=messageInput.value.trim();if(!value)return;
     if(editingMessageIndex!==null){
       const existing=(chats[activeThread]||[])[editingMessageIndex];
-      if(existing?.mine){existing.text=value;delete existing.translation;delete existing.meaningResult;toast('Message updated')}
+      if(existing?.mine){if(existing.text!==value){existing.editCount=(existing.editCount||0)+1;existing.text=value;delete existing.translation;delete existing.meaningResult;toast('Message updated · '+existing.editCount+'/6 edits used')}else{toast('No changes to save')}}
       editingMessageIndex=null;
     }else{
       const message={text:value,mine:true};if(replyTarget)message.replyTo=replyTarget.text;(chats[activeThread]||(chats[activeThread]=[])).push(message);
