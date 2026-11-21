@@ -1712,7 +1712,7 @@
   }
   async function joinCallRoom(mode,code){
     if(!window.Peer){setCallStatus('Call library did not load. Check your connection and refresh.');return}
-    if(!/^\\d{8}$/.test(code)){setCallStatus('Enter the full 8-digit call code.');return}
+    if(!/^\d{8}$/.test(code)){setCallStatus('Enter the full 8-digit call code.');return}
     callIsHost=false;activeCallMode=mode;callStageTitle.textContent=mode==='video'?'Joining video call':'Joining voice call';
     callJoinCard.hidden=true;callCodeCard.hidden=true;setCallStatus('Connecting to the call room…');
     try{
@@ -1740,7 +1740,7 @@
     catch(e){callJoinInput.value=callRoomCode;callJoinInput.focus();toast('Select and copy the code above')}
   });
   document.getElementById('call-join-button').addEventListener('click',()=>joinCallRoom(activeCallMode,callJoinInput.value.trim()));
-  document.getElementById('call-join-input').addEventListener('input',event=>{event.target.value=event.target.value.replace(/\\D/g,'').slice(0,8)});
+  document.getElementById('call-join-input').addEventListener('input',event=>{event.target.value=event.target.value.replace(/\D/g,'').slice(0,8)});
   document.getElementById('call-accept').addEventListener('click',async()=>{
     if(!incomingMediaCall)return;
     const incoming=incomingMediaCall,mode=activeCallMode;
