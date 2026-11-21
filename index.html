@@ -994,6 +994,16 @@
 .call-stage.video-active .call-code-card,.call-stage.video-active #call-join-card,.call-stage.video-active .call-incoming-actions,.call-stage.video-active .call-stage-note,.call-stage.video-active .call-audio-avatar{display:none!important}
 @media(max-width:380px){.call-stage.video-active .call-controls{gap:18px!important}.call-stage.video-active .call-local-video{width:100px!important;height:138px!important;right:12px!important}.call-stage.video-active .call-stage-head{right:126px!important}}
 
+
+/* Remote participant waiting view, alongside the local camera preview */
+.call-remote-waiting{position:absolute;z-index:2;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:24px;text-align:center;background:radial-gradient(ellipse at 50% 38%,#292044 0%,#111020 56%,#050713 100%);color:#F7FBFD}
+.call-remote-waiting[hidden]{display:none!important}
+.call-remote-orb{width:112px;height:112px;display:grid;place-items:center;border-radius:50%;font-size:48px;color:#f3c96b;background:radial-gradient(circle,rgba(243,201,107,.2),rgba(135,60,255,.22) 60%,rgba(5,7,19,.5));border:1px solid rgba(243,201,107,.42);box-shadow:0 0 45px rgba(135,60,255,.2)}
+.call-remote-waiting strong{font-size:18px;color:#F7FBFD}
+.call-remote-waiting span{font-size:12px;color:#c7badb;max-width:250px}
+.call-stage.video-active .call-remote-waiting{z-index:1}
+.call-stage.video-active .call-remote-video{z-index:2}
+
 </style>
 </head>
 <body>
@@ -1129,7 +1139,7 @@
           <div class="call-stage-status" id="call-stage-status">Preparing your call…</div>
           <div class="call-code-card" id="call-code-card" hidden><div class="call-code-label">YOUR TEMPORARY CALL CODE</div><div class="call-code-value" id="call-code-value">••••</div><button class="call-copy-button" id="call-copy-code" type="button">Copy call code</button><p class="call-stage-note">Share this code only with the person you intend to call. It expires when you close this call room.</p></div>
           <div id="call-join-card"><div class="call-code-label" style="margin-bottom:8px;text-align:center">Or join someone else's call</div><div class="call-join-row"><input class="call-join-input" id="call-join-input" inputmode="numeric" autocomplete="one-time-code" maxlength="4" placeholder="Enter 4-digit code" aria-label="Enter call code"><button class="call-primary-button" id="call-join-button" type="button">Join</button></div></div>
-          <div class="call-video-stage" id="call-video-stage" hidden><video class="call-remote-video" id="call-remote-video" autoplay playsinline></video><video class="call-local-video" id="call-local-video" autoplay muted playsinline></video></div>
+          <div class="call-video-stage" id="call-video-stage" hidden><div class="call-remote-waiting" id="call-remote-waiting"><div class="call-remote-orb">✦</div><strong id="call-remote-waiting-name">Waiting for your person</strong><span>Their live video will appear here when they join</span></div><video class="call-remote-video" id="call-remote-video" autoplay playsinline></video><video class="call-local-video" id="call-local-video" autoplay muted playsinline></video></div>
           <div class="call-audio-avatar" id="call-audio-avatar" hidden>☎</div>
           <audio id="call-remote-audio" autoplay></audio>
           <div class="call-incoming-actions" id="call-incoming-actions" hidden><button class="call-primary-button" id="call-accept" type="button">Accept call</button><button class="call-decline" id="call-decline" type="button">Decline</button></div>
@@ -1715,7 +1725,7 @@
     if(incomingMediaCall){try{incomingMediaCall.close()}catch(e){}incomingMediaCall=null}
     stopLocalCallStream();
     if(callPeer){try{callPeer.destroy()}catch(e){}callPeer=null}
-    callLocalVideo.srcObject=null;callRemoteVideo.srcObject=null;callRemoteAudio.srcObject=null;
+    callLocalVideo.srcObject=null;callRemoteVideo.srcObject=null;callRemoteAudio.srcObject=null;document.getElementById("call-remote-waiting").hidden=true;
     callStage.hidden=true;callStage.classList.remove("video-active");callStageBackdrop.hidden=true;callCodeCard.hidden=true;callJoinCard.hidden=false;
     callVideoStage.hidden=true;callAudioAvatar.hidden=true;callControls.hidden=true;callIncomingActions.hidden=true;
     callJoinInput.value='';callRoomCode='';callIsHost=false;micEnabled=true;cameraEnabled=true;
@@ -1728,7 +1738,7 @@
   function attachCallMedia(mediaCall,mode){
     activeMediaCall=mediaCall;activeCallMode=mode;
     mediaCall.on('stream',remoteStream=>{
-      if(mode==='video'){callStage.classList.add('video-active');callVideoStage.hidden=false;callAudioAvatar.hidden=true;callRemoteVideo.srcObject=remoteStream;callRemoteVideo.play().catch(()=>{})}
+      if(mode==='video'){callStage.classList.add('video-active');callVideoStage.hidden=false;callAudioAvatar.hidden=true;document.getElementById('call-remote-waiting').hidden=true;callRemoteVideo.srcObject=remoteStream;callRemoteVideo.play().catch(()=>{})}
       else{callVideoStage.hidden=true;callAudioAvatar.hidden=false;callRemoteAudio.srcObject=remoteStream;callRemoteAudio.play().catch(()=>{})}
       if(localCallStream&&mode==='video'){callLocalVideo.srcObject=localCallStream;callLocalVideo.play().catch(()=>{})}
       callControls.hidden=false;callCodeCard.hidden=true;callJoinCard.hidden=true;callIncomingActions.hidden=true;
@@ -1743,6 +1753,20 @@
     callStageTitle.textContent=mode==='video'?'Start a video call':'Start a voice call';
     callCodeCard.hidden=true;callJoinCard.hidden=false;callControls.hidden=true;callIncomingActions.hidden=true;
     setCallStatus('Creating your temporary call room…');openCallStage();
+    if(mode==='video'){
+      callStage.classList.add('video-active');
+      callVideoStage.hidden=false;callAudioAvatar.hidden=true;
+      callRemoteVideo.srcObject=null;document.getElementById('call-remote-waiting').hidden=false;
+      document.getElementById('call-remote-waiting-name').textContent='Waiting for '+document.getElementById('thread-title').textContent;
+      try{
+        localCallStream=await acquireCallMedia('video');
+        callLocalVideo.srcObject=localCallStream;callLocalVideo.play().catch(()=>{});
+        callControls.hidden=false;
+        setCallStatus('Your camera is ready · waiting for them to join');
+      }catch(error){
+        setCallStatus(error.name==='NotAllowedError'?'Camera or microphone permission was not granted. You can still share the call code.':'Camera preview unavailable · you can still share the call code.');
+      }
+    }
     callRoomCode=String(Math.floor(1000+Math.random()*9000));
     callPeer=new Peer('si-'+callRoomCode+'-x');
     callPeer.on('open',id=>{
