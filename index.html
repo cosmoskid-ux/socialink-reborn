@@ -2231,7 +2231,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const currentWeek=weekKey();
     const completedActiveWeeks=activeWeeks.length-(activeWeeks.includes(currentWeek)?1:0);
     const wordLimit=Math.min(60,20+Math.max(0,completedActiveWeeks)*10);
-    const countWords=t=>(t.trim().match(/\\S+/g)||[]).length;
+    const countWords=t=>(t.trim().match(/\S+/g)||[]).length;
     const supabase=window.supabaseClient;
 
     function addCloud(button,data){
