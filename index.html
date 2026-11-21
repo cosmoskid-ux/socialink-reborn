@@ -852,6 +852,25 @@
 #thread-panel .chat-audio-button.is-recording{background:#9b315f;border-color:#ff8caf;animation:voicePulse 1s infinite alternate}
 #thread-panel .message-bubble audio{display:block;width:min(220px,58vw);height:38px;max-width:100%}
 @keyframes voicePulse{from{box-shadow:0 0 0 0 rgba(255,140,175,.15)}to{box-shadow:0 0 0 6px rgba(255,140,175,.18)}}
+
+/* Socialink voice recording studio */
+#thread-panel .message-compose.is-recording{gap:8px;min-height:70px;padding:8px 10px calc(8px + env(safe-area-inset-bottom));}
+#thread-panel .message-compose.is-recording>.chat-audio-button,#thread-panel .message-compose.is-recording>#message-input,#thread-panel .message-compose.is-recording>button[type="submit"]{display:none!important}
+#thread-panel .voice-recording-panel{display:flex;align-items:center;gap:9px;width:100%;min-width:0;color:#F7FBFD}
+#thread-panel .voice-recording-panel[hidden]{display:none!important}
+#thread-panel .voice-profile{width:43px;height:43px;flex:0 0 43px;border-radius:50% / 42%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(145deg,#6543a2,#20183c);border:1px solid rgba(243,201,107,.65);font-size:19px;color:#F7FBFD}
+#thread-panel .voice-profile small{font-size:8px;font-weight:800;color:#F7FBFD}
+#thread-panel .voice-wave-area{flex:1;min-width:0;display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+#thread-panel .voice-wave{height:35px;display:flex;align-items:center;justify-content:center;gap:2px;flex:1;min-width:65px;overflow:hidden}
+#thread-panel .voice-wave i{display:block;width:3px;height:var(--h,12px);border-radius:5px;background:linear-gradient(180deg,#f3c96b,#a77af2);animation:voiceWave .72s ease-in-out infinite alternate;animation-delay:var(--d,0s)}
+#thread-panel .voice-wave i:nth-child(3n){--h:25px;--d:-.2s}#thread-panel .voice-wave i:nth-child(3n + 1){--h:15px;--d:-.45s}#thread-panel .voice-wave i:nth-child(3n + 2){--h:30px;--d:-.1s}
+#thread-panel .voice-recording-time{font-size:11px;font-weight:800;font-variant-numeric:tabular-nums;color:#F7FBFD}
+#thread-panel .voice-recording-status{flex-basis:100%;font-size:9px;color:#F7FBFD;opacity:.8;margin-top:-7px}
+#thread-panel .voice-control,#thread-panel .voice-send{width:34px;height:34px;flex:0 0 34px;border-radius:50%;display:grid;place-items:center;border:1px solid rgba(247,251,253,.16);background:#211b36;color:#F7FBFD;font-size:15px}
+#thread-panel .voice-delete{color:#ff9eb5}
+#thread-panel .voice-send{background:linear-gradient(135deg,#e8c16a,#a779ef);color:#171126;border:0;font-weight:900}
+#thread-panel .message-compose.is-recording .voice-wave i{animation-play-state:running}
+@keyframes voiceWave{from{transform:scaleY(.35);opacity:.65}to{transform:scaleY(1);opacity:1}}
 </style>
 </head>
 <body>
@@ -982,7 +1001,7 @@
       <div class="messages-panel" id="thread-panel" aria-label="Private conversation">
         <header class="chat-screen-head"><button class="chat-screen-back" id="thread-back" aria-label="Back to messages">‹</button><span class="chat-screen-avatar" id="thread-avatar">🌙</span><div class="chat-screen-person"><h3 id="thread-title">Conversation</h3><small>Socialink chat</small></div><button class="chat-screen-more" type="button" aria-label="More options">⋮</button></header>
         <div class="thread-messages" id="thread-messages"><div class="message-bubble">Welcome to your conversation ✨</div></div>
-        <div class="reply-preview" id="reply-preview" hidden><span class="reply-preview-copy"></span><button type="button" id="cancel-reply" aria-label="Cancel reply">×</button></div><form class="message-compose" id="message-compose"><button type="button" class="chat-audio-button" id="chat-audio-button" aria-label="Record voice message" title="Record voice message">🎙</button><textarea id="message-input" maxlength="300" rows="1" placeholder="Message..." aria-label="Write a message"></textarea><button type="submit" aria-label="Send message">➤</button></form>
+        <div class="reply-preview" id="reply-preview" hidden><span class="reply-preview-copy"></span><button type="button" id="cancel-reply" aria-label="Cancel reply">×</button></div><form class="message-compose" id="message-compose"><button type="button" class="chat-audio-button" id="chat-audio-button" aria-label="Record voice message" title="Record voice message">🎙</button><textarea id="message-input" maxlength="300" rows="1" placeholder="Message..." aria-label="Write a message"></textarea><button type="submit" aria-label="Send message">➤</button><div class="voice-recording-panel" id="voice-recording-panel" hidden><div class="voice-profile">♙<small>You</small></div><div class="voice-wave-area"><div class="voice-wave" aria-label="Recording waveform"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><span class="voice-recording-time" id="voice-recording-time">0:00</span><span class="voice-recording-status" id="voice-recording-status">Recording</span></div><button type="button" class="voice-control" id="voice-pause" aria-label="Pause recording">Ⅱ</button><button type="button" class="voice-control voice-delete" id="voice-delete" aria-label="Delete recording">×</button><button type="button" class="voice-send" id="voice-send" aria-label="Send voice message">➤</button></div></form>
       </div>
       <div class="messages-panel" id="education-panel"><button class="back-link" id="education-back">‹ Back</button><div class="rooms-hero"><div class="rooms-orbit">🎓</div><h3>Education Dashboard</h3><p>A dedicated space for learning with your groups.</p></div><div class="room-list"><div class="room-card"><span class="room-icon">📚</span><span><strong>Study rooms</strong><small>Focused group learning</small></span></div><div class="room-card"><span class="room-icon">📝</span><span><strong>Shared notes</strong><small>Keep useful ideas together</small></span></div></div></div>
     </section>
@@ -1333,27 +1352,45 @@
   document.getElementById('cancel-reply').addEventListener('click',()=>{replyTarget=null;syncReplyPreview()});
   document.querySelectorAll('[data-chat]').forEach(btn=>btn.addEventListener('click',()=>openThread(btn.dataset.chat)));
   document.getElementById('thread-back').addEventListener('click',()=>activateMessageTool('inbox'));
-  // Voice messages: microphone permission is requested only after the user taps Record.
+  // Voice recording studio: profile, animated waveform, pause, delete and send.
   const audioButton=document.getElementById('chat-audio-button');
-  let voiceRecorder=null,voiceChunks=[];
+  const composeForm=document.getElementById('message-compose');
+  const recordingPanel=document.getElementById('voice-recording-panel');
+  const pauseVoice=document.getElementById('voice-pause');
+  const deleteVoice=document.getElementById('voice-delete');
+  const sendVoice=document.getElementById('voice-send');
+  const voiceTime=document.getElementById('voice-recording-time');
+  const voiceStatus=document.getElementById('voice-recording-status');
+  let voiceRecorder=null,voiceChunks=[],voiceStream=null,voiceStartedAt=0,voiceElapsed=0,voiceClock=null,voiceSendAfterStop=false;
+  function formatVoiceTime(seconds){return Math.floor(seconds/60)+':'+String(seconds%60).padStart(2,'0')}
+  function updateVoiceTime(){const elapsed=voiceElapsed+(voiceRecorder&&voiceRecorder.state==='recording'?Math.floor((Date.now()-voiceStartedAt)/1000):0);voiceTime.textContent=formatVoiceTime(elapsed)}
+  function resetVoiceStudio(){clearInterval(voiceClock);voiceClock=null;if(voiceStream)voiceStream.getTracks().forEach(track=>track.stop());voiceStream=null;voiceRecorder=null;voiceChunks=[];voiceElapsed=0;voiceSendAfterStop=false;recordingPanel.hidden=true;composeForm.classList.remove('is-recording');audioButton.textContent='🎙';audioButton.classList.remove('is-recording');audioButton.setAttribute('aria-label','Record voice message');audioButton.title='Record voice message';}
+  function finishVoiceRecording(){if(!voiceRecorder||voiceRecorder.state==='inactive')return;voiceRecorder.stop()}
   audioButton.addEventListener('click',async()=>{
-    if(voiceRecorder&&voiceRecorder.state==='recording'){voiceRecorder.stop();return}
     if(!navigator.mediaDevices?.getUserMedia||!window.MediaRecorder){toast('Voice recording is not supported in this browser');return}
     try{
-      const stream=await navigator.mediaDevices.getUserMedia({audio:true});
-      voiceChunks=[];
-      voiceRecorder=new MediaRecorder(stream);
+      voiceStream=await navigator.mediaDevices.getUserMedia({audio:true});
+      voiceChunks=[];voiceElapsed=0;voiceStartedAt=Date.now();voiceSendAfterStop=false;
+      voiceRecorder=new MediaRecorder(voiceStream);
       voiceRecorder.addEventListener('dataavailable',event=>{if(event.data.size)voiceChunks.push(event.data)});
       voiceRecorder.addEventListener('stop',()=>{
-        const blob=new Blob(voiceChunks,{type:voiceRecorder.mimeType||'audio/webm'});
-        stream.getTracks().forEach(track=>track.stop());
-        if(blob.size){const audioUrl=URL.createObjectURL(blob);(chats[activeThread]||(chats[activeThread]=[])).push({mine:true,audioUrl,text:'Voice message'});drawThread()}
-        audioButton.textContent='🎙';audioButton.classList.remove('is-recording');audioButton.setAttribute('aria-label','Record voice message');audioButton.title='Record voice message';
+        clearInterval(voiceClock);voiceClock=null;
+        const blob=new Blob(voiceChunks,{type:voiceRecorder?.mimeType||'audio/webm'});
+        if(voiceStream)voiceStream.getTracks().forEach(track=>track.stop());
+        voiceStream=null;
+        if(voiceSendAfterStop&&blob.size){const audioUrl=URL.createObjectURL(blob);(chats[activeThread]||(chats[activeThread]=[])).push({mine:true,audioUrl,text:'Voice message'});drawThread()}
+        resetVoiceStudio();
       });
-      voiceRecorder.start();
-      audioButton.textContent='■';audioButton.classList.add('is-recording');audioButton.setAttribute('aria-label','Stop and send voice message');audioButton.title='Stop and send voice message';
-    }catch(error){toast(error.name==='NotAllowedError'?'Microphone permission was not granted':'Could not start voice recording')}
+      voiceRecorder.start();recordingPanel.hidden=false;composeForm.classList.add('is-recording');audioButton.classList.add('is-recording');voiceStatus.textContent='Recording';pauseVoice.textContent='Ⅱ';pauseVoice.setAttribute('aria-label','Pause recording');voiceClock=setInterval(updateVoiceTime,250);updateVoiceTime();
+    }catch(error){if(voiceStream)voiceStream.getTracks().forEach(track=>track.stop());voiceStream=null;toast(error.name==='NotAllowedError'?'Microphone permission was not granted':'Could not start voice recording')}
   });
+  pauseVoice.addEventListener('click',()=>{
+    if(!voiceRecorder)return;
+    if(voiceRecorder.state==='recording'){voiceRecorder.pause();voiceElapsed+=Math.floor((Date.now()-voiceStartedAt)/1000);clearInterval(voiceClock);voiceClock=null;pauseVoice.textContent='▶';pauseVoice.setAttribute('aria-label','Resume recording');voiceStatus.textContent='Paused';updateVoiceTime()}
+    else if(voiceRecorder.state==='paused'){voiceRecorder.resume();voiceStartedAt=Date.now();voiceClock=setInterval(updateVoiceTime,250);pauseVoice.textContent='Ⅱ';pauseVoice.setAttribute('aria-label','Pause recording');voiceStatus.textContent='Recording'}
+  });
+  deleteVoice.addEventListener('click',()=>{voiceSendAfterStop=false;if(voiceRecorder&&voiceRecorder.state!=='inactive')voiceRecorder.stop();else resetVoiceStudio();toast('Recording deleted')});
+  sendVoice.addEventListener('click',()=>{if(!voiceRecorder)return;voiceSendAfterStop=true;finishVoiceRecording()});
   const messageInput=document.getElementById('message-input');
   function resizeMessageInput(){messageInput.style.height='auto';messageInput.style.height=Math.min(messageInput.scrollHeight,90)+'px';}
   messageInput.addEventListener('input',resizeMessageInput);
