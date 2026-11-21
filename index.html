@@ -1810,8 +1810,8 @@
   function stopCallTimer(){clearInterval(callTimerInterval);callTimerInterval=null;callConnectedAt=0;callConnectedTimer.hidden=true;callConnectedTimer.textContent='00:00'}
   function stopRingVibration(){clearInterval(ringVibrationInterval);ringVibrationInterval=null;try{if(navigator.vibrate)navigator.vibrate(0)}catch(error){}}
   function startRingVibration(){stopRingVibration();try{if(navigator.vibrate){navigator.vibrate([65,110,65,760]);ringVibrationInterval=setInterval(()=>{try{navigator.vibrate([65,110,65,760])}catch(error){}},1700)}}catch(error){}}
-  // Socialink signature v2: a warm, layered three-bar motif with a melodic lead,
-  // soft harmonic bed, rounded bass and a restrained rhythmic sparkle.
+  // Socialink signature v3: a warm, memorable mid-register hook.
+  // Rounded tones only; deliberately avoids bright/high-pitched sparkle notes.
   function ensureCallAudio(){
     const AudioContextClass=window.AudioContext||window.webkitAudioContext;
     if(!AudioContextClass)return false;
@@ -1830,50 +1830,46 @@
   function scheduleCallTonePhrase(){
     if(!callToneContext||!callToneMaster||callToneContext.state!=='running')return;
     const ctx=callToneContext,now=ctx.currentTime;
-    const beat=.4,phrase=6.4;
-    function voice(freq,at,duration,opts={}){
+    function note(freq,at,duration,level=.085){
       const start=now+at,stop=start+duration;
-      const osc=ctx.createOscillator(),voiceGain=ctx.createGain(),filter=ctx.createBiquadFilter();
-      osc.type=opts.type||'triangle';osc.frequency.setValueAtTime(freq,start);
-      if(opts.detune)osc.detune.setValueAtTime(opts.detune,start);
-      filter.type='lowpass';filter.frequency.setValueAtTime(opts.cutoff||4200,start);filter.Q.value=.55;
-      const peak=opts.level||.045,attack=opts.attack||.035;
-      voiceGain.gain.setValueAtTime(.0001,start);
-      voiceGain.gain.exponentialRampToValueAtTime(peak,start+attack);
-      voiceGain.gain.setTargetAtTime(peak*(opts.sustain||.62),start+attack,.11);
-      voiceGain.gain.setTargetAtTime(.0001,stop-.13,.075);
-      osc.connect(filter);filter.connect(voiceGain);voiceGain.connect(callToneMaster);
+      const osc=ctx.createOscillator(),gain=ctx.createGain(),filter=ctx.createBiquadFilter();
+      osc.type='triangle';osc.frequency.setValueAtTime(freq,start);
+      filter.type='lowpass';filter.frequency.setValueAtTime(1050,start);filter.Q.value=.45;
+      gain.gain.setValueAtTime(.0001,start);
+      gain.gain.exponentialRampToValueAtTime(level,start+.025);
+      gain.gain.setTargetAtTime(level*.58,start+.07,.12);
+      gain.gain.setTargetAtTime(.0001,stop-.1,.09);
+      osc.connect(filter);filter.connect(gain);gain.connect(callToneMaster);
       osc.start(start);osc.stop(stop+.02);
     }
-    function chord(root,at){
-      [root,root*1.25,root*1.5].forEach((hz,i)=>{
-        voice(hz,at,1.48,{type:'sine',level:i===0?.014:.009,attack:.22,sustain:.78,cutoff:1700});
-        voice(hz*2,at+.025,1.34,{type:'triangle',level:.004,attack:.24,sustain:.65,cutoff:2400});
-      });
+    function bass(freq,at,duration){
+      const start=now+at,stop=start+duration;
+      const osc=ctx.createOscillator(),gain=ctx.createGain();
+      osc.type='sine';osc.frequency.setValueAtTime(freq,start);
+      gain.gain.setValueAtTime(.0001,start);
+      gain.gain.exponentialRampToValueAtTime(.055,start+.07);
+      gain.gain.setTargetAtTime(.0001,stop-.12,.12);
+      osc.connect(gain);gain.connect(callToneMaster);
+      osc.start(start);osc.stop(stop+.02);
     }
-    // D-major / B-minor colour gives the motif a bright, confident lift.
-    chord(146.83,0);chord(110,1.6);chord(98,3.2);chord(123.47,4.8);
-    const melody=[
-      [587.33,0,.31],[739.99,.4,.28],[880,.8,.46],[739.99,1.4,.25],
-      [659.25,1.8,.3],[739.99,2.2,.28],[987.77,2.6,.48],[880,3.2,.28],
-      [783.99,3.6,.3],[880,4,.28],[1174.66,4.4,.48],[987.77,5,.28],
-      [880,5.4,.3],[739.99,5.8,.43]
+    // A compact, hummable call-sign: repeated rising answer phrase in a warm register.
+    // The highest lead note is 392 Hz; no piercing chimes or treble accents.
+    const hook=[
+      [220,0,.34],[261.63,.42,.30],[293.66,.82,.62],
+      [261.63,1.62,.28],[220,2.02,.30],[246.94,2.42,.66],
+      [196,3.22,.34],[220,3.64,.30],[261.63,4.04,.62],
+      [293.66,4.84,.30],[261.63,5.24,.30],[220,5.64,.48]
     ];
-    melody.forEach(([hz,at,duration],i)=>{
-      voice(hz,at,duration,{type:'triangle',level:i===6||i===10?.073:.057,attack:.018,sustain:.34,cutoff:5200});
-      voice(hz*2,at+.012,duration*.72,{type:'sine',level:.012,attack:.025,sustain:.2,cutoff:6500});
-      voice(hz*.5,at+.018,duration*.82,{type:'sine',level:.012,attack:.045,sustain:.25,cutoff:1300});
+    hook.forEach(([hz,at,duration],i)=>note(hz,at,duration,i===2||i===5||i===8?.092:.078));
+    // Gentle low chord roots give the melody a rounded, musical foundation.
+    [[110,0],[82.41,1.62],[98,3.22],[73.42,4.84]].forEach(([hz,at])=>{
+      bass(hz,at,1.18);
+      note(hz*2,at+.03,.72,.025);
     });
-    // Rounded bass notes and quiet off-beat plucks add movement without sounding like alerts.
-    [[73.42,0],[55,1.6],[49,3.2],[61.74,4.8]].forEach(([hz,at])=>{
-      voice(hz,at,.72,{type:'sine',level:.052,attack:.09,sustain:.5,cutoff:500});
-      voice(hz*2,at+.04,.48,{type:'triangle',level:.014,attack:.035,sustain:.28,cutoff:850});
+    // Soft mid-range harmony fills the gaps without adding any high-frequency sparkle.
+    [[164.81,.02],[146.83,1.64],[130.81,3.24],[146.83,4.86]].forEach(([hz,at])=>{
+      note(hz,at+.16,1.02,.022);
     });
-    [0.6,1.4,2.2,3,3.8,4.6,5.4,6.0].forEach((at,i)=>{
-      voice([1760,1975,1568,2093][i%4],at,.12,{type:'sine',level:.012,attack:.008,sustain:.08,cutoff:6000});
-    });
-    // A soft swell at the phrase tail bridges naturally into the next repeat.
-    voice(293.66,5.92,.42,{type:'sine',level:.009,attack:.18,sustain:.8,cutoff:1200});
   }
   function startCallTone(){
     stopCallTone();if(!ensureCallAudio())return;
