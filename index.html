@@ -1241,6 +1241,25 @@
 #thread-panel .pinned-message-banner strong{color:#e8c16a;white-space:nowrap}
 #thread-panel .pinned-message-banner span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 #thread-panel .pinned-message-banner[hidden]{display:none!important}
+
+/* Faster mobile interaction and off-screen feed rendering */
+@media (max-width: 600px){
+  header,.bottom-nav{
+    -webkit-backdrop-filter:none!important;
+    backdrop-filter:none!important;
+  }
+}
+button,a,[role="button"]{
+  touch-action:manipulation;
+  -webkit-tap-highlight-color:transparent;
+}
+.post{
+  content-visibility:auto;
+  contain-intrinsic-size:auto 560px;
+}
+.message-bubble{
+  touch-action:pan-y;
+}
 \n</style>
 </head>
 <body>
@@ -1963,7 +1982,7 @@
     });
   }
   threadMessages.addEventListener('touchstart',event=>{
-    const bubble=event.target.closest('.message-bubble');if(!bubble||event.target.closest('.meaning-word'))return;
+    const bubble=event.target.closest('.message-bubble');if(!bubble)return;
     const touch=event.touches[0];if(!touch)return;
     longPressTriggered=false;clearTimeout(longPressTimer);
     longPressStartX=touch.clientX;longPressStartY=touch.clientY;
@@ -1980,7 +1999,7 @@
   },{passive:true});
   threadMessages.addEventListener('touchcancel',()=>{clearTimeout(longPressTimer);longPressTimer=null;},{passive:true});
   threadMessages.addEventListener('contextmenu',event=>{
-    const bubble=event.target.closest('.message-bubble');if(!bubble||event.target.closest('.meaning-word'))return;
+    const bubble=event.target.closest('.message-bubble');if(!bubble)return;
     event.preventDefault();
     if(!longPressTriggered){longPressTriggered=true;showMessageActionMenu(bubble)}
   });
