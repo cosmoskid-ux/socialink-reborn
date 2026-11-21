@@ -372,6 +372,10 @@
     .message-person small{font-size:9px;color:#a99bb9}
     .message-person:active{transform:scale(.96)}
 
+
+    .new-group-mini{font-size:10px!important;padding:6px 8px!important;min-height:28px!important;display:inline-flex!important;align-items:center;gap:3px;white-space:nowrap;border:1px solid rgba(243,201,107,.35)!important;border-radius:9px!important;background:rgba(243,201,107,.09)!important;color:#F7FBFD!important}
+    .new-group-mini span{font-size:15px;line-height:1;color:#f3c96b}
+
     .messages-toolbar{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-bottom:22px}
     .messages-tool{min-width:0;min-height:72px;border:1px solid rgba(255,255,255,.08);border-radius:16px;background:linear-gradient(155deg,#1c1630,#100d1b);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;font-size:11px;font-weight:850}
     .messages-tool .tool-icon{font-size:21px;color:#f3c96b!important}
@@ -489,11 +493,7 @@
     </section>
     
     <section class="messages-screen" id="messages-screen" aria-label="Messages">
-      <div class="messages-heading"><div><small>YOUR CONNECTIONS</small><h2>Messages</h2></div><div class="messages-head-actions"><button class="messages-mini-action active" data-message-view="groups">Groups</button><button class="messages-mini-action" data-message-view="games">Games</button><button class="messages-mini-action rooms-mini-action" id="messages-rooms-open">✦ Rooms</button><button class="education-btn" id="education-open" aria-label="Education Dashboard">🎓</button></div></div>
-      <div class="messages-toolbar">
-        <button class="messages-tool active" data-message-view="search"><span class="tool-icon">⌕</span><span>Search</span></button>
-        <button class="messages-tool" id="new-group-open"><span class="tool-icon">＋</span><span>New Group</span></button>
-      </div>
+      <div class="messages-heading"><div><small>YOUR CONNECTIONS</small><h2>Messages</h2></div><div class="messages-head-actions"><button class="messages-mini-action active" data-message-view="groups">Groups</button><button class="messages-mini-action new-group-mini" id="new-group-open"><span>＋</span> New Group</button><button class="messages-mini-action" data-message-view="games">Games</button><button class="messages-mini-action rooms-mini-action" id="messages-rooms-open">✦ Rooms</button><button class="education-btn" id="education-open" aria-label="Education Dashboard">🎓</button></div></div>
       <section class="message-people-dashboard" aria-label="People who messaged you">
         <div class="message-people-heading"><h3>People</h3><span>YOUR MESSAGES</span></div>
         <div class="message-people-list">
