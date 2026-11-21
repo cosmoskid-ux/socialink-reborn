@@ -923,6 +923,25 @@
 #thread-panel .cutout-preview.square img{width:min(75vw,280px);height:min(75vw,280px);object-fit:cover;border-radius:18px}
 #thread-panel .cutout-shapes{display:flex;justify-content:center;gap:8px}
 
+
+    /* Socialink chat call launcher */
+    .chat-call-button{width:36px;height:38px;flex:0 0 36px;border:1px solid rgba(243,201,107,.26);border-radius:12px;background:rgba(243,201,107,.09);color:#F7FBFD;font-size:20px;display:grid;place-items:center}
+    .chat-call-button:active{transform:scale(.94);background:rgba(243,201,107,.18)}
+    .call-sheet-backdrop{position:fixed;inset:0;z-index:1200;background:rgba(0,0,0,.52);backdrop-filter:blur(3px)}
+    .call-sheet{position:fixed;z-index:1201;left:50%;bottom:calc(12px + env(safe-area-inset-bottom));transform:translateX(-50%);width:min(calc(100% - 24px),440px);padding:14px;border:1px solid rgba(243,201,107,.24);border-radius:23px;background:linear-gradient(155deg,#211831,#0c0b17 78%);box-shadow:0 18px 55px rgba(0,0,0,.62);color:#F7FBFD}
+    .call-sheet[hidden],.call-sheet-backdrop[hidden]{display:none!important}
+    .call-sheet-grip{width:38px;height:4px;border-radius:8px;background:#746b80;margin:0 auto 14px}
+    .call-sheet-title{display:flex;flex-direction:column;gap:4px;padding:0 5px 13px}
+    .call-sheet-title strong{font-size:16px;color:#F7FBFD}.call-sheet-title small{font-size:11px;color:#b9afc9}
+    .call-choice{width:100%;display:flex;align-items:center;gap:12px;padding:12px 10px;border:1px solid rgba(247,251,253,.07);border-radius:16px;background:rgba(247,251,253,.035);color:#F7FBFD;text-align:left}
+    .call-choice+.call-choice{margin-top:8px}
+    .call-choice:active{background:rgba(243,201,107,.1);transform:scale(.99)}
+    .call-choice-icon{width:44px;height:44px;flex:0 0 44px;border-radius:14px;display:grid;place-items:center;background:rgba(243,201,107,.12);color:#f3c96b;font-size:22px}
+    .call-choice-icon.video{background:rgba(138,98,196,.18);color:#c5a5ff}
+    .call-choice>span:nth-child(2){display:flex;flex:1;flex-direction:column;gap:3px}
+    .call-choice strong{font-size:13px;color:#F7FBFD}.call-choice small{font-size:10px;color:#b9afc9}
+    .call-choice-arrow{font-size:25px;color:#a99ab9}
+
 </style>
 </head>
 <body>
@@ -1051,7 +1070,7 @@
         <div class="room-list"><div class="room-card"><span class="room-icon">💬</span><span><strong>General Orbit</strong><small>Everyday conversations</small></span><button class="room-join" data-room="General Orbit">Open</button></div><div class="room-card"><span class="room-icon">💡</span><span><strong>Ideas Lab</strong><small>Share thoughts and inspiration</small></span><button class="room-join" data-room="Ideas Lab">Open</button></div><div class="room-card"><span class="room-icon">🎯</span><span><strong>Plans & Events</strong><small>Make things happen together</small></span><button class="room-join" data-room="Plans & Events">Open</button></div></div>
       </div>
       <div class="messages-panel" id="thread-panel" aria-label="Private conversation">
-        <header class="chat-screen-head"><button class="chat-screen-back" id="thread-back" aria-label="Back to messages">‹</button><span class="chat-screen-avatar" id="thread-avatar">🌙</span><div class="chat-screen-person"><h3 id="thread-title">Conversation</h3><small>Socialink chat</small></div><button class="chat-screen-more" type="button" aria-label="More options">⋮</button></header>
+        <header class="chat-screen-head"><button class="chat-screen-back" id="thread-back" aria-label="Back to messages">‹</button><span class="chat-screen-avatar" id="thread-avatar">🌙</span><div class="chat-screen-person"><h3 id="thread-title">Conversation</h3><small>Socialink chat</small></div><button class="chat-call-button" id="chat-call-button" type="button" aria-label="Start a call" title="Call">☎</button><button class="chat-screen-more" type="button" aria-label="More options">⋮</button></header><div class="call-sheet-backdrop" id="call-sheet-backdrop" hidden></div><section class="call-sheet" id="call-sheet" role="dialog" aria-modal="true" aria-label="Call options" hidden><div class="call-sheet-grip"></div><div class="call-sheet-title"><strong>Connect with <span id="call-contact-name">Amara K.</span></strong><small>Choose how you would like to call</small></div><button class="call-choice" type="button" data-call-type="voice"><span class="call-choice-icon">☎</span><span><strong>Voice Call</strong><small>Talk without video</small></span><span class="call-choice-arrow">›</span></button><button class="call-choice" type="button" data-call-type="video"><span class="call-choice-icon video">▣</span><span><strong>Video Call</strong><small>Talk face to face</small></span><span class="call-choice-arrow">›</span></button></section>
         <div class="thread-messages" id="thread-messages"><div class="message-bubble">Welcome to your conversation ✨</div></div>
         <div class="creative-editor" id="draw-editor" hidden><div class="creative-editor-head"><span>Draw something ✨</span><button type="button" data-editor-close="draw" aria-label="Close drawing">×</button></div><canvas id="draw-canvas" aria-label="Drawing canvas"></canvas><div class="draw-colors"><button class="draw-color" data-draw-color="#211735" style="background:#211735" aria-label="Purple"></button><button class="draw-color" data-draw-color="#f3c96b" style="background:#f3c96b" aria-label="Gold"></button><button class="draw-color" data-draw-color="#e85d9e" style="background:#e85d9e" aria-label="Pink"></button><button class="draw-color" data-draw-color="#269bd8" style="background:#269bd8" aria-label="Blue"></button><button class="draw-color" data-draw-color="#F7FBFD" style="background:#F7FBFD" aria-label="Arctic Pearl"></button></div><div class="creative-editor-actions"><button type="button" id="draw-erase">Eraser</button><button type="button" id="draw-clear">Clear</button><button type="button" class="creative-send" id="draw-send">Send drawing</button></div></div><div class="creative-editor" id="cutout-editor" hidden><div class="creative-editor-head"><span>Make a cut-out ✂️</span><button type="button" data-editor-close="cutout" aria-label="Close cut-out">×</button></div><input type="file" id="cutout-file" accept="image/*" hidden><button type="button" id="cutout-choose" class="creative-tool">Choose a photo</button><div class="cutout-preview circle" id="cutout-preview"><span>Choose a photo to start</span></div><div class="cutout-shapes"><button type="button" data-cutout-shape="circle">Circle</button><button type="button" data-cutout-shape="oval">Oval</button><button type="button" data-cutout-shape="square">Square</button></div><div class="creative-editor-actions"><button type="button" id="cutout-change">Change photo</button><button type="button" class="creative-send" id="cutout-send" disabled>Send cut-out</button></div></div><div class="creative-tools" id="creative-tools" hidden><button type="button" class="creative-tool" data-creative-tool="gif"><span class="creative-tool-icon">GIF</span><span>GIF</span></button><button type="button" class="creative-tool" data-creative-tool="cutouts"><span class="creative-tool-icon">✂️</span><span>Cut outs</span></button><button type="button" class="creative-tool" data-creative-tool="stickers"><span class="creative-tool-icon">🌟</span><span>Stickers</span></button><button type="button" class="creative-tool" data-creative-tool="draw"><span class="creative-tool-icon">✏️</span><span>Draw</span></button></div><div class="gif-picker" id="gif-picker" hidden><div class="gif-picker-head"><strong>Find a GIF</strong><button type="button" class="gif-picker-close" id="gif-picker-close" aria-label="Close GIF picker">×</button></div><input class="gif-search" id="gif-search" type="search" placeholder="Search GIFs..." aria-label="Search GIFs"><div class="gif-categories" id="gif-categories"><button type="button" class="gif-category active" data-gif-category="trending">Trending</button><button type="button" class="gif-category" data-gif-category="happy">Happy</button><button type="button" class="gif-category" data-gif-category="love">Love</button><button type="button" class="gif-category" data-gif-category="funny">Funny</button><button type="button" class="gif-category" data-gif-category="celebrate">Celebrate</button><button type="button" class="gif-category" data-gif-category="wow">Wow</button></div><div class="gif-grid" id="gif-grid"><div class="gif-empty">Loading GIFs…</div></div><div class="gif-attribution">Powered by GifJif</div></div><div class="reply-preview" id="reply-preview" hidden><span class="reply-preview-copy"></span><button type="button" id="cancel-reply" aria-label="Cancel reply">×</button></div><form class="message-compose" id="message-compose"><button type="button" class="chat-gif-button" id="chat-gif-button" aria-label="Open creative tools" title="GIF, Cut outs, Stickers and Draw">✦</button><button type="button" class="chat-audio-button" id="chat-audio-button" aria-label="Record voice message" title="Record voice message">🎙</button><textarea id="message-input" maxlength="300" rows="1" placeholder="Message..." aria-label="Write a message"></textarea><button type="submit" aria-label="Send message">➤</button><div class="voice-recording-panel" id="voice-recording-panel" hidden><div class="voice-profile">♙<small>You</small></div><div class="voice-wave-area"><div class="voice-wave" aria-label="Recording waveform"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><span class="voice-recording-time" id="voice-recording-time">0:00</span><span class="voice-recording-status" id="voice-recording-status">Recording</span></div><button type="button" class="voice-control" id="voice-pause" aria-label="Pause recording">Ⅱ</button><button type="button" class="voice-control voice-delete" id="voice-delete" aria-label="Delete recording">×</button><button type="button" class="voice-send" id="voice-send" aria-label="Send voice message">➤</button></div></form>
       </div>
@@ -1575,6 +1594,22 @@
 
 
   document.getElementById('messages-rooms-open').addEventListener('click',()=>{openGroup(activeGroup);showMessagePanel('rooms-panel')});
+
+
+  // Chat call menu — call options are interactive; live calling needs a calling service.
+  const callButton=document.getElementById('chat-call-button');
+  const callSheet=document.getElementById('call-sheet');
+  const callBackdrop=document.getElementById('call-sheet-backdrop');
+  const callContact=document.getElementById('call-contact-name');
+  function closeCallSheet(){callSheet.hidden=true;callBackdrop.hidden=true}
+  callButton.addEventListener('click',()=>{callContact.textContent=document.getElementById('thread-title').textContent;callBackdrop.hidden=false;callSheet.hidden=false});
+  callBackdrop.addEventListener('click',closeCallSheet);
+  callSheet.querySelectorAll('[data-call-type]').forEach(option=>option.addEventListener('click',()=>{
+    const type=option.dataset.callType==='voice'?'Voice':'Video';
+    closeCallSheet();
+    toast(type+' call selected · Live calling is not connected yet');
+  }));
+  document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!callSheet.hidden)closeCallSheet()});
 
 </script>
 </body>
