@@ -226,7 +226,7 @@
   function openSpotlight(index){
     const items=spotlightItems();if(!items.length)return;
     spotlightIndex=(index+items.length)%items.length;
-    const item=items[spotlightIndex],name=item.dataset.spotlightName||'You',avatar=item.dataset.spotlightAvatar||'✦';
+    const item=items[spotlightIndex],name=item.dataset.spotlightName||item.querySelector('.story-name')?.textContent||'You',avatar=item.dataset.spotlightAvatar||item.querySelector('.portrait-inner')?.textContent||'✦';
     spotlightContent.innerHTML='';
     if(item.dataset.videoUrl){
       const video=document.createElement('video');video.src=item.dataset.videoUrl;video.controls=true;video.autoplay=true;video.playsInline=true;spotlightContent.append(video);
