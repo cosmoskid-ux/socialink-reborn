@@ -197,7 +197,17 @@
     .spotlight-viewer{background:#050b24!important}
     .spotlight-viewer-content{background:radial-gradient(ellipse at 50% 35%,#152448 0%,#0b1734 56%,#050b24 100%)!important}
     .spotlight-placeholder p{color:#c2cde4!important}
-</style>
+
+    /* Arctic Pearl typography across the entire Socialink interface */
+    :root{--white:#F7FBFD;--muted:#F7FBFD}
+    body,body *:not(.ico):not(.nav-icon):not(.star){
+      color:#F7FBFD!important;
+    }
+    body input::placeholder,body textarea::placeholder{color:#F7FBFD!important;opacity:.72}
+    .post-actions .action.liked .ico{color:#ff78b5!important}
+    .post-actions .action.saved .ico{color:var(--gold)!important}
+    .nav-item .nav-icon{color:#F7FBFD!important}
+  </style>
 </head>
 <body>
 <div class="app">
