@@ -1260,6 +1260,46 @@ button,a,[role="button"]{
 .message-bubble{
   touch-action:pan-y;
 }
+
+/* My Page — Radiant Galaxy profile */
+.profile-screen{padding:0 0 28px;color:#F7FBFD}
+.profile-screen[hidden]{display:none!important}
+.profile-cover{height:142px;position:relative;overflow:hidden;background:radial-gradient(ellipse at 50% 110%,rgba(142,91,220,.42),transparent 58%),linear-gradient(125deg,#171025,#241638 48%,#0d0b16);border-bottom:1px solid rgba(243,201,107,.16)}
+.profile-cover:before,.profile-cover:after{content:"";position:absolute;width:220px;height:220px;border:1px solid rgba(243,201,107,.2);border-radius:50%;left:50%;top:40%;transform:translate(-50%,-50%) scaleX(1.5) rotate(-24deg)}
+.profile-cover:after{width:165px;height:165px;border-color:rgba(177,135,255,.22);transform:translate(-50%,-50%) scaleX(1.5) rotate(32deg)}
+.cover-wordmark{position:absolute;right:17px;bottom:13px;color:rgba(247,251,253,.58);font-size:9px;font-weight:900;letter-spacing:3px}
+.profile-identity{padding:0 18px 18px;text-align:center;background:linear-gradient(180deg,rgba(24,17,38,.98),rgba(10,9,17,.98))}
+.profile-avatar-wrap{width:100px;height:100px;margin:-50px auto 8px;position:relative;z-index:2}
+.profile-avatar{width:100%;height:100%;display:grid;place-items:center;border-radius:34px;border:3px solid #171025;background:linear-gradient(145deg,#5a3d78,#171321 72%);box-shadow:0 0 0 1px rgba(243,201,107,.6);font-size:42px;color:#f3c96b}
+.profile-spotlight-star{position:absolute;bottom:-3px;left:-9px;width:31px;height:31px;display:grid;place-items:center;border-radius:50%;background:linear-gradient(145deg,#ffe7a3,#bd8737);color:#26182b;border:3px solid #100d1c;font-size:17px}
+.profile-name-row{display:flex;align-items:center;justify-content:center;gap:7px;margin-top:5px}
+.profile-name-row h2{margin:0;font-size:22px;font-weight:900;letter-spacing:-.4px}
+.profile-verified{width:17px;height:17px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(145deg,#f8db8a,#bd8737);color:#21162a;font-size:11px}
+.profile-handle{margin:2px 0 9px;color:#a99db7;font-size:12px}
+.profile-bio{max-width:340px;margin:0 auto 17px;color:#e1d9e9;font-size:13px;line-height:1.5}
+.profile-stats{display:flex;justify-content:center;gap:0;margin:0 auto 17px;max-width:350px}
+.profile-stats>div{flex:1;display:flex;flex-direction:column;gap:2px;border-right:1px solid rgba(255,255,255,.09)}
+.profile-stats>div:last-child{border:0}
+.profile-stats strong{font-size:18px;color:#F7FBFD;font-weight:900}
+.profile-stats span{font-size:11px;color:#a99db7}
+.profile-actions{display:flex;gap:8px;max-width:410px;margin:auto}
+.profile-actions button{height:42px;border-radius:13px;font-size:12px;font-weight:850}
+.profile-edit-button{flex:1;border:1px solid rgba(243,201,107,.55);background:linear-gradient(135deg,#f3d27b,#c18b42);color:#21162a}
+.profile-share-button{flex:1;border:1px solid rgba(255,255,255,.13);background:#1a1524;color:#F7FBFD}
+.profile-settings-button{width:44px;border:1px solid rgba(255,255,255,.13);background:#1a1524;color:#d9c9ed;font-size:18px!important}
+.profile-spotlight-card{width:calc(100% - 28px);margin:14px 14px 13px;padding:13px 14px;display:flex;align-items:center;gap:12px;text-align:left;border:1px solid rgba(243,201,107,.25);border-radius:17px;background:linear-gradient(110deg,rgba(91,62,117,.28),rgba(20,16,29,.96));color:#F7FBFD}
+.profile-spotlight-icon{width:42px;height:42px;display:grid;place-items:center;border-radius:14px;background:rgba(243,201,107,.13);color:#f3c96b;font-size:23px}
+.profile-spotlight-card>span:nth-child(2){display:flex;flex:1;flex-direction:column;gap:2px}
+.profile-spotlight-card strong{font-size:13px}.profile-spotlight-card small{font-size:10px;color:#a99db7}
+.profile-card-arrow{font-size:25px;color:#c6b6d6}
+.profile-tabs{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid rgba(255,255,255,.08);border-bottom:1px solid rgba(255,255,255,.08)}
+.profile-tab{height:48px;border:0;border-bottom:2px solid transparent;background:transparent;color:#a99db7;font-size:18px}
+.profile-tab span{font-size:11px;margin-left:4px}
+.profile-tab.active{color:#f3c96b;border-bottom-color:#f3c96b}
+.profile-content{min-height:190px}
+.profile-empty{min-height:190px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-align:center;padding:24px;color:#a99db7}
+.profile-empty>span{font-size:32px;color:#c9a45b}.profile-empty strong{font-size:14px;color:#F7FBFD}.profile-empty small{font-size:11px}
+@media(min-width:600px){.profile-cover{height:175px}.profile-identity{padding-bottom:22px}.profile-screen{border-left:1px solid rgba(255,255,255,.05);border-right:1px solid rgba(255,255,255,.05)}}
 \n</style>
 </head>
 <body>
@@ -1430,6 +1470,34 @@ button,a,[role="button"]{
     </section>
 
     <section class="screen-note" id="other-screen"><h2 id="screen-title">Reels</h2><p>This part of Socialink is being prepared. The home feed is our first build.</p></section>
+    <section class="profile-screen" id="profile-screen" aria-label="Your profile" hidden>
+      <div class="profile-cover"><span class="cover-orbit orbit-one"></span><span class="cover-orbit orbit-two"></span><span class="cover-wordmark">YOUR UNIVERSE</span></div>
+      <div class="profile-identity">
+        <div class="profile-avatar-wrap"><div class="profile-avatar" id="profile-avatar">✦</div><span class="profile-spotlight-star" title="Spotlight">✦</span></div>
+        <div class="profile-name-row"><h2 id="profile-name">Your Name</h2><span class="profile-verified" aria-label="Socialink profile">✦</span></div>
+        <p class="profile-handle" id="profile-handle">@youruniverse</p>
+        <p class="profile-bio" id="profile-bio">Write a little something about yourself and let your universe speak. ✨</p>
+        <div class="profile-stats">
+          <div><strong id="profile-post-count">0</strong><span>Posts</span></div>
+          <div><strong>0</strong><span>Followers</span></div>
+          <div><strong>0</strong><span>Following</span></div>
+        </div>
+        <div class="profile-actions">
+          <button type="button" class="profile-edit-button" id="profile-edit">Edit profile</button>
+          <button type="button" class="profile-share-button" id="profile-share">Share profile</button>
+          <button type="button" class="profile-settings-button" id="profile-settings" aria-label="Profile settings">⚙</button>
+        </div>
+      </div>
+      <button type="button" class="profile-spotlight-card" id="profile-spotlight">
+        <span class="profile-spotlight-icon">✦</span><span><strong>Your Spotlight</strong><small>Your daily moment belongs here</small></span><span class="profile-card-arrow">›</span>
+      </button>
+      <div class="profile-tabs" role="tablist" aria-label="Profile content">
+        <button type="button" class="profile-tab active" data-profile-tab="posts" role="tab" aria-selected="true">▦ <span>Posts</span></button>
+        <button type="button" class="profile-tab" data-profile-tab="reels" role="tab" aria-selected="false">▷ <span>Reels</span></button>
+        <button type="button" class="profile-tab" data-profile-tab="saved" role="tab" aria-selected="false">▣ <span>Saved</span></button>
+      </div>
+      <div class="profile-content" id="profile-content"><div class="profile-empty"><span>✧</span><strong>Your story starts here</strong><small>Your posts will appear here when you share them.</small></div></div>
+    </section>
   </main>
   <nav class="bottom-nav" aria-label="Main navigation">
     <button class="nav-item active" data-screen="Home"><span class="nav-icon">⌂</span><span>Home</span></button>
@@ -1627,15 +1695,55 @@ button,a,[role="button"]{
   document.querySelectorAll('.share').forEach(btn=>btn.addEventListener('click',async()=>{try{if(navigator.share)await navigator.share({title:'Socialink',text:'Connect beyond the ordinary.',url:location.href});else{await navigator.clipboard.writeText(location.href);toast('Link copied')}}catch(e){if(e.name!=='AbortError')toast('Sharing is unavailable here')}}));
   document.querySelectorAll('.nav-item').forEach(btn=>btn.addEventListener('click',()=>{
     document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));btn.classList.add('active');
-    const screen=btn.dataset.screen,home=screen==='Home',reels=screen==='Reels',messages=screen==='Messages';
+    const screen=btn.dataset.screen,home=screen==='Home',reels=screen==='Reels',messages=screen==='Messages',profile=screen==='Your Page';
     document.querySelector('.spotlights').parentElement.style.display=home?'':'none';
     document.querySelector('.discover').parentElement.style.display=home?'':'none';
     document.querySelector('.feed').style.display=home?'':'none';
     document.getElementById('reels-screen').classList.toggle('active',reels);
     document.getElementById('messages-screen').classList.toggle('active',messages);
-    document.getElementById('other-screen').classList.toggle('show',!home&&!reels&&!messages);
+    document.getElementById('other-screen').classList.toggle('show',!home&&!reels&&!messages&&!profile);
+    document.getElementById('profile-screen').hidden=!profile;
     document.getElementById('screen-title').textContent=screen;
   }));
+
+  // My Page profile controls — profile details are saved on this device.
+  (function(){
+    const read=()=>{try{return JSON.parse(localStorage.getItem('socialink-profile-v1')||'{}')}catch(e){return {}}};
+    const save=data=>{try{localStorage.setItem('socialink-profile-v1',JSON.stringify(data))}catch(e){}};
+    const profile=read();
+    const name=document.getElementById('profile-name'),handle=document.getElementById('profile-handle'),bio=document.getElementById('profile-bio');
+    if(profile.name)name.textContent=profile.name;
+    if(profile.handle)handle.textContent='@'+profile.handle.replace(/^@/,'');
+    if(profile.bio)bio.textContent=profile.bio;
+    document.getElementById('profile-post-count').textContent='0';
+    document.getElementById('profile-edit').addEventListener('click',()=>{
+      const current=read();
+      const nextName=prompt('What name should appear on your profile?',current.name||'Your Name');
+      if(nextName===null)return;
+      const cleanName=nextName.trim();if(!cleanName){toast('Name cannot be empty');return}
+      const nextHandle=prompt('Choose your username (without @).',current.handle||'youruniverse');
+      if(nextHandle===null)return;
+      const cleanHandle=nextHandle.trim().replace(/^@/,'').replace(/\s+/g,'');
+      if(!cleanHandle){toast('Username cannot be empty');return}
+      const nextBio=prompt('Write your profile bio.',current.bio||'Write a little something about yourself and let your universe speak. ✨');
+      if(nextBio===null)return;
+      const updated={name:cleanName,handle:cleanHandle,bio:nextBio.trim()};
+      save(updated);name.textContent=updated.name;handle.textContent='@'+updated.handle;bio.textContent=updated.bio||'No bio added yet.';
+      toast('Profile updated ✦');
+    });
+    document.getElementById('profile-share').addEventListener('click',async()=>{
+      const shareData={title:'Socialink profile',text:name.textContent+' on Socialink — connect beyond the ordinary.',url:location.href};
+      try{if(navigator.share)await navigator.share(shareData);else{await navigator.clipboard.writeText(location.href);toast('Profile link copied')}}catch(e){if(e.name!=='AbortError')toast('Sharing is unavailable here')}
+    });
+    document.getElementById('profile-settings').addEventListener('click',()=>toast('More profile settings are coming soon ✦'));
+    document.getElementById('profile-spotlight').addEventListener('click',()=>toast('Create a Spotlight from the ＋ button ✦'));
+    document.querySelectorAll('[data-profile-tab]').forEach(tab=>tab.addEventListener('click',()=>{
+      document.querySelectorAll('[data-profile-tab]').forEach(x=>{x.classList.toggle('active',x===tab);x.setAttribute('aria-selected',String(x===tab))});
+      const label=tab.dataset.profileTab;
+      const copy=label==='posts'?'Your posts will appear here when you share them.':label==='reels'?'Your Reels will appear here when you share them.':'Posts you save will be collected here.';
+      document.getElementById('profile-content').innerHTML='<div class="profile-empty"><span>'+(label==='posts'?'✧':label==='reels'?'▷':'▣')+'</span><strong>'+(label==='posts'?'Your story starts here':label==='reels'?'Your Reels are waiting':'Your saved universe')+'</strong><small>'+copy+'</small></div>';
+    }));
+  })();
 
   // Give Reels an immersive full-screen mode while preserving the app shell elsewhere.
   const reelsScreen=document.getElementById('reels-screen');
