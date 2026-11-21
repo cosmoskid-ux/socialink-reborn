@@ -739,6 +739,21 @@
     #thread-panel .message-line{align-items:flex-start!important}
     #thread-panel .message-mini-avatar{align-self:flex-start!important;margin-top:0!important}
 
+
+    /* Compact, growing chat composer and tighter message rhythm */
+    #thread-panel .thread-messages{gap:5px!important;padding-top:12px!important;padding-bottom:12px!important}
+    #thread-panel .message-line{margin:0!important}
+    #thread-panel .message-content{gap:3px!important}
+    #thread-panel .message-compose{align-items:flex-end!important;gap:8px!important}
+    #thread-panel .message-compose textarea{
+      display:block;flex:1 1 auto;min-width:0;min-height:40px;max-height:120px;
+      height:40px;resize:none;overflow-y:auto;box-sizing:border-box;
+      border:0;border-radius:20px;background:#263244;color:#F7FBFD;
+      padding:10px 15px;font:inherit;font-size:13px;line-height:20px;outline:none;
+    }
+    #thread-panel .message-compose textarea::placeholder{color:#b5c0d0}
+    #thread-panel .message-compose textarea:focus{border:1px solid rgba(243,201,107,.45)}
+
 </style>
 </head>
 <body>
@@ -869,7 +884,7 @@
       <div class="messages-panel" id="thread-panel" aria-label="Private conversation">
         <header class="chat-screen-head"><button class="chat-screen-back" id="thread-back" aria-label="Back to messages">‹</button><span class="chat-screen-avatar" id="thread-avatar">🌙</span><div class="chat-screen-person"><h3 id="thread-title">Conversation</h3><small>Socialink chat</small></div><button class="chat-screen-more" type="button" aria-label="More options">⋮</button></header>
         <div class="thread-messages" id="thread-messages"><div class="message-bubble">Welcome to your conversation ✨</div></div>
-        <div class="reply-preview" id="reply-preview" hidden><span class="reply-preview-copy"></span><button type="button" id="cancel-reply" aria-label="Cancel reply">×</button></div><form class="message-compose" id="message-compose"><input id="message-input" maxlength="300" placeholder="Message..." aria-label="Write a message" required><button type="submit" aria-label="Send message">➤</button></form>
+        <div class="reply-preview" id="reply-preview" hidden><span class="reply-preview-copy"></span><button type="button" id="cancel-reply" aria-label="Cancel reply">×</button></div><form class="message-compose" id="message-compose"><textarea id="message-input" maxlength="300" rows="1" placeholder="Message..." aria-label="Write a message" required></textarea><button type="submit" aria-label="Send message">➤</button></form>
       </div>
       <div class="messages-panel" id="education-panel"><button class="back-link" id="education-back">‹ Back</button><div class="rooms-hero"><div class="rooms-orbit">🎓</div><h3>Education Dashboard</h3><p>A dedicated space for learning with your groups.</p></div><div class="room-list"><div class="room-card"><span class="room-icon">📚</span><span><strong>Study rooms</strong><small>Focused group learning</small></span></div><div class="room-card"><span class="room-icon">📝</span><span><strong>Shared notes</strong><small>Keep useful ideas together</small></span></div></div></div>
     </section>
@@ -1220,7 +1235,10 @@
   document.getElementById('cancel-reply').addEventListener('click',()=>{replyTarget=null;syncReplyPreview()});
   document.querySelectorAll('[data-chat]').forEach(btn=>btn.addEventListener('click',()=>openThread(btn.dataset.chat)));
   document.getElementById('thread-back').addEventListener('click',()=>activateMessageTool('inbox'));
-  document.getElementById('message-compose').addEventListener('submit',event=>{event.preventDefault();const input=document.getElementById('message-input'),value=input.value.trim();if(!value)return;const message={text:value,mine:true};if(replyTarget)message.replyTo=replyTarget.text;(chats[activeThread]||(chats[activeThread]=[])).push(message);input.value='';replyTarget=null;drawThread()});
+  const messageInput=document.getElementById('message-input');
+  function resizeMessageInput(){messageInput.style.height='auto';messageInput.style.height=Math.min(messageInput.scrollHeight,120)+'px';}
+  messageInput.addEventListener('input',resizeMessageInput);
+  document.getElementById('message-compose').addEventListener('submit',event=>{event.preventDefault();const value=messageInput.value.trim();if(!value)return;const message={text:value,mine:true};if(replyTarget)message.replyTo=replyTarget.text;(chats[activeThread]||(chats[activeThread]=[])).push(message);messageInput.value='';resizeMessageInput();replyTarget=null;drawThread()});
   document.getElementById('message-search-input').addEventListener('input',event=>{const query=event.target.value.toLowerCase(),results=document.getElementById('search-results');results.innerHTML='';document.querySelectorAll('[data-chat]').forEach(btn=>{if(btn.textContent.toLowerCase().includes(query)){const clone=btn.cloneNode(true);clone.addEventListener('click',()=>openThread(clone.dataset.chat));results.append(clone)}});document.querySelectorAll('[data-group]').forEach(btn=>{if(btn.textContent.toLowerCase().includes(query)){const clone=btn.cloneNode(true);clone.addEventListener('click',()=>openGroup(clone.dataset.group));results.append(clone)}})});
   document.querySelectorAll('[data-room]').forEach(btn=>btn.addEventListener('click',()=>openThread(activeGroup+' · '+btn.dataset.room)));
 
