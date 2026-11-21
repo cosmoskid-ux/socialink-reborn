@@ -573,6 +573,26 @@
   margin-left:auto!important;
   margin-right:0!important;
 }
+
+/* Prevent the chat grid from stretching short message bubbles vertically */
+#thread-panel .thread-messages{
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:flex-start!important;
+  justify-content:flex-start!important;
+  align-content:flex-start!important;
+}
+#thread-panel .message-bubble{
+  flex:0 0 auto!important;
+  align-self:flex-start!important;
+  height:auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  box-sizing:border-box!important;
+}
+#thread-panel .message-bubble.mine{
+  align-self:flex-end!important;
+}
 </style>
 </head>
 <body>
