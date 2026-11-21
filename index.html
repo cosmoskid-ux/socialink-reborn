@@ -2658,5 +2658,29 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 
+
+<script>
+/* Reliable My Page navigation fallback */
+document.addEventListener('click',function(event){
+  const button=event.target.closest&&event.target.closest('.nav-item[data-screen="Your Page"]');
+  if(!button)return;
+  document.querySelectorAll('.nav-item').forEach(item=>item.classList.toggle('active',item===button));
+  const profile=document.getElementById('profile-screen');
+  if(profile){profile.hidden=false;profile.style.display='block';}
+  const homeSections=[
+    document.querySelector('.spotlights')?.parentElement,
+    document.querySelector('.discover')?.parentElement,
+    document.querySelector('.feed')
+  ];
+  homeSections.forEach(section=>{if(section)section.style.display='none';});
+  const reels=document.getElementById('reels-screen');
+  const messages=document.getElementById('messages-screen');
+  const other=document.getElementById('other-screen');
+  if(reels)reels.classList.remove('active');
+  if(messages)messages.classList.remove('active');
+  if(other)other.classList.remove('show');
+  window.scrollTo({top:0,behavior:'instant'});
+},true);
+</script>
 </body>
 </html>
