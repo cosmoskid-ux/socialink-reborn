@@ -1802,16 +1802,61 @@
   const callControls=document.getElementById('call-controls');
   const callIncomingActions=document.getElementById('call-incoming-actions');
   let callPeer=null,activeMediaCall=null,localCallStream=null,incomingMediaCall=null,activeCallMode='voice',callRoomCode='',callIsHost=false;
-  let micEnabled=true,cameraEnabled=true,callConnectedAt=0,callTimerInterval=null,ringVibrationInterval=null;
+  let micEnabled=true,cameraEnabled=true,callConnectedAt=0,callTimerInterval=null,ringVibrationInterval=null,callToneContext=null,callToneMaster=null,callToneLoopInterval=null,callToneActive=false;
   const callAcceptButton=document.getElementById('call-accept');
   const callDeclineButton=document.getElementById('call-decline');
   const callConnectedTimer=document.getElementById('call-connected-timer');
   function formatCallDuration(total){const minutes=Math.floor(total/60),seconds=total%60;return String(minutes).padStart(2,'0')+':'+String(seconds).padStart(2,'0')}
   function stopCallTimer(){clearInterval(callTimerInterval);callTimerInterval=null;callConnectedAt=0;callConnectedTimer.hidden=true;callConnectedTimer.textContent='00:00'}
   function stopRingVibration(){clearInterval(ringVibrationInterval);ringVibrationInterval=null;try{if(navigator.vibrate)navigator.vibrate(0)}catch(error){}}
-  function startRingVibration(){stopRingVibration();try{if(navigator.vibrate)navigator.vibrate([220,180,220]);ringVibrationInterval=setInterval(()=>{try{if(navigator.vibrate)navigator.vibrate([220,180,220])}catch(error){}},1800)}catch(error){}}
+  function startRingVibration(){stopRingVibration();try{if(navigator.vibrate){navigator.vibrate([65,110,65,760]);ringVibrationInterval=setInterval(()=>{try{navigator.vibrate([65,110,65,760])}catch(error){}},1700)}}catch(error){}}
+  // Original Socialink signature call sound: cosmic chimes, warm low notes and a gentle electronic pulse.
+  function ensureCallAudio(){
+    const AudioContextClass=window.AudioContext||window.webkitAudioContext;
+    if(!AudioContextClass)return false;
+    if(!callToneContext){callToneContext=new AudioContextClass();callToneMaster=callToneContext.createGain();callToneMaster.gain.value=0;callToneMaster.connect(callToneContext.destination)}
+    if(callToneContext.state==='suspended')callToneContext.resume().catch(()=>{});
+    return true;
+  }
+  function scheduleCallTonePhrase(){
+    if(!callToneContext||!callToneMaster||callToneContext.state!=='running')return;
+    const now=callToneContext.currentTime;
+    const notes=[659.25,783.99,987.77,783.99,659.25,523.25,659.25,783.99,1046.5,783.99];
+    notes.forEach((frequency,index)=>{
+      const start=now+index*.61;
+      const length=.43;
+      const tone=callToneContext.createOscillator(),harmonic=callToneContext.createOscillator(),gain=callToneContext.createGain();
+      tone.type='sine';tone.frequency.setValueAtTime(frequency,start);
+      harmonic.type='triangle';harmonic.frequency.setValueAtTime(frequency*2.01,start);
+      const filter=callToneContext.createBiquadFilter();filter.type='lowpass';filter.frequency.setValueAtTime(2800,start);
+      gain.gain.setValueAtTime(.0001,start);gain.gain.exponentialRampToValueAtTime(index===8?.105:.078,start+.045);gain.gain.exponentialRampToValueAtTime(.0001,start+length);
+      tone.connect(filter);harmonic.connect(filter);filter.connect(gain);gain.connect(callToneMaster);
+      tone.start(start);harmonic.start(start);tone.stop(start+length+.02);harmonic.stop(start+length+.02);
+    });
+    [0,1.62,3.24,4.86].forEach((offset,index)=>{
+      const start=now+offset,osc=callToneContext.createOscillator(),gain=callToneContext.createGain();
+      osc.type='sine';osc.frequency.setValueAtTime(index===0?130.81:98,start);
+      gain.gain.setValueAtTime(.0001,start);gain.gain.exponentialRampToValueAtTime(.035,start+.08);gain.gain.exponentialRampToValueAtTime(.0001,start+.62);
+      osc.connect(gain);gain.connect(callToneMaster);osc.start(start);osc.stop(start+.65);
+    });
+  }
+  function startCallTone(){
+    stopCallTone();if(!ensureCallAudio())return;
+    callToneActive=true;
+    callToneMaster.gain.cancelScheduledValues(callToneContext.currentTime);
+    callToneMaster.gain.setValueAtTime(.0001,callToneContext.currentTime);
+    callToneMaster.gain.linearRampToValueAtTime(.82,callToneContext.currentTime+.18);
+    scheduleCallTonePhrase();
+    callToneLoopInterval=setInterval(scheduleCallTonePhrase,6100);
+  }
+  function stopCallTone(){
+    callToneActive=false;clearInterval(callToneLoopInterval);callToneLoopInterval=null;
+    if(callToneContext&&callToneMaster){const now=callToneContext.currentTime;callToneMaster.gain.cancelScheduledValues(now);callToneMaster.gain.setTargetAtTime(.0001,now,.035)}
+  }
+  // Unlock audio after the user's first interaction so incoming rings can sound while Socialink is open.
+  document.addEventListener('pointerdown',()=>{if(!callToneContext)ensureCallAudio();else if(callToneContext.state==='suspended')callToneContext.resume().catch(()=>{})},{once:true,passive:true});
   function markCallConnected(){
-    stopRingVibration();
+    stopRingVibration();stopCallTone();
     if(!callConnectedAt){callConnectedAt=Date.now();callConnectedTimer.hidden=false;callConnectedTimer.textContent='00:00';callTimerInterval=setInterval(()=>{callConnectedTimer.textContent=formatCallDuration(Math.floor((Date.now()-callConnectedAt)/1000))},1000)}
     callAcceptButton.textContent='✓ Call connected';callAcceptButton.classList.add('is-connected');callAcceptButton.disabled=true;callDeclineButton.hidden=true;callIncomingActions.hidden=false;
     setCallStatus('Call connected');
@@ -1822,7 +1867,7 @@
   function openCallStage(){callStageBackdrop.hidden=false;callStage.hidden=false}
   function stopLocalCallStream(){if(localCallStream){localCallStream.getTracks().forEach(track=>track.stop());localCallStream=null}}
   function cleanupCallRoom(){
-    stopRingVibration();stopCallTimer();callAcceptButton.textContent='Accept call';callAcceptButton.classList.remove('is-connected');callAcceptButton.disabled=false;callDeclineButton.hidden=false;
+    stopRingVibration();stopCallTone();stopCallTimer();callAcceptButton.textContent='Accept call';callAcceptButton.classList.remove('is-connected');callAcceptButton.disabled=false;callDeclineButton.hidden=false;
     if(activeMediaCall){try{activeMediaCall.close()}catch(e){}activeMediaCall=null}
     if(incomingMediaCall){try{incomingMediaCall.close()}catch(e){}incomingMediaCall=null}
     stopLocalCallStream();
@@ -1855,7 +1900,7 @@
       if(incomingMediaCall){try{incoming.close()}catch(error){}return}
       incomingMediaCall=incoming;
       const mode=incoming.metadata?.mode==='video'?'video':'voice';
-      startRingVibration();
+      startCallTone();startRingVibration();
       activeCallMode=mode;callStageTitle.textContent='Incoming '+mode+' call';
       callCodeCard.hidden=true;callJoinCard.hidden=true;callIncomingActions.hidden=false;
       setCallStatus('Incoming '+mode+' call · accept or decline.');
@@ -1920,6 +1965,7 @@
         const mediaCall=callPeer.call(target,stream,{metadata:{mode}});
         if(!mediaCall){setCallStatus('Could not start the call.');return}
         setCallStatus('Calling… waiting for the other person to answer.');
+        startCallTone();
         attachCallMedia(mediaCall,mode);
       });
       callPeer.on('error',error=>setCallStatus(error.message||'Call connection failed. Check the code and try again.'));
@@ -1939,7 +1985,7 @@
   document.getElementById('call-accept').addEventListener('click',async()=>{
     if(!incomingMediaCall)return;
     const incoming=incomingMediaCall,mode=activeCallMode;
-    stopRingVibration();
+    stopRingVibration();stopCallTone();
     try{
       setCallStatus('Connecting your microphone'+(mode==='video'?' and camera':'')+'…');
       localCallStream=await acquireCallMedia(mode);
