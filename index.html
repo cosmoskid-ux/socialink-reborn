@@ -978,6 +978,22 @@
     .call-decline{height:44px;border:1px solid #e96c8466;border-radius:13px;background:#9e2945;color:#fff;font-weight:850}
     .call-stage-note{font-size:10px;line-height:1.5;color:#a99db8;text-align:center}
 
+
+/* Immersive, full-screen Socialink video-call experience */
+.call-stage.video-active{display:block!important;inset:0!important;width:100vw!important;height:100dvh!important;min-height:100dvh!important;padding:0!important;margin:0!important;gap:0!important;overflow:hidden!important;border:0!important;border-radius:0!important;background:#050713!important;color:#F7FBFD!important}
+.call-stage.video-active .call-video-stage{display:block!important;position:absolute!important;inset:0!important;width:100%!important;height:100%!important;min-height:100%!important;max-height:none!important;border:0!important;border-radius:0!important;background:#050713!important;overflow:hidden!important}
+.call-stage.video-active .call-remote-video{position:absolute!important;inset:0!important;display:block!important;width:100%!important;height:100%!important;object-fit:cover!important;background:#050713!important}
+.call-stage.video-active .call-local-video{position:absolute!important;z-index:4!important;top:calc(18px + env(safe-area-inset-top))!important;right:16px!important;bottom:auto!important;width:clamp(104px,30vw,142px)!important;height:clamp(142px,39vw,190px)!important;aspect-ratio:3/4!important;object-fit:cover!important;border:2px solid rgba(243,201,107,.9)!important;border-radius:19px!important;box-shadow:0 8px 28px rgba(0,0,0,.38)!important;background:#171225!important}
+.call-stage.video-active .call-stage-head{position:absolute!important;z-index:5!important;top:calc(18px + env(safe-area-inset-top))!important;left:16px!important;right:calc(164px + 4vw)!important;min-height:46px!important;padding:0!important;pointer-events:none!important}
+.call-stage.video-active .call-stage-head strong{max-width:100%!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;font-size:15px!important;color:#F7FBFD!important;text-shadow:0 2px 9px #000!important}
+.call-stage.video-active .call-stage-close{display:none!important}
+.call-stage.video-active .call-stage-status{position:absolute!important;z-index:5!important;top:calc(68px + env(safe-area-inset-top))!important;left:16px!important;right:16px!important;text-align:left!important;color:#F7FBFD!important;font-size:11px!important;text-shadow:0 2px 8px #000!important;pointer-events:none!important}
+.call-stage.video-active .call-controls{position:absolute!important;z-index:6!important;left:0!important;right:0!important;bottom:0!important;display:flex!important;justify-content:center!important;align-items:center!important;gap:24px!important;padding:24px 18px calc(28px + env(safe-area-inset-bottom))!important;background:linear-gradient(transparent,rgba(3,4,12,.84) 30%,rgba(3,4,12,.96))!important}
+.call-stage.video-active .call-control{width:58px!important;height:58px!important;border-radius:50%!important;border:1px solid rgba(247,251,253,.2)!important;background:rgba(20,20,34,.76)!important;color:#F7FBFD!important;font-size:22px!important;backdrop-filter:blur(12px)!important}
+.call-stage.video-active .call-control.end{width:66px!important;height:66px!important;background:#e83d56!important;border:0!important;color:#F7FBFD!important;font-size:25px!important;transform:rotate(135deg)}
+.call-stage.video-active .call-code-card,.call-stage.video-active #call-join-card,.call-stage.video-active .call-incoming-actions,.call-stage.video-active .call-stage-note,.call-stage.video-active .call-audio-avatar{display:none!important}
+@media(max-width:380px){.call-stage.video-active .call-controls{gap:18px!important}.call-stage.video-active .call-local-video{width:100px!important;height:138px!important;right:12px!important}.call-stage.video-active .call-stage-head{right:126px!important}}
+
 </style>
 </head>
 <body>
@@ -1700,7 +1716,7 @@
     stopLocalCallStream();
     if(callPeer){try{callPeer.destroy()}catch(e){}callPeer=null}
     callLocalVideo.srcObject=null;callRemoteVideo.srcObject=null;callRemoteAudio.srcObject=null;
-    callStage.hidden=true;callStageBackdrop.hidden=true;callCodeCard.hidden=true;callJoinCard.hidden=false;
+    callStage.hidden=true;callStage.classList.remove("video-active");callStageBackdrop.hidden=true;callCodeCard.hidden=true;callJoinCard.hidden=false;
     callVideoStage.hidden=true;callAudioAvatar.hidden=true;callControls.hidden=true;callIncomingActions.hidden=true;
     callJoinInput.value='';callRoomCode='';callIsHost=false;micEnabled=true;cameraEnabled=true;
     document.getElementById('call-mute').textContent='🎙';document.getElementById('call-camera').textContent='▣';
@@ -1712,7 +1728,7 @@
   function attachCallMedia(mediaCall,mode){
     activeMediaCall=mediaCall;activeCallMode=mode;
     mediaCall.on('stream',remoteStream=>{
-      if(mode==='video'){callVideoStage.hidden=false;callAudioAvatar.hidden=true;callRemoteVideo.srcObject=remoteStream;callRemoteVideo.play().catch(()=>{})}
+      if(mode==='video'){callStage.classList.add('video-active');callVideoStage.hidden=false;callAudioAvatar.hidden=true;callRemoteVideo.srcObject=remoteStream;callRemoteVideo.play().catch(()=>{})}
       else{callVideoStage.hidden=true;callAudioAvatar.hidden=false;callRemoteAudio.srcObject=remoteStream;callRemoteAudio.play().catch(()=>{})}
       if(localCallStream&&mode==='video'){callLocalVideo.srcObject=localCallStream;callLocalVideo.play().catch(()=>{})}
       callControls.hidden=false;callCodeCard.hidden=true;callJoinCard.hidden=true;callIncomingActions.hidden=true;
