@@ -256,6 +256,52 @@
     .reel-empty-note{font-size:11px;color:#bcb2ca;text-align:center;padding:8px}
     @media(max-width:420px){.reel-card{height:70vh;min-height:450px;border-radius:14px}.reels-screen{padding-left:7px;padding-right:7px}.reel-actions.post-actions{padding-left:8px;padding-right:8px;gap:12px}.reel-actions.post-actions .action{font-size:11px;gap:4px}.reel-actions.post-actions .action .ico{font-size:23px}}
 
+  
+    /* TikTok-inspired immersive Reels layout — Socialink styling */
+    body.reels-mode{padding-bottom:0;overflow:hidden}
+    body.reels-mode header{display:none}
+    body.reels-mode main{padding:0}
+    .reels-screen{position:fixed;z-index:25;inset:0 0 0 0;margin:0;padding:0;background:#05040b;overflow:hidden}
+    .reels-screen.active{display:block}
+    .reels-top{position:absolute;z-index:10;top:env(safe-area-inset-top,0px);left:0;right:0;padding:13px 18px 12px;background:linear-gradient(#05040b88,transparent);pointer-events:none}
+    .reels-top h2{display:none}
+    .reels-tabs{margin:0 auto;gap:22px;font-size:14px;text-shadow:0 1px 5px #000;pointer-events:auto}
+    .reels-tabs button{color:#F7FBFD!important;opacity:.72}
+    .reels-tabs button.active{opacity:1;border-bottom:2px solid var(--gold)}
+    .reel-list{height:100%;width:100%;display:flex;flex-direction:column;gap:0;overflow-y:auto;overflow-x:hidden;scroll-snap-type:y mandatory;scrollbar-width:none;overscroll-behavior-y:contain}
+    .reel-list::-webkit-scrollbar{display:none}
+    .reel-card{position:relative;flex:0 0 100%;width:100%;height:100%;min-height:100%;border:0;border-radius:0;overflow:hidden;background:#070611;scroll-snap-align:start;scroll-snap-stop:always}
+    .reel-scene{inset:0}
+    .reel-scene .reel-emoji{font-size:clamp(100px,25vw,150px)}
+    .reel-scene .reel-quote{bottom:36%;font-size:clamp(25px,7vw,38px);left:12%;right:12%}
+    .reel-shade{inset:25% 0 0;background:linear-gradient(transparent 5%,rgba(0,0,0,.12) 35%,rgba(0,0,0,.82) 100%)}
+    .reel-info{left:16px;right:88px;bottom:calc(91px + env(safe-area-inset-bottom,0px));z-index:5}
+    .reel-author{font-size:14px;gap:8px}
+    .reel-author .mini-avatar{display:none}
+    .reel-follow{margin-left:4px;padding:5px 10px;border-radius:6px;color:#F7FBFD!important;border-color:var(--gold);background:rgba(10,8,20,.42);font-size:11px}
+    .reel-caption{font-size:13px;line-height:1.4;margin:9px 0 7px;max-width:100%}
+    .reel-audio{font-size:11px;color:#F7FBFD!important}
+    .reel-side-rail{position:absolute;z-index:7;right:10px;bottom:calc(102px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;align-items:center;gap:18px;width:54px}
+    .reel-rail-profile{position:relative;width:46px;height:54px;margin-bottom:3px}
+    .reel-rail-profile .mini-avatar{width:43px;height:52px;border-radius:50%/42%;display:grid;place-items:center;background:linear-gradient(145deg,#49345e,#171225);border:1.5px solid var(--gold);font-size:21px}
+    .rail-follow-plus{position:absolute;bottom:-7px;left:50%;transform:translateX(-50%);width:20px;height:20px;border-radius:50%;display:grid;place-items:center;background:var(--gold);color:#20152d!important;font-size:17px;font-weight:950;border:2px solid #090711}
+    .reel-rail-btn{width:52px;min-height:48px;padding:0;border:0;background:transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:#F7FBFD!important;text-shadow:0 1px 5px #000}
+    .reel-rail-btn .rail-glyph{font-size:30px;line-height:1;font-weight:900}
+    .reel-rail-btn small{font-size:10px;font-weight:750;color:#F7FBFD!important}
+    .reel-rail-btn.liked .rail-glyph{color:#ff78b5!important;filter:drop-shadow(0 0 7px rgba(255,120,181,.4))}
+    .reel-rail-btn.saved .rail-glyph{color:var(--gold)!important}
+    .reel-rail-btn:active{transform:scale(.92)}
+    .reel-rail-btn .rail-comment{font-size:0;width:25px;height:22px;border:2.5px solid currentColor;border-radius:6px;position:relative}
+    .reel-rail-btn .rail-comment:after{content:"";position:absolute;left:3px;bottom:-6px;width:8px;height:8px;border-left:2.5px solid currentColor;transform:skewY(-38deg);background:#090711}
+    .reel-actions{display:none!important}
+    .reel-comments{margin:0;border-radius:0}
+    .reel-empty-note{display:none}
+    .bottom-nav{z-index:40}
+    @media(min-width:600px){
+      .reels-screen{left:50%;right:auto;transform:translateX(-50%);width:min(100%,680px);bottom:0}
+      .reel-card{width:100%}
+    }
+
   </style>
 </head>
 <body>
@@ -300,19 +346,19 @@
         <article class="reel-card" data-reel-id="r1">
           <div class="reel-scene one"><span class="reel-emoji">🌙</span><div class="reel-quote">MAKE YOUR<br>OWN UNIVERSE.</div></div><div class="reel-shade"></div>
           <div class="reel-info"><div class="reel-author"><span class="mini-avatar">🌙</span><span>Amara K. ✦</span><button class="reel-follow">Follow</button></div><p class="reel-caption">A little reminder to keep creating your own path. ✨ #YourUniverse</p><div class="reel-audio">♫ Original audio · Amara K.</div></div>
-          <div class="reel-actions post-actions"><button class="action like reel-action" data-reel-like><span class="ico">♥</span><span>Like</span><span class="reel-like-count">2.4K</span></button><button class="action comment reel-action" data-reel-comment><span class="ico bubble-icon" aria-hidden="true"></span><span>Comment</span></button><button class="action share reel-action" data-reel-share><span class="ico share-icon">⤴</span><span>Share</span></button><button class="action save reel-action" data-reel-save><span class="ico">▣</span><span>Save</span></button></div>
+          <div class="reel-side-rail"><div class="reel-rail-profile"><span class="mini-avatar">🌙</span><span class="rail-follow-plus">+</span></div><button class="reel-rail-btn" data-reel-like aria-label="Like Reel"><span class="rail-glyph">♥</span><small class="reel-like-count">2.4K</small></button><button class="reel-rail-btn" data-reel-comment aria-label="Comment on Reel"><span class="rail-glyph rail-comment">▢</span><small>Comment</small></button><button class="reel-rail-btn" data-reel-share aria-label="Share Reel"><span class="rail-glyph">⤴</span><small>Share</small></button><button class="reel-rail-btn" data-reel-save aria-label="Save Reel"><span class="rail-glyph">▣</span><small>Save</small></button></div>
         </article>
         <div class="reel-comments" data-reel-comments><p>Start the conversation ✨</p><form><input maxlength="180" placeholder="Add a comment..." aria-label="Reel comment"><button type="submit">Post</button></form></div>
         <article class="reel-card" data-reel-id="r2">
           <div class="reel-scene two"><span class="reel-emoji">🪐</span><div class="reel-quote">STAY CURIOUS.<br>KEEP EXPLORING.</div></div><div class="reel-shade"></div>
           <div class="reel-info"><div class="reel-author"><span class="mini-avatar">🪐</span><span>Jayden M.</span><button class="reel-follow">Follow</button></div><p class="reel-caption">There's always something new beyond the horizon. 🚀</p><div class="reel-audio">♫ Space to Think · Jayden M.</div></div>
-          <div class="reel-actions"><button class="reel-action" data-reel-like><span class="glyph">♥</span><span class="reel-like-count">986</span></button><button class="reel-action" data-reel-comment><span class="glyph">▢</span><span>Comment</span></button><button class="reel-action" data-reel-share><span class="glyph">⤴</span><span>Share</span></button><button class="reel-action" data-reel-save><span class="glyph">▣</span><span>Save</span></button></div>
+          <div class="reel-side-rail"><div class="reel-rail-profile"><span class="mini-avatar">🪐</span><span class="rail-follow-plus">+</span></div><button class="reel-rail-btn" data-reel-like aria-label="Like Reel"><span class="rail-glyph">♥</span><small class="reel-like-count">986</small></button><button class="reel-rail-btn" data-reel-comment aria-label="Comment on Reel"><span class="rail-glyph rail-comment">▢</span><small>Comment</small></button><button class="reel-rail-btn" data-reel-share aria-label="Share Reel"><span class="rail-glyph">⤴</span><small>Share</small></button><button class="reel-rail-btn" data-reel-save aria-label="Save Reel"><span class="rail-glyph">▣</span><small>Save</small></button></div>
         </article>
         <div class="reel-comments" data-reel-comments><p>Start the conversation ✨</p><form><input maxlength="180" placeholder="Add a comment..." aria-label="Reel comment"><button type="submit">Post</button></form></div>
         <article class="reel-card" data-reel-id="r3">
           <div class="reel-scene three"><span class="reel-emoji">✨</span><div class="reel-quote">SMALL STEPS.<br>BIG GALAXIES.</div></div><div class="reel-shade"></div>
           <div class="reel-info"><div class="reel-author"><span class="mini-avatar">🦋</span><span>Nia W. ✦</span><button class="reel-follow">Follow</button></div><p class="reel-caption">Celebrate every little win. Your journey matters. 💫</p><div class="reel-audio">♫ Golden Hour · Nia W.</div></div>
-          <div class="reel-actions"><button class="reel-action" data-reel-like><span class="glyph">♥</span><span class="reel-like-count">1.2K</span></button><button class="reel-action" data-reel-comment><span class="glyph">▢</span><span>Comment</span></button><button class="reel-action" data-reel-share><span class="glyph">⤴</span><span>Share</span></button><button class="reel-action" data-reel-save><span class="glyph">▣</span><span>Save</span></button></div>
+          <div class="reel-side-rail"><div class="reel-rail-profile"><span class="mini-avatar">🦋</span><span class="rail-follow-plus">+</span></div><button class="reel-rail-btn" data-reel-like aria-label="Like Reel"><span class="rail-glyph">♥</span><small class="reel-like-count">1.2K</small></button><button class="reel-rail-btn" data-reel-comment aria-label="Comment on Reel"><span class="rail-glyph rail-comment">▢</span><small>Comment</small></button><button class="reel-rail-btn" data-reel-share aria-label="Share Reel"><span class="rail-glyph">⤴</span><small>Share</small></button><button class="reel-rail-btn" data-reel-save aria-label="Save Reel"><span class="rail-glyph">▣</span><small>Save</small></button></div>
         </article>
         <div class="reel-comments" data-reel-comments><p>Start the conversation ✨</p><form><input maxlength="180" placeholder="Add a comment..." aria-label="Reel comment"><button type="submit">Post</button></form></div>
       </div>
@@ -515,6 +561,14 @@
     document.getElementById('other-screen').classList.toggle('show',!home&&!reels);
     document.getElementById('screen-title').textContent=screen;
   }));
+
+  // Give Reels an immersive full-screen mode while preserving the app shell elsewhere.
+  const reelsScreen=document.getElementById('reels-screen');
+  const syncReelsMode=()=>document.body.classList.toggle('reels-mode',reelsScreen.classList.contains('active'));
+  const navObserver=new MutationObserver(syncReelsMode);
+  navObserver.observe(reelsScreen,{attributes:true,attributeFilter:['class']});
+  syncReelsMode();
+
   document.querySelectorAll('[data-reel-tab]').forEach(tab=>tab.addEventListener('click',()=>{
     document.querySelectorAll('[data-reel-tab]').forEach(x=>x.classList.toggle('active',x===tab));
     toast(tab.dataset.reelTab==='Following'?'Following Reels will appear here as you follow creators':'Showing Reels for you');
