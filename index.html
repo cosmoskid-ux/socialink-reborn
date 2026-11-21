@@ -2211,82 +2211,146 @@
 
 
 <script>
-/* Socialink Thoughts: local prototype state; cloud appears only for active Thoughts or songs. */
-(function(){
-  const root=document.getElementById('socialink-thoughts-v1');
-  const list=document.querySelector('#messages-screen .message-people-list');
-  if(!root||!list)return;
-  const sample={
-    'Amara K.':{avatar:'🌙',name:'Amara',text:'Make time for the things that make you feel alive ✨',song:'Golden Hour · JVKE'},
-    'Nia W.':{avatar:'🦋',name:'Nia',text:'A little progress is still progress 💜',song:''},
-    'Zuri A.':{avatar:'✨',name:'Zuri',text:'',song:'Snooze · SZA'}
-  };
-  const storeKey='socialink-thoughts-local-v1';
-  let own={};try{own=JSON.parse(localStorage.getItem(storeKey)||'{}')||{}}catch(e){own={}}
-  const weekKey=()=>{const d=new Date(),jan=new Date(d.getFullYear(),0,1);return d.getFullYear()+'-'+Math.floor((d-jan)/604800000)};
-  const activeWeeks=Array.isArray(own.activeWeeks)?own.activeWeeks:[];
-  const currentWeek=weekKey();
-  const completedActiveWeeks=activeWeeks.length-(activeWeeks.includes(currentWeek)?1:0);
-  const wordLimit=Math.min(60,20+Math.max(0,completedActiveWeeks)*10);
-  const countWords=t=>(t.trim().match(/\S+/g)||[]).length;
-  function addCloud(button,data){
-    const avatar=button.querySelector('.message-person-avatar');
-    if(!avatar||avatar.querySelector('.thought-cloud')||(!data.text&&!data.song))return;
-    const cloud=document.createElement('button');cloud.type='button';cloud.className='thought-cloud';cloud.textContent='💭';cloud.setAttribute('aria-label','View '+data.name+"'s Thought");
-    cloud.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();openPreview(data)});
-    avatar.appendChild(cloud);
-  }
-  function openPreview(data){
-    document.getElementById('thought-preview-avatar').textContent=data.avatar||'✦';
-    document.getElementById('thought-preview-name').textContent=data.name||'You';
-    const text=document.getElementById('thought-preview-text');
-    text.textContent=data.text||'';
-    text.parentElement.hidden=!data.text;
-    const song=document.getElementById('thought-preview-song');
-    song.hidden=!data.song;
-    document.getElementById('thought-preview-song-text').textContent=data.song||'';
-    showModal('thought-preview');
-  }
-  function showModal(id){document.getElementById('thoughts-backdrop').hidden=false;document.getElementById('thought-preview').hidden=id!=='thought-preview';document.getElementById('thought-compose').hidden=id!=='thought-compose'}
-  function closeModals(){document.getElementById('thoughts-backdrop').hidden=true;document.getElementById('thought-preview').hidden=true;document.getElementById('thought-compose').hidden=true}
-  Object.entries(sample).forEach(([key,data])=>{const button=list.querySelector('[data-chat="'+key+'"]');if(button)addCloud(button,data)});
-  const heading=document.querySelector('#messages-screen .message-people-heading');
-  if(heading){
-    const add=document.createElement('button');add.type='button';add.className='thought-add-button';add.textContent='＋ Thought';
-    add.addEventListener('click',()=>{document.getElementById('thought-input').value=own.text||'';document.getElementById('thought-song-input').value=own.song||'';document.getElementById('thought-limit').textContent=wordLimit+' words available';document.getElementById('thought-feedback').textContent='';showModal('thought-compose')});
-    heading.appendChild(add);
-  }
-  function renderOwn(){
-    let button=list.querySelector('.thought-own-person');
-    if(!own.text&&!own.song){if(button)button.remove();return}
-    if(!button){
-      button=document.createElement('button');button.type='button';button.className='message-person thought-own-person';button.innerHTML='<span class="message-person-avatar">✦</span><strong>You</strong><small>Your Thought</small>';
-      list.prepend(button);
-      button.addEventListener('click',()=>openPreview({avatar:'✦',name:'You',text:own.text||'',song:own.song||''}));
+/* Socialink Thoughts: save and restore the signed-in user's Thought through Supabase. */
+window.addEventListener('DOMContentLoaded', () => {
+  (async function(){
+    const root=document.getElementById('socialink-thoughts-v1');
+    const list=document.querySelector('#messages-screen .message-people-list');
+    if(!root||!list)return;
+
+    const sample={
+      'Amara K.':{avatar:'🌙',name:'Amara',text:'Make time for the things that make you feel alive ✨',song:'Golden Hour · JVKE'},
+      'Nia W.':{avatar:'🦋',name:'Nia',text:'A little progress is still progress 💜',song:''},
+      'Zuri A.':{avatar:'✨',name:'Zuri',text:'',song:'Snooze · SZA'}
+    };
+    const storeKey='socialink-thoughts-local-v1';
+    let own={};
+    try{own=JSON.parse(localStorage.getItem(storeKey)||'{}')||{}}catch(e){own={}}
+    const weekKey=()=>{const d=new Date(),jan=new Date(d.getFullYear(),0,1);return d.getFullYear()+'-'+Math.floor((d-jan)/604800000)};
+    let activeWeeks=Array.isArray(own.activeWeeks)?own.activeWeeks:[];
+    const currentWeek=weekKey();
+    const completedActiveWeeks=activeWeeks.length-(activeWeeks.includes(currentWeek)?1:0);
+    const wordLimit=Math.min(60,20+Math.max(0,completedActiveWeeks)*10);
+    const countWords=t=>(t.trim().match(/\\S+/g)||[]).length;
+    const supabase=window.supabaseClient;
+
+    function addCloud(button,data){
+      const avatar=button.querySelector('.message-person-avatar');
+      if(!avatar||avatar.querySelector('.thought-cloud')||(!data.text&&!data.song))return;
+      const cloud=document.createElement('button');cloud.type='button';cloud.className='thought-cloud';cloud.textContent='💭';cloud.setAttribute('aria-label','View '+data.name+"'s Thought");
+      cloud.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();openPreview(data)});
+      avatar.appendChild(cloud);
     }
-    addCloud(button,{avatar:'✦',name:'You',text:own.text||'',song:own.song||''});
-  }
-  renderOwn();
-  document.getElementById('thought-input').addEventListener('input',e=>{
-    const words=countWords(e.target.value),limit=wordLimit;
-    document.getElementById('thought-limit').textContent=words+' / '+limit+' words';
-    document.getElementById('thought-feedback').textContent=words>limit?'Please shorten your Thought to '+limit+' words.':'';
-  });
-  document.getElementById('thought-publish').addEventListener('click',()=>{
-    const text=document.getElementById('thought-input').value.trim(),song=document.getElementById('thought-song-input').value.trim(),words=countWords(text),feedback=document.getElementById('thought-feedback');
-    if(!text&&!song){feedback.textContent='Add a Thought or a song first.';return}
-    if(words>wordLimit){feedback.textContent='Your current limit is '+wordLimit+' words.';return}
-    const wk=weekKey();if(!activeWeeks.includes(wk))activeWeeks.push(wk);
-    own={text,song,activeWeeks};try{localStorage.setItem(storeKey,JSON.stringify(own))}catch(e){}
-    renderOwn();closeModals();
-  });
-  document.getElementById('thought-close').addEventListener('click',closeModals);
-  document.getElementById('thought-compose-close').addEventListener('click',closeModals);
-  document.getElementById('thoughts-backdrop').addEventListener('click',closeModals);
-  document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModals()});
-  document.getElementById('thought-react').addEventListener('click',()=>{document.getElementById('thought-react').textContent='♥ Reacted'});
-  document.getElementById('thought-reply').addEventListener('click',()=>{closeModals();const name=document.getElementById('thought-preview-name').textContent;const target=name==='You'?'Amara K.':name+' '+(name==='Amara'?'K.':name==='Nia'?'W.':'A.');if(typeof openThread==='function')openThread(target)});
-})();
+    function openPreview(data){
+      document.getElementById('thought-preview-avatar').textContent=data.avatar||'✦';
+      document.getElementById('thought-preview-name').textContent=data.name||'You';
+      const text=document.getElementById('thought-preview-text');
+      text.textContent=data.text||'';
+      text.parentElement.hidden=!data.text;
+      const song=document.getElementById('thought-preview-song');
+      song.hidden=!data.song;
+      document.getElementById('thought-preview-song-text').textContent=data.song||'';
+      showModal('thought-preview');
+    }
+    function showModal(id){document.getElementById('thoughts-backdrop').hidden=false;document.getElementById('thought-preview').hidden=id!=='thought-preview';document.getElementById('thought-compose').hidden=id!=='thought-compose'}
+    function closeModals(){document.getElementById('thoughts-backdrop').hidden=true;document.getElementById('thought-preview').hidden=true;document.getElementById('thought-compose').hidden=true}
+    Object.entries(sample).forEach(([key,data])=>{const button=list.querySelector('[data-chat="'+key+'"]');if(button)addCloud(button,data)});
+
+    const heading=document.querySelector('#messages-screen .message-people-heading');
+    if(heading){
+      const add=document.createElement('button');add.type='button';add.className='thought-add-button';add.textContent='＋ Thought';
+      add.addEventListener('click',()=>{document.getElementById('thought-input').value=own.text||'';document.getElementById('thought-song-input').value=own.song||'';document.getElementById('thought-limit').textContent=wordLimit+' words available';document.getElementById('thought-feedback').textContent='';showModal('thought-compose')});
+      heading.appendChild(add);
+    }
+    function renderOwn(){
+      let button=list.querySelector('.thought-own-person');
+      if(!own.text&&!own.song){if(button)button.remove();return}
+      if(!button){
+        button=document.createElement('button');button.type='button';button.className='message-person thought-own-person';button.innerHTML='<span class="message-person-avatar">✦</span><strong>You</strong><small>Your Thought</small>';
+        list.prepend(button);
+        button.addEventListener('click',()=>openPreview({avatar:'✦',name:'You',text:own.text||'',song:own.song||''}));
+      }
+      const avatar=button.querySelector('.message-person-avatar');
+      if(avatar)avatar.querySelectorAll('.thought-cloud').forEach(node=>node.remove());
+      addCloud(button,{avatar:'✦',name:'You',text:own.text||'',song:own.song||''});
+    }
+
+    renderOwn();
+    document.getElementById('thought-input').addEventListener('input',e=>{
+      const words=countWords(e.target.value),limit=wordLimit;
+      document.getElementById('thought-limit').textContent=words+' / '+limit+' words';
+      document.getElementById('thought-feedback').textContent=words>limit?'Please shorten your Thought to '+limit+' words.':'';
+    });
+
+    document.getElementById('thought-publish').addEventListener('click',async()=>{
+      const text=document.getElementById('thought-input').value.trim();
+      const song=document.getElementById('thought-song-input').value.trim();
+      const words=countWords(text);
+      const feedback=document.getElementById('thought-feedback');
+      const publish=document.getElementById('thought-publish');
+      if(!text&&!song){feedback.textContent='Add a Thought or a song first.';return}
+      if(words>wordLimit){feedback.textContent='Your current limit is '+wordLimit+' words.';return}
+      if(!supabase){feedback.textContent='Socialink database is not ready. Refresh and try again.';return}
+
+      publish.disabled=true;
+      feedback.textContent='Saving your Thought…';
+      try{
+        const session=await window.socialinkSessionReady;
+        if(!session?.user?.id)throw new Error('Your Socialink session is not ready. Refresh and try again.');
+        const {error}=await supabase.from('socialink_thoughts').upsert({
+          user_id:session.user.id,
+          thought_text:text,
+          song:song||null,
+          updated_at:new Date().toISOString()
+        },{onConflict:'user_id'});
+        if(error)throw error;
+
+        const wk=weekKey();if(!activeWeeks.includes(wk))activeWeeks.push(wk);
+        own={text,song,activeWeeks};
+        try{localStorage.setItem(storeKey,JSON.stringify(own))}catch(e){}
+        renderOwn();
+        feedback.textContent='Thought saved successfully.';
+        closeModals();
+      }catch(error){
+        console.error('Thought save error:',error);
+        feedback.textContent='Could not save your Thought: '+(error.message||'Please try again.');
+      }finally{
+        publish.disabled=false;
+      }
+    });
+
+    document.getElementById('thought-close').addEventListener('click',closeModals);
+    document.getElementById('thought-compose-close').addEventListener('click',closeModals);
+    document.getElementById('thoughts-backdrop').addEventListener('click',closeModals);
+    document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModals()});
+    document.getElementById('thought-react').addEventListener('click',()=>{document.getElementById('thought-react').textContent='♥ Reacted'});
+    document.getElementById('thought-reply').addEventListener('click',()=>{closeModals();const name=document.getElementById('thought-preview-name').textContent;const target=name==='You'?'Amara K.':name+' '+(name==='Amara'?'K.':name==='Nia'?'W.':'A.');if(typeof openThread==='function')openThread(target)});
+
+    try{
+      const session=await window.socialinkSessionReady;
+      if(!session?.user?.id)throw new Error('No active Socialink session.');
+      const {data,error}=await supabase.from('socialink_thoughts').select('thought_text,song,updated_at').eq('user_id',session.user.id).maybeSingle();
+      if(error)throw error;
+      if(data){
+        own={...own,text:data.thought_text||'',song:data.song||''};
+        try{localStorage.setItem(storeKey,JSON.stringify(own))}catch(e){}
+        renderOwn();
+      }else if(own.text||own.song){
+        const {error:saveError}=await supabase.from('socialink_thoughts').upsert({
+          user_id:session.user.id,
+          thought_text:own.text||'',
+          song:own.song||null,
+          updated_at:new Date().toISOString()
+        },{onConflict:'user_id'});
+        if(saveError)throw saveError;
+      }
+      console.log('Socialink Thought cloud sync ready.');
+    }catch(error){
+      console.error('Thought load error:',error);
+      document.getElementById('thought-feedback').textContent='Thought sync unavailable: '+(error.message||'Please refresh and try again.');
+    }
+  })();
+});
 </script>
 
 </body>
