@@ -329,8 +329,10 @@
     .messages-mini-action{height:29px;min-width:0;padding:0 8px;border:1px solid rgba(243,201,107,.27);border-radius:9px;background:#1b1428;color:#F7FBFD!important;font-size:10px;font-weight:850;white-space:nowrap}
     .messages-mini-action.active{background:linear-gradient(135deg,#4a345e,#21172f);border-color:rgba(243,201,107,.65);color:#f3c96b!important}
     .messages-mini-action.rooms-mini-action{color:#f3c96b!important;background:rgba(243,201,107,.1)}
-    .messages-heading{gap:8px}
-    .messages-heading h2{font-size:24px}
+    .messages-heading{display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;gap:10px}
+    .messages-heading h2{font-size:24px;margin:2px 0 0}
+    .messages-heading>div:first-child{width:100%}
+    .messages-head-actions{width:100%;justify-content:flex-end}
     @media(max-width:390px){.messages-mini-action{height:27px;padding:0 6px;font-size:9px}.messages-head-actions{gap:4px}.education-btn{width:34px;height:34px;border-radius:11px;font-size:17px}}
 
     .messages-screen{display:none;margin:0 -14px;padding:18px 14px 110px;min-height:72vh;background:linear-gradient(180deg,#100b1d,#090712 72%)}
