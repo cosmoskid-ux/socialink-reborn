@@ -724,13 +724,13 @@
 /* Double-tap a message to reveal its compact reaction strip */
 #thread-panel .message-content{position:relative}
 #thread-panel .reaction-picker{
-  position:absolute;z-index:5;bottom:calc(100% + 5px);left:0;
+  position:relative;z-index:2;align-self:flex-start;
   display:flex;align-items:center;gap:2px;padding:5px 7px;
   border:1px solid rgba(214,182,108,.3);border-radius:22px;
   background:#211832;box-shadow:0 7px 22px rgba(0,0,0,.48);
-  white-space:nowrap;animation:reactionPop .14s ease-out
+  white-space:nowrap;animation:reactionPop .14s ease-out;margin-top:1px
 }
-#thread-panel .message-line.mine .reaction-picker{left:auto;right:0}
+#thread-panel .message-line.mine .reaction-picker{align-self:flex-end}
 #thread-panel .reaction-picker button{border:0;background:transparent;font-size:20px;padding:2px 4px;line-height:1}
 @keyframes reactionPop{from{opacity:0;transform:translateY(5px) scale(.94)}to{opacity:1;transform:translateY(0) scale(1)}}
 
@@ -1174,7 +1174,7 @@
       const tools=document.createElement('div');tools.className='message-tools';
       const reply=document.createElement('button');reply.type='button';reply.className='message-tool';reply.dataset.replyIndex=index;reply.textContent='↩ Reply';
       tools.append(reply);content.append(tools);
-      if(item.reaction){const reaction=document.createElement('span');reaction.className='message-reaction';reaction.textContent=item.reaction;content.append(reaction)}
+      if(item.reaction){const reaction=document.createElement('span');reaction.className='message-reaction';reaction.textContent=item.reaction;content.insertBefore(reaction,tools)}
       line.append(content);
       if(item.mine){const avatar=document.createElement('span');avatar.className='message-mini-avatar message-own-avatar';avatar.textContent='♙';avatar.setAttribute('aria-label','Your profile');line.append(avatar)}
       box.append(line);
@@ -1191,7 +1191,7 @@
       choice.addEventListener('click',()=>{item.reaction=item.reaction===emoji?'':emoji;drawThread()});
       picker.append(choice);
     });
-    content.append(picker);
+    content.insertBefore(picker,content.querySelector('.message-tools'));
   }
   threadMessages.addEventListener('click',event=>{
     const reply=event.target.closest('[data-reply-index]');
