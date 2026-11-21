@@ -2864,10 +2864,11 @@ body.socialink-profile-open #profile-screen{
   function showScreen(name){
     if(!screens.includes(name))return;
     const home=name==='Home',reels=name==='Reels',messages=name==='Messages',profile=name==='Your Page';
-    document.body.classList.remove('socialink-profile-open');
+    document.body.classList.toggle('socialink-profile-open',profile);
     const profileEl=document.getElementById('profile-screen');
     if(profileEl){
       profileEl.hidden=!profile;
+      if(profile)profileEl.scrollTop=0;
       profileEl.style.removeProperty('display');
       profileEl.style.removeProperty('visibility');
       profileEl.style.removeProperty('position');
