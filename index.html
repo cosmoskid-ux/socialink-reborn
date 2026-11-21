@@ -1771,5 +1771,41 @@
   });
 
 </script>
+
+<!-- Call launcher fallback: keep the phone button responsive even if an earlier
+     chat initializer exits before registering its own event listeners. -->
+<script>
+(function(){
+  const button=document.getElementById('chat-call-button');
+  const sheet=document.getElementById('call-sheet');
+  const backdrop=document.getElementById('call-sheet-backdrop');
+  if(!button||!sheet||!backdrop)return;
+  document.addEventListener('click',function(event){
+    const target=event.target;
+    if(target===button||button.contains(target)){
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      sheet.hidden=false;
+      backdrop.hidden=false;
+    } else if(target===backdrop){
+      sheet.hidden=true;
+      backdrop.hidden=true;
+    } else if(target.closest&&target.closest('#call-sheet [data-call-type]')){
+      const choice=target.closest('#call-sheet [data-call-type]');
+      sheet.hidden=true;
+      backdrop.hidden=true;
+      const stage=document.getElementById('call-stage');
+      const stageBackdrop=document.getElementById('call-stage-backdrop');
+      if(stage&&stageBackdrop){
+        stage.hidden=false;
+        stageBackdrop.hidden=false;
+        const status=document.getElementById('call-stage-status');
+        if(status)status.textContent='Call setup is loading. If this message stays here, refresh Socialink and try again.';
+      }
+    }
+  },true);
+})();
+</script>
+
 </body>
 </html>
