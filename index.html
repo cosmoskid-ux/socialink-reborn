@@ -742,9 +742,13 @@
 
 
     /* Compact, growing chat composer and tighter message rhythm */
-    #thread-panel .thread-messages{gap:5px!important;padding-top:12px!important;padding-bottom:12px!important}
-    #thread-panel .message-line{margin:0!important}
-    #thread-panel .message-content{gap:3px!important}
+    #thread-panel .thread-messages{
+      display:flex!important;flex-direction:column!important;justify-content:flex-end!important;
+      gap:6px!important;padding:12px 13px 4px!important;
+      overscroll-behavior:contain;scroll-behavior:smooth;
+    }
+    #thread-panel .message-line{margin:0!important;flex:0 0 auto!important}
+    #thread-panel .message-content{gap:3px!important;flex:0 1 auto;min-width:0}
     #thread-panel .message-compose{align-items:flex-end!important;gap:8px!important}
     #thread-panel .message-compose textarea{
       display:block;flex:1 1 auto;min-width:0;min-height:30px;max-height:90px;
