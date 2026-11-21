@@ -1536,7 +1536,7 @@
   function toast(message){toastEl.textContent=message;toastEl.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>toastEl.classList.remove('show'),2100)}
   document.querySelectorAll('[data-toast]').forEach(el=>el.addEventListener('click',e=>{e.preventDefault();toast(el.dataset.toast)}));
   // Follow state is shared between discovery cards and every post by the same account.
-  const followKey=name=>String(name||'').replace(/✦/g,'').replace(/[^a-z0-9 ]/gi,'').trim().toLowerCase().replace(/\\s+/g,' ');
+  const followKey=name=>String(name||'').replace(/✦/g,'').replace(/[^a-z0-9 ]/gi,'').trim().toLowerCase().replace(/\s+/g,' ');
   const followedAccounts=(()=>{try{return new Set(JSON.parse(localStorage.getItem('socialink-following')||'[]'))}catch(e){return new Set()}})();
   function accountNameFor(button){
     const post=button.closest('.post');
@@ -1828,11 +1828,11 @@
         const seek=event=>{if(!Number.isFinite(audio.duration)||!audio.duration)return;const rect=wave.getBoundingClientRect();const point=event.clientX??(rect.left+rect.width/2);audio.currentTime=Math.max(0,Math.min(1,(point-rect.left)/rect.width))*audio.duration;paint()};
         wave.addEventListener('click',seek);wave.addEventListener('keydown',event=>{if(event.key==='ArrowRight'||event.key==='ArrowLeft'){event.preventDefault();audio.currentTime=Math.max(0,Math.min(audio.duration||0,audio.currentTime+(event.key==='ArrowRight'?5:-5)));paint()}});
       }else{
-        const words=String(item.text||'').split(/(\\s+)/);
+        const words=String(item.text||'').split(/(\s+)/);
         words.forEach(part=>{
           if(!part)return;
-          if(/^\\s+$/.test(part)){bubble.append(document.createTextNode(part));return}
-          const word=document.createElement('button');word.type='button';word.className='meaning-word';word.dataset.meaningWord=part.replace(/^[^\\p{L}\\p{N}'-]+|[^\\p{L}\\p{N}'-]+$/gu,'');word.textContent=part;bubble.append(word);
+          if(/^\s+$/.test(part)){bubble.append(document.createTextNode(part));return}
+          const word=document.createElement('button');word.type='button';word.className='meaning-word';word.dataset.meaningWord=part.replace(/^[^\p{L}\p{N}'-]+|[^\p{L}\p{N}'-]+$/gu,'');word.textContent=part;bubble.append(word);
         });
       }content.append(bubble);
       if(item.translation){const translated=document.createElement('div');translated.className='message-translation';const label=document.createElement('small');label.textContent='TRANSLATION';const value=document.createElement('span');value.textContent=item.translation;translated.append(label,value);content.append(translated)}
