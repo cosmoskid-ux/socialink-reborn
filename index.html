@@ -1761,26 +1761,15 @@
     });
   }
   function restoreHostCallRoom(){
+    // A PeerJS host can receive multiple calls on the same live peer.
+    // Keep the signalling peer open after decline; destroying and recreating
+    // the same ID can race PeerServer's ID release and break the next decline.
     if(!callIsHost||!callRoomCode)return;
-    const roomId='si-'+callRoomCode+'-x';
-    if(callPeer){try{callPeer.destroy()}catch(error){}callPeer=null}
-    setCallStatus('Reopening your call room…');
-    window.setTimeout(()=>{
-      if(!callIsHost||!callRoomCode)return;
-      const replacementPeer=new Peer(roomId);
-      callPeer=replacementPeer;
-      replacementPeer.on('open',()=>{
-        callCodeValue.textContent=callRoomCode;
-        callCodeCard.hidden=false;
-        callJoinCard.hidden=true;
-        callIncomingActions.hidden=true;
-        setCallStatus('Your call room is ready. You can receive another call.');
-      });
-      armIncomingCallListener(replacementPeer);
-      replacementPeer.on('error',error=>{
-        setCallStatus(error.type==='unavailable-id'?'Your call room is still resetting. Please wait a moment.':(error.message||'Could not reopen the call room.'));
-      });
-    },650);
+    callCodeValue.textContent=callRoomCode;
+    callCodeCard.hidden=false;
+    callJoinCard.hidden=true;
+    callIncomingActions.hidden=true;
+    setCallStatus('Your call room is ready. You can receive another call.');
   }
   async function createCallRoom(mode){
     if(!window.Peer){setCallStatus('Call library did not load. Check your connection and refresh.');return}
