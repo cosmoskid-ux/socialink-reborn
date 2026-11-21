@@ -357,6 +357,21 @@
     .messages-heading small,.eyebrow{font-size:10px;letter-spacing:1.8px;font-weight:900;color:#d7b96f!important}
     .messages-heading h2{margin:3px 0 0;font-size:27px;font-weight:950;letter-spacing:-.8px}
     .education-btn{width:42px;height:42px;border-radius:14px;border:1px solid rgba(243,201,107,.35);background:linear-gradient(145deg,#2a2040,#171020);font-size:20px;box-shadow:0 5px 18px #0005}
+
+    /* Message people dashboard directly beneath Search and New Group */
+    .message-people-dashboard{margin:12px 0 18px;padding:12px 12px 10px;border:1px solid rgba(243,201,107,.13);border-radius:18px;background:linear-gradient(145deg,#151020,#0e0b17)}
+    .message-people-heading{display:flex;align-items:center;justify-content:space-between;margin:0 2px 10px}
+    .message-people-heading h3{margin:0;color:#F7FBFD;font-size:14px;font-weight:850}
+    .message-people-heading span{font-size:9px;letter-spacing:1px;color:#b7a9c9;font-weight:800}
+    .message-people-list{display:flex;gap:15px;overflow-x:auto;scrollbar-width:none;padding:2px 1px 4px}
+    .message-people-list::-webkit-scrollbar{display:none}
+    .message-person{flex:0 0 62px;display:flex;flex-direction:column;align-items:center;gap:4px;border:0;background:transparent;padding:0;color:#F7FBFD}
+    .message-person-avatar{width:54px;height:68px;position:relative;display:grid;place-items:center;border-radius:50% / 42%;border:1px solid #62536d;background:linear-gradient(145deg,#352448,#171321);font-size:25px}
+    .message-person-avatar i{position:absolute;right:-2px;bottom:3px;width:11px;height:11px;border-radius:50%;background:#f3c96b;border:2px solid #100d19}
+    .message-person strong{font-size:11px;font-weight:850;color:#F7FBFD}
+    .message-person small{font-size:9px;color:#a99bb9}
+    .message-person:active{transform:scale(.96)}
+
     .messages-toolbar{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-bottom:22px}
     .messages-tool{min-width:0;min-height:72px;border:1px solid rgba(255,255,255,.08);border-radius:16px;background:linear-gradient(155deg,#1c1630,#100d1b);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;font-size:11px;font-weight:850}
     .messages-tool .tool-icon{font-size:21px;color:#f3c96b!important}
@@ -479,6 +494,16 @@
         <button class="messages-tool active" data-message-view="search"><span class="tool-icon">⌕</span><span>Search</span></button>
         <button class="messages-tool" id="new-group-open"><span class="tool-icon">＋</span><span>New Group</span></button>
       </div>
+      <section class="message-people-dashboard" aria-label="People who messaged you">
+        <div class="message-people-heading"><h3>People</h3><span>YOUR MESSAGES</span></div>
+        <div class="message-people-list">
+          <button class="message-person" data-chat="Amara K."><span class="message-person-avatar">🌙<i></i></span><strong>Amara</strong><small>12:08</small></button>
+          <button class="message-person" data-chat="Jayden M."><span class="message-person-avatar">🪐<i></i></span><strong>Jayden</strong><small>Yesterday</small></button>
+          <button class="message-person" data-chat="Nia W."><span class="message-person-avatar">🦋<i></i></span><strong>Nia</strong><small>Mon</small></button>
+          <button class="message-person" data-chat="Leo R."><span class="message-person-avatar">🌠</span><strong>Leo</strong><small>Sun</small></button>
+          <button class="message-person" data-chat="Zuri A."><span class="message-person-avatar">✨</span><strong>Zuri</strong><small>Sat</small></button>
+        </div>
+      </section>
       <div class="messages-panel" id="inbox-panel">
         <div class="messages-section-title"><h3>Recent conversations</h3><small>YOUR ORBIT</small></div>
         <div class="conversation-list" id="conversation-list">
