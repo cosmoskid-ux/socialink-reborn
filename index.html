@@ -208,6 +208,45 @@
     .post-actions .action.liked .ico{color:#ff78b5!important}
     .post-actions .action.saved .ico{color:var(--gold)!important}
     .nav-item .nav-icon{color:#F7FBFD!important}
+      
+    /* Socialink Reels experience */
+    .reels-screen{display:none;margin:0 -14px;padding:0 10px 18px}
+    .reels-screen.active{display:block}
+    .reels-top{display:flex;align-items:center;justify-content:space-between;padding:12px 8px 14px}
+    .reels-top h2{margin:0;font-size:19px;color:#F7FBFD}
+    .reels-tabs{display:flex;gap:18px;font-size:13px;font-weight:800;color:#9e94ae}
+    .reels-tabs button{border:0;background:none;color:inherit;padding:5px 0}
+    .reels-tabs button.active{color:#F7FBFD;border-bottom:2px solid var(--gold)}
+    .reel-list{display:grid;gap:14px}
+    .reel-card{height:min(72vh,650px);min-height:470px;position:relative;overflow:hidden;border-radius:20px;background:#090817;isolation:isolate;scroll-snap-align:start;border:1px solid rgba(255,255,255,.08)}
+    .reel-scene{position:absolute;inset:0;display:grid;place-items:center;overflow:hidden}
+    .reel-scene:before,.reel-scene:after{content:"";position:absolute;border:1px solid rgba(243,201,107,.3);width:72%;aspect-ratio:1;border-radius:50%;transform:rotate(-24deg) scaleX(1.45);box-shadow:0 0 55px rgba(130,73,220,.18)}
+    .reel-scene:after{width:52%;border-color:rgba(177,130,255,.35);transform:rotate(32deg) scaleX(1.4)}
+    .reel-scene .reel-emoji{font-size:100px;filter:drop-shadow(0 0 30px rgba(243,201,107,.3));z-index:1}
+    .reel-scene .reel-quote{position:absolute;z-index:1;bottom:30%;left:8%;right:8%;text-align:center;font-size:clamp(23px,6vw,34px);font-weight:950;line-height:1.08;text-shadow:0 3px 20px #000}
+    .reel-scene.one{background:radial-gradient(ellipse at 50% 38%,#55337c 0%,#211735 48%,#090817 100%)}
+    .reel-scene.two{background:radial-gradient(ellipse at 50% 38%,#18556a 0%,#15263e 48%,#080a17 100%)}
+    .reel-scene.three{background:radial-gradient(ellipse at 50% 38%,#69472d 0%,#2c1d34 48%,#090817 100%)}
+    .reel-shade{position:absolute;inset:35% 0 0;background:linear-gradient(transparent,rgba(0,0,0,.78));z-index:2;pointer-events:none}
+    .reel-info{position:absolute;z-index:3;left:15px;right:72px;bottom:18px;color:#F7FBFD}
+    .reel-author{display:flex;align-items:center;gap:8px;font-weight:850;font-size:13px}
+    .reel-author .mini-avatar{width:34px;height:40px;border-radius:50%/42%;display:grid;place-items:center;background:#35244d;border:1px solid #b89a60}
+    .reel-follow{border:1px solid rgba(243,201,107,.65);border-radius:8px;background:rgba(12,9,22,.35);color:var(--gold);font-size:10px;font-weight:850;padding:5px 9px}
+    .reel-caption{font-size:12px;line-height:1.4;margin:10px 0 7px}
+    .reel-audio{font-size:10px;color:#e2d9ec}
+    .reel-actions{position:absolute;z-index:4;right:10px;bottom:22px;display:grid;gap:17px;justify-items:center}
+    .reel-action{border:0;background:rgba(8,7,17,.28);color:#F7FBFD;display:grid;justify-items:center;gap:3px;padding:5px;border-radius:12px;font-weight:850;font-size:10px;text-shadow:0 1px 4px #000}
+    .reel-action .glyph{font-size:27px;line-height:1}
+    .reel-action.liked{color:#ff78b5}.reel-action.saved{color:var(--gold)}
+    .reel-comments{display:none;background:#100d19;border:1px solid rgba(255,255,255,.08);border-radius:15px;padding:12px;margin-top:9px}
+    .reel-comments.open{display:block}
+    .reel-comments p{margin:0 0 8px;font-size:12px;color:#F7FBFD}
+    .reel-comments form{display:flex;gap:7px}
+    .reel-comments input{flex:1;min-width:0;border:1px solid #ffffff22;border-radius:10px;background:#080712;color:#F7FBFD;padding:9px;font:inherit;font-size:12px}
+    .reel-comments button{border:0;border-radius:9px;background:var(--gold);color:#21152b;font-size:11px;font-weight:900;padding:0 12px}
+    .reel-empty-note{font-size:11px;color:#bcb2ca;text-align:center;padding:8px}
+    @media(max-width:420px){.reel-card{height:70vh;min-height:450px;border-radius:14px}.reels-screen{padding-left:7px;padding-right:7px}.reel-actions{right:6px;gap:13px}}
+
   </style>
 </head>
 <body>
@@ -245,6 +284,30 @@
         <div class="post-actions"><button class="action like"><span class="ico">♥</span><span>Like</span><span class="count">18</span></button><button class="action comment"><span class="ico bubble-icon" aria-hidden="true"></span><span>Comment</span><span class="comment-count"></span></button><button class="action share"><span class="ico share-icon">⤴</span><span>Share</span></button><button class="action save"><span class="ico">▣</span><span>Save</span></button></div>
         <div class="post-caption"><strong>Jayden M.</strong> What's one thing you learned this week?</div>
       </article>
+    </section>
+    <section class="reels-screen" id="reels-screen" aria-label="Reels">
+      <div class="reels-top"><h2>Reels</h2><div class="reels-tabs"><button class="active" data-reel-tab="For You">For You</button><button data-reel-tab="Following">Following</button></div></div>
+      <div class="reel-list">
+        <article class="reel-card" data-reel-id="r1">
+          <div class="reel-scene one"><span class="reel-emoji">🌙</span><div class="reel-quote">MAKE YOUR<br>OWN UNIVERSE.</div></div><div class="reel-shade"></div>
+          <div class="reel-info"><div class="reel-author"><span class="mini-avatar">🌙</span><span>Amara K. ✦</span><button class="reel-follow">Follow</button></div><p class="reel-caption">A little reminder to keep creating your own path. ✨ #YourUniverse</p><div class="reel-audio">♫ Original audio · Amara K.</div></div>
+          <div class="reel-actions"><button class="reel-action" data-reel-like><span class="glyph">♥</span><span class="reel-like-count">2.4K</span></button><button class="reel-action" data-reel-comment><span class="glyph">▢</span><span>Comment</span></button><button class="reel-action" data-reel-share><span class="glyph">⤴</span><span>Share</span></button><button class="reel-action" data-reel-save><span class="glyph">▣</span><span>Save</span></button></div>
+        </article>
+        <div class="reel-comments" data-reel-comments><p>Start the conversation ✨</p><form><input maxlength="180" placeholder="Add a comment..." aria-label="Reel comment"><button type="submit">Post</button></form></div>
+        <article class="reel-card" data-reel-id="r2">
+          <div class="reel-scene two"><span class="reel-emoji">🪐</span><div class="reel-quote">STAY CURIOUS.<br>KEEP EXPLORING.</div></div><div class="reel-shade"></div>
+          <div class="reel-info"><div class="reel-author"><span class="mini-avatar">🪐</span><span>Jayden M.</span><button class="reel-follow">Follow</button></div><p class="reel-caption">There's always something new beyond the horizon. 🚀</p><div class="reel-audio">♫ Space to Think · Jayden M.</div></div>
+          <div class="reel-actions"><button class="reel-action" data-reel-like><span class="glyph">♥</span><span class="reel-like-count">986</span></button><button class="reel-action" data-reel-comment><span class="glyph">▢</span><span>Comment</span></button><button class="reel-action" data-reel-share><span class="glyph">⤴</span><span>Share</span></button><button class="reel-action" data-reel-save><span class="glyph">▣</span><span>Save</span></button></div>
+        </article>
+        <div class="reel-comments" data-reel-comments><p>Start the conversation ✨</p><form><input maxlength="180" placeholder="Add a comment..." aria-label="Reel comment"><button type="submit">Post</button></form></div>
+        <article class="reel-card" data-reel-id="r3">
+          <div class="reel-scene three"><span class="reel-emoji">✨</span><div class="reel-quote">SMALL STEPS.<br>BIG GALAXIES.</div></div><div class="reel-shade"></div>
+          <div class="reel-info"><div class="reel-author"><span class="mini-avatar">🦋</span><span>Nia W. ✦</span><button class="reel-follow">Follow</button></div><p class="reel-caption">Celebrate every little win. Your journey matters. 💫</p><div class="reel-audio">♫ Golden Hour · Nia W.</div></div>
+          <div class="reel-actions"><button class="reel-action" data-reel-like><span class="glyph">♥</span><span class="reel-like-count">1.2K</span></button><button class="reel-action" data-reel-comment><span class="glyph">▢</span><span>Comment</span></button><button class="reel-action" data-reel-share><span class="glyph">⤴</span><span>Share</span></button><button class="reel-action" data-reel-save><span class="glyph">▣</span><span>Save</span></button></div>
+        </article>
+        <div class="reel-comments" data-reel-comments><p>Start the conversation ✨</p><form><input maxlength="180" placeholder="Add a comment..." aria-label="Reel comment"><button type="submit">Post</button></form></div>
+      </div>
+      <div class="reel-empty-note">You're exploring the Socialink Reels universe ✦</div>
     </section>
     <section class="screen-note" id="other-screen"><h2 id="screen-title">Reels</h2><p>This part of Socialink is being prepared. The home feed is our first build.</p></section>
   </main>
@@ -433,7 +496,38 @@
   });
 
   document.querySelectorAll('.share').forEach(btn=>btn.addEventListener('click',async()=>{try{if(navigator.share)await navigator.share({title:'Socialink',text:'Connect beyond the ordinary.',url:location.href});else{await navigator.clipboard.writeText(location.href);toast('Link copied')}}catch(e){if(e.name!=='AbortError')toast('Sharing is unavailable here')}}));
-  document.querySelectorAll('.nav-item').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));btn.classList.add('active');const home=btn.dataset.screen==='Home';document.querySelector('.spotlights').parentElement.style.display=home?'':'none';document.querySelector('.discover').parentElement.style.display=home?'':'none';document.querySelector('.feed').style.display=home?'':'none';document.getElementById('other-screen').classList.toggle('show',!home);document.getElementById('screen-title').textContent=btn.dataset.screen}));
+  document.querySelectorAll('.nav-item').forEach(btn=>btn.addEventListener('click',()=>{
+    document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));btn.classList.add('active');
+    const screen=btn.dataset.screen,home=screen==='Home',reels=screen==='Reels';
+    document.querySelector('.spotlights').parentElement.style.display=home?'':'none';
+    document.querySelector('.discover').parentElement.style.display=home?'':'none';
+    document.querySelector('.feed').style.display=home?'':'none';
+    document.getElementById('reels-screen').classList.toggle('active',reels);
+    document.getElementById('other-screen').classList.toggle('show',!home&&!reels);
+    document.getElementById('screen-title').textContent=screen;
+  }));
+  document.querySelectorAll('[data-reel-tab]').forEach(tab=>tab.addEventListener('click',()=>{
+    document.querySelectorAll('[data-reel-tab]').forEach(x=>x.classList.toggle('active',x===tab));
+    toast(tab.dataset.reelTab==='Following'?'Following Reels will appear here as you follow creators':'Showing Reels for you');
+  }));
+  document.querySelectorAll('.reel-card').forEach(card=>{
+    const id=card.dataset.reelId,like=card.querySelector('[data-reel-like]'),save=card.querySelector('[data-reel-save]'),follow=card.querySelector('.reel-follow');
+    const stateKey='socialink-reel-'+id;
+    let state={liked:false,saved:false,following:false};
+    try{state={...state,...JSON.parse(localStorage.getItem(stateKey)||'{}')}}catch(e){}
+    const persist=()=>{try{localStorage.setItem(stateKey,JSON.stringify(state))}catch(e){}};
+    like.classList.toggle('liked',state.liked);save.classList.toggle('saved',state.saved);follow.textContent=state.following?'Following':'Follow';
+    like.addEventListener('click',()=>{state.liked=!state.liked;like.classList.toggle('liked',state.liked);persist();toast(state.liked?'Reel liked':'Like removed')});
+    save.addEventListener('click',()=>{state.saved=!state.saved;save.classList.toggle('saved',state.saved);persist();toast(state.saved?'Reel saved':'Reel removed from saved')});
+    follow.addEventListener('click',()=>{state.following=!state.following;follow.textContent=state.following?'Following':'Follow';persist();toast(state.following?'Following creator':'Unfollowed creator')});
+    card.querySelector('[data-reel-comment]').addEventListener('click',()=>{const panel=card.nextElementSibling;panel.classList.toggle('open');if(panel.classList.contains('open'))panel.querySelector('input').focus()});
+    card.querySelector('[data-reel-share]').addEventListener('click',async()=>{try{if(navigator.share)await navigator.share({title:'Socialink Reel',text:'Check out this Reel on Socialink',url:location.href+'#'+id});else{await navigator.clipboard.writeText(location.href+'#'+id);toast('Reel link copied')}}catch(e){if(e.name!=='AbortError')toast('Sharing is unavailable here')}});
+    const panel=card.nextElementSibling,form=panel.querySelector('form'),input=form.querySelector('input'),comments=panel.querySelector('p');
+    const commentKey=stateKey+'-comments';let entries=[];try{entries=JSON.parse(localStorage.getItem(commentKey)||'[]')}catch(e){}
+    function drawComments(){comments.textContent=entries.length?entries.map(x=>x).join(' · '):'Start the conversation ✨'}
+    drawComments();
+    form.addEventListener('submit',event=>{event.preventDefault();const value=input.value.trim();if(!value)return;entries.push('You: '+value);try{localStorage.setItem(commentKey,JSON.stringify(entries))}catch(e){}input.value='';drawComments()});
+  });
 </script>
 </body>
 </html>
