@@ -163,7 +163,7 @@
     <section class="section spotlight-section">
       <div class="spotlights">
         <div class="story" data-spotlight-name="Amara" data-spotlight-avatar="🌙"><div class="portrait"><div class="portrait-inner">🌙</div><span class="star" role="button" tabindex="0" aria-label="Open Spotlight"></span></div><span class="story-name">Amara</span></div>
-        <div class="story"><div class="portrait"><div class="portrait-inner">🪐</div><span class="star" aria-label="Spotlight badge"></span></div><span class="story-name">Jayden</span></div>
+        <div class="story"><div class="portrait"><div class="portrait-inner">🪐</div><span class="star" role="button" tabindex="0" aria-label="Open Spotlight"></span></div><span class="story-name">Jayden</span></div>
         <div class="story"><div class="portrait"><div class="portrait-inner">🦋</div><span class="star" aria-label="Spotlight badge"></span></div><span class="story-name">Nia</span></div>
         <div class="story"><div class="portrait"><div class="portrait-inner">🌌</div><span class="star" aria-label="Spotlight badge"></span></div><span class="story-name">Leo</span></div>
         <div class="story"><div class="portrait"><div class="portrait-inner">✨</div><span class="star" aria-label="Spotlight badge"></span></div><span class="story-name">Zuri</span></div>
@@ -237,13 +237,23 @@
     spotlightViewer.classList.add('open');spotlightViewer.setAttribute('aria-hidden','false');
   }
   function closeSpotlight(){spotlightViewer.classList.remove('open');spotlightViewer.setAttribute('aria-hidden','true');const video=spotlightContent.querySelector('video');if(video)video.pause()}
-  document.querySelector('.spotlights').addEventListener('click',event=>{
-    const star=event.target.closest('.star');
-    if(!star)return;
-    const item=star.closest('.story');
-    if(!item)return;
-    const items=spotlightItems();
-    openSpotlight(items.indexOf(item));
+  document.querySelectorAll('.spotlights .story .star').forEach(star=>{
+    star.style.pointerEvents='auto';
+    star.addEventListener('click',event=>{
+      event.preventDefault();
+      event.stopPropagation();
+      const item=star.closest('.story');
+      const items=spotlightItems();
+      if(item)openSpotlight(items.indexOf(item));
+    });
+    star.addEventListener('keydown',event=>{
+      if(event.key==='Enter'||event.key===' '){
+        event.preventDefault();
+        const item=star.closest('.story');
+        const items=spotlightItems();
+        if(item)openSpotlight(items.indexOf(item));
+      }
+    });
   });
   document.getElementById('spotlight-close').addEventListener('click',closeSpotlight);
   document.getElementById('spotlight-prev').addEventListener('click',()=>openSpotlight(spotlightIndex-1));
