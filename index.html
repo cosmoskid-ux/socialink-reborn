@@ -691,6 +691,17 @@
 }
 #thread-panel .empty-state{background:rgba(38,29,57,.55)!important;border:1px solid rgba(190,157,231,.17)!important;border-radius:18px!important}
 
+
+/* Show both participants' profile portraits beside their own messages */
+#thread-panel .message-line.mine{justify-content:flex-end!important}
+#thread-panel .message-own-avatar{
+  order:2!important;
+  background:linear-gradient(145deg,#7950a8,#35264d)!important;
+  border:1.5px solid #e0bd75!important;
+  box-shadow:0 0 0 3px rgba(243,201,107,.12),0 0 13px rgba(180,133,231,.2)!important;
+}
+#thread-panel .message-line.mine .message-bubble{order:1!important}
+
 </style>
 </head>
 <body>
@@ -1117,8 +1128,10 @@
     if(!items.length){const empty=document.createElement('div');empty.className='empty-state';empty.textContent='Start a conversation with '+activeThread+' ✨';box.append(empty)}
     items.forEach(item=>{
       const line=document.createElement('div');line.className='message-line'+(item.mine?' mine':'');
-      if(!item.mine){const avatar=document.createElement('span');avatar.className='message-mini-avatar';avatar.textContent=avatars[activeThread]||'✦';line.append(avatar)}
-      const bubble=document.createElement('div');bubble.className='message-bubble'+(item.mine?' mine':'');bubble.textContent=item.text;line.append(bubble);box.append(line);
+      if(!item.mine){const avatar=document.createElement('span');avatar.className='message-mini-avatar';avatar.textContent=avatars[activeThread]||'✦';avatar.setAttribute('aria-label',activeThread+' profile');line.append(avatar)}
+      const bubble=document.createElement('div');bubble.className='message-bubble'+(item.mine?' mine':'');bubble.textContent=item.text;line.append(bubble);
+      if(item.mine){const avatar=document.createElement('span');avatar.className='message-mini-avatar message-own-avatar';avatar.textContent='♙';avatar.setAttribute('aria-label','Your profile');line.append(avatar)}
+      box.append(line);
     });
     box.scrollTop=box.scrollHeight;
   }
