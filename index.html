@@ -39,8 +39,10 @@
     .post-art:before,.post-art:after{border-color:rgba(243,201,107,.12)}
     .art-copy .orb{filter:none}
     /* Futuristic, Instagram-inspired inline post actions: no button boxes */
-    /* Compact, near-black action dashboard */
-    .post-actions{width:74%;margin:8px auto 12px;padding:8px 10px;background:#000!important;border:1px solid rgba(255,255,255,.035);border-radius:15px;gap:4px}
+    /* Compact Instagram-inspired action row: directly beneath each post */
+    .post-actions{width:100%;margin:0;padding:3px 12px;background:#000!important;border:0;border-radius:0;display:flex;align-items:center;justify-content:flex-start;gap:17px;min-height:47px}
+    .post-actions .action{flex:0 0 auto;min-width:0;min-height:40px;padding:5px 0;gap:5px;font-size:12px}
+    .post-actions .action.save{margin-left:auto}
     .post-actions .action{border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;min-height:48px;padding:8px 4px;color:#fff;font-weight:850;letter-spacing:.1px}
     .post-actions .action .ico{font-size:25px;font-weight:900;line-height:1;text-shadow:0 0 10px rgba(255,255,255,.12)}
     .post-actions .action .bubble-icon{display:inline-block;width:22px;height:18px;border:2.5px solid currentColor;border-radius:5px;position:relative;font-size:0;box-shadow:none}
@@ -127,14 +129,14 @@
       <article class="post">
         <div class="post-head"><div class="avatar">🌙</div><div class="post-user"><strong>Amara K. ✦</strong><small>2 hours ago · Nairobi</small></div><button class="more" aria-label="More options">···</button></div>
         <div class="post-art"><div class="art-copy"><span class="orb">🌙</span><h3>Make room for<br>your own universe.</h3><p>Little steps. Big galaxies.</p></div></div>
-        <div class="post-caption"><strong>Amara K.</strong> A reminder to keep creating your own path. ✨</div>
         <div class="post-actions"><button class="action like"><span class="ico">♥</span><span>Like</span><span class="count">24</span></button><button class="action comment"><span class="ico bubble-icon" aria-hidden="true"></span><span>Comment</span><span class="comment-count"></span></button><button class="action share"><span class="ico share-icon">⤴</span><span>Share</span></button><button class="action save"><span class="ico">▣</span><span>Save</span></button></div>
+        <div class="post-caption"><strong>Amara K.</strong> A reminder to keep creating your own path. ✨</div>
       </article>
       <article class="post">
         <div class="post-head"><div class="avatar">🪐</div><div class="post-user"><strong>Jayden M.</strong><small>5 hours ago</small></div><button class="more" aria-label="More options">···</button></div>
         <div class="post-art" style="background:radial-gradient(circle at 50% 45%,rgba(49,203,222,.3),transparent 44%),linear-gradient(135deg,#1c3450,#17102c 70%,#121025)"><div class="art-copy"><span class="orb">🪐</span><h3>Stay curious.<br>Stay connected.</h3><p>There's always more to discover.</p></div></div>
-        <div class="post-caption"><strong>Jayden M.</strong> What's one thing you learned this week?</div>
         <div class="post-actions"><button class="action like"><span class="ico">♥</span><span>Like</span><span class="count">18</span></button><button class="action comment"><span class="ico">▢</span><span>Comment</span></button><button class="action share"><span class="ico share-icon">⤴</span><span>Share</span></button><button class="action save"><span class="ico">♧</span><span>Save</span></button></div>
+        <div class="post-caption"><strong>Jayden M.</strong> What's one thing you learned this week?</div>
       </article>
     </section>
     <section class="screen-note" id="other-screen"><h2 id="screen-title">Reels</h2><p>This part of Socialink is being prepared. The home feed is our first build.</p></section>
