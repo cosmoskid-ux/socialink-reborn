@@ -175,6 +175,23 @@
     .spotlight-prev{left:12px}.spotlight-next{right:12px}
     .star{pointer-events:auto;cursor:pointer;z-index:5}
     .star:after{pointer-events:none}
+
+    .spotlight-social{width:min(100%,480px);max-height:34vh;overflow:auto;padding:0 4px 8px}
+    .spotlight-reactions{display:flex;justify-content:space-between;gap:7px;margin:2px 0 10px}
+    .spotlight-reactions button{flex:1;min-width:0;border:1px solid #ffffff20;border-radius:18px;background:#171221;color:#fff;padding:8px 3px;font-size:17px}
+    .spotlight-reactions button.active{border-color:#f3c96b;background:#382843;transform:translateY(-2px)}
+    .spotlight-reactions small{font-size:10px;color:#d4c6e8}
+    .spotlight-comments-toggle{width:100%;text-align:left;border:0;border-top:1px solid #ffffff20;background:transparent;color:#f3c96b;padding:10px 2px;font-weight:800;font-size:12px}
+    .spotlight-comments{display:none;padding:0 0 8px}
+    .spotlight-comments.open{display:block}
+    .spotlight-comment-list{display:grid;gap:7px;max-height:100px;overflow:auto;padding:2px 0 8px}
+    .spotlight-comment-item{font-size:11px;color:#e8e0f1;background:#171221;border-radius:10px;padding:7px 9px;overflow-wrap:anywhere}
+    .spotlight-comment-item strong{color:#fff;margin-right:5px}
+    .spotlight-compose{display:flex;gap:7px;margin:6px 0}
+    .spotlight-compose input{min-width:0;flex:1;height:38px;border:1px solid #ffffff25;border-radius:12px;background:#171221;color:#fff;padding:0 11px;font:inherit;font-size:11px}
+    .spotlight-compose button{border:0;border-radius:11px;background:linear-gradient(135deg,#f3d27b,#c18b42);color:#21152b;padding:0 13px;font-size:11px;font-weight:900}
+    .spotlight-reply-status{font-size:10px;color:#c7bdd8;min-height:14px}
+    @media(max-height:700px){.spotlight-viewer-content{height:55vh}.spotlight-social{max-height:30vh}}
 </style>
 </head>
 <body>
@@ -229,6 +246,18 @@
   <div class="spotlight-progress"><span></span></div>
   <div class="spotlight-viewer-content" id="spotlight-viewer-content"></div>
   <div class="spotlight-viewer-bottom"><div id="spotlight-viewer-user"></div><button id="spotlight-like" class="spotlight-like" type="button">♡ Like</button></div>
+  <div class="spotlight-social">
+    <div class="spotlight-reactions" id="spotlight-reactions" aria-label="Emoji reactions">
+      <button type="button" data-reaction="❤️">❤️ <small>0</small></button><button type="button" data-reaction="😂">😂 <small>0</small></button><button type="button" data-reaction="😮">😮 <small>0</small></button><button type="button" data-reaction="🔥">🔥 <small>0</small></button><button type="button" data-reaction="👏">👏 <small>0</small></button>
+    </div>
+    <button type="button" class="spotlight-comments-toggle" id="spotlight-comments-toggle">💬 Comments <span id="spotlight-comment-count">0</span></button>
+    <div class="spotlight-comments" id="spotlight-comments">
+      <div class="spotlight-comment-list" id="spotlight-comment-list"></div>
+      <form class="spotlight-compose" id="spotlight-comment-form"><input id="spotlight-comment-input" maxlength="240" placeholder="Add a comment..." aria-label="Add a Spotlight comment"><button type="submit">Post</button></form>
+    </div>
+    <form class="spotlight-compose spotlight-reply-compose" id="spotlight-reply-form"><input id="spotlight-reply-input" maxlength="240" placeholder="Reply to this Spotlight..." aria-label="Reply to this Spotlight"><button type="submit">Send</button></form>
+    <div class="spotlight-reply-status" id="spotlight-reply-status" aria-live="polite"></div>
+  </div>
   <button class="spotlight-prev" id="spotlight-prev" aria-label="Previous Spotlight">‹</button>
   <button class="spotlight-next" id="spotlight-next" aria-label="Next Spotlight">›</button>
 </div>
@@ -255,7 +284,7 @@
     spotlightUser.innerHTML='<strong>'+name+'</strong><small>Spotlight ✦</small>';
     spotlightLike.classList.toggle('liked',spotlightLiked.has(item));
     spotlightLike.textContent=spotlightLiked.has(item)?'♥ Liked':'♡ Like';
-    spotlightViewer.classList.add('open');spotlightViewer.setAttribute('aria-hidden','false');
+    spotlightViewer.classList.add('open');spotlightViewer.setAttribute('aria-hidden','false');renderSpotlightSocial();
   }
   function closeSpotlight(){spotlightViewer.classList.remove('open');spotlightViewer.setAttribute('aria-hidden','true');const video=spotlightContent.querySelector('video');if(video)video.pause()}
   document.querySelectorAll('.spotlights .story .star').forEach(star=>{
@@ -284,6 +313,47 @@
   let spotlightTouchX=0;spotlightViewer.addEventListener('touchstart',event=>{spotlightTouchX=event.changedTouches[0].clientX},{passive:true});
   spotlightViewer.addEventListener('touchend',event=>{const dx=event.changedTouches[0].clientX-spotlightTouchX;if(Math.abs(dx)>65)openSpotlight(spotlightIndex+(dx<0?1:-1))},{passive:true});
 
+
+  // Spotlight reactions, comments and creator replies (saved on this device)
+  const spotlightReactionChoices=['❤️','😂','😮','🔥','👏'];
+  const spotlightCommentsPanel=document.getElementById('spotlight-comments');
+  const spotlightCommentList=document.getElementById('spotlight-comment-list');
+  const spotlightCommentCount=document.getElementById('spotlight-comment-count');
+  const spotlightReplyStatus=document.getElementById('spotlight-reply-status');
+  const spotlightStore=(key,fallback)=>{try{return JSON.parse(localStorage.getItem(key)||'null')??fallback}catch(e){return fallback}};
+  const spotlightSave=(key,value)=>{try{localStorage.setItem(key,JSON.stringify(value))}catch(e){}};
+  function spotlightKey(suffix){const item=spotlightItems()[spotlightIndex];return 'socialink-spotlight-'+spotlightIndex+'-'+suffix}
+  function renderSpotlightSocial(){
+    const reactions=spotlightStore(spotlightKey('reactions'),{});
+    document.querySelectorAll('#spotlight-reactions button').forEach(btn=>{
+      const emoji=btn.dataset.reaction,entry=reactions[emoji]||{count:0,selected:false};
+      btn.classList.toggle('active',!!entry.selected);
+      btn.querySelector('small').textContent=entry.count||0;
+    });
+    const comments=spotlightStore(spotlightKey('comments'),[]);
+    spotlightCommentCount.textContent=comments.length;
+    spotlightCommentList.innerHTML=comments.length?comments.map(item=>'<div class="spotlight-comment-item"><strong>'+escapeComment(item.name)+'</strong>'+escapeComment(item.text)+'</div>').join(''):'<div class="spotlight-comment-item">No comments yet. Start the conversation ✨</div>';
+    spotlightReplyStatus.textContent='';
+    spotlightCommentsPanel.classList.remove('open');
+  }
+  document.querySelectorAll('#spotlight-reactions button').forEach(btn=>btn.addEventListener('click',()=>{
+    const key=spotlightKey('reactions'),data=spotlightStore(key,{}),emoji=btn.dataset.reaction;
+    const entry=data[emoji]||{count:0,selected:false};
+    entry.count=Math.max(0,entry.count+(entry.selected?-1:1));entry.selected=!entry.selected;data[emoji]=entry;spotlightSave(key,data);renderSpotlightSocial();
+  }));
+  document.getElementById('spotlight-comments-toggle').addEventListener('click',()=>{
+    spotlightCommentsPanel.classList.toggle('open');
+    if(spotlightCommentsPanel.classList.contains('open'))document.getElementById('spotlight-comment-input').focus();
+  });
+  document.getElementById('spotlight-comment-form').addEventListener('submit',event=>{
+    event.preventDefault();const input=document.getElementById('spotlight-comment-input'),value=input.value.trim();if(!value)return;
+    const key=spotlightKey('comments'),comments=spotlightStore(key,[]);comments.push({name:'You',text:value});spotlightSave(key,comments);input.value='';renderSpotlightSocial();spotlightCommentsPanel.classList.add('open');
+    spotlightCommentList.scrollTop=spotlightCommentList.scrollHeight;
+  });
+  document.getElementById('spotlight-reply-form').addEventListener('submit',event=>{
+    event.preventDefault();const input=document.getElementById('spotlight-reply-input'),value=input.value.trim();if(!value)return;
+    const key=spotlightKey('replies'),replies=spotlightStore(key,[]);replies.push({text:value,createdAt:Date.now()});spotlightSave(key,replies);input.value='';spotlightReplyStatus.textContent='Reply saved on this device ✦';
+  });
   function toast(message){toastEl.textContent=message;toastEl.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>toastEl.classList.remove('show'),2100)}
   document.querySelectorAll('[data-toast]').forEach(el=>el.addEventListener('click',e=>{e.preventDefault();toast(el.dataset.toast)}));
   document.querySelectorAll('.follow').forEach(btn=>btn.addEventListener('click',()=>{const on=btn.classList.toggle('following');btn.textContent=on?'Following':'Follow';toast(on?'Following account':'Unfollowed account')}));
