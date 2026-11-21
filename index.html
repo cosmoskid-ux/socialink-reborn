@@ -2917,5 +2917,41 @@ body.socialink-profile-open #profile-screen{
   },{passive:true});
 })();
 </script>
+
+<style>
+/* My Page: remove the oversized blank top area and fit profile details neatly. */
+body.socialink-profile-open #profile-screen{
+  top:60px!important;
+  bottom:calc(76px + env(safe-area-inset-bottom,0px))!important;
+  padding-bottom:12px!important;
+}
+#profile-screen .profile-cover{
+  height:104px!important;
+}
+#profile-screen .profile-identity{
+  padding:0 14px 12px!important;
+}
+#profile-screen .profile-avatar-wrap{
+  width:86px!important;height:86px!important;margin:-43px auto 5px!important;
+}
+#profile-screen .profile-avatar{font-size:36px!important}
+#profile-screen .profile-name-row{margin-top:3px!important}
+#profile-screen .profile-name-row h2{font-size:20px!important}
+#profile-screen .profile-handle{margin:1px 0 6px!important}
+#profile-screen .profile-bio{margin:0 auto 10px!important;line-height:1.4!important}
+#profile-screen .profile-stats{margin:0 auto 10px!important}
+#profile-screen .profile-actions button{height:38px!important}
+#profile-screen .profile-spotlight-card{margin:10px 12px!important;padding:10px 12px!important}
+#profile-screen .profile-spotlight-icon{width:36px!important;height:36px!important}
+#profile-screen .profile-tab{height:42px!important}
+#profile-screen .profile-content{min-height:110px}
+@media(max-height:700px){
+  #profile-screen .profile-cover{height:86px!important}
+  #profile-screen .profile-avatar-wrap{width:76px!important;height:76px!important;margin-top:-38px!important}
+  #profile-screen .profile-bio{margin-bottom:7px!important}
+  #profile-screen .profile-stats{margin-bottom:7px!important}
+  #profile-screen .profile-spotlight-card{margin-top:7px!important;margin-bottom:7px!important}
+}
+</style>
 </body>
 </html>
