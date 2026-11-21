@@ -1360,7 +1360,7 @@
       picker.querySelector('.gif-picker-close').addEventListener('click',()=>picker.remove());document.getElementById('thread-panel').append(picker);return;
     }
     const note=tool==='cutouts'?'Cut outs workspace is coming next.':'Draw workspace is coming next.';
-    showToast(note);
+    toast(note);
   }));
   gifClose.addEventListener('click',()=>{gifPicker.hidden=true});
   document.querySelectorAll('[data-gif-category]').forEach(button=>button.addEventListener('click',()=>{gifCategory=button.dataset.gifCategory;document.querySelectorAll('[data-gif-category]').forEach(x=>x.classList.toggle('active',x===button));gifSearch.value='';loadGifs()}));
