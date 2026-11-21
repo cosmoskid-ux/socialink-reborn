@@ -1754,6 +1754,7 @@
     cleanupCallRoom();activeCallMode=mode;callIsHost=true;document.getElementById('audio-contact-name').textContent=document.getElementById('thread-title').textContent||'Your connection';document.getElementById('audio-contact-avatar').textContent=document.getElementById('thread-avatar').textContent||'🌙';
     callStageTitle.textContent=mode==='video'?'Start a video call':'Start a voice call';
     callCodeCard.hidden=true;callJoinCard.hidden=false;callControls.hidden=true;callIncomingActions.hidden=true;
+    if(mode==='voice'){callVideoStage.hidden=true;callAudioAvatar.hidden=false;callStage.classList.remove('video-active')}
     setCallStatus('Creating your temporary call room…');openCallStage();
     if(mode==='video'){
       callStage.classList.add('video-active');
@@ -1790,7 +1791,7 @@
     if(!window.Peer){setCallStatus('Call library did not load. Check your connection and refresh.');return}
     if(!/^\d{4}$/.test(code)){setCallStatus('Enter the full 4-digit call code.');return}
     callIsHost=false;activeCallMode=mode;callStageTitle.textContent=mode==='video'?'Joining video call':'Joining voice call';
-    callJoinCard.hidden=true;callCodeCard.hidden=true;setCallStatus('Connecting to the call room…');
+    callJoinCard.hidden=true;callCodeCard.hidden=true;if(mode==='voice'){callVideoStage.hidden=true;callAudioAvatar.hidden=false;document.getElementById('audio-contact-name').textContent=document.getElementById('thread-title').textContent||'Your connection';document.getElementById('audio-contact-avatar').textContent=document.getElementById('thread-avatar').textContent||'🌙'}setCallStatus('Connecting to the call room…');
     try{
       const stream=await acquireCallMedia(mode);localCallStream=stream;
       if(mode==='video'){callVideoStage.hidden=false;callAudioAvatar.hidden=true;callLocalVideo.srcObject=stream;callLocalVideo.play().catch(()=>{})}
