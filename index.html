@@ -98,11 +98,13 @@
     .avatar{width:60px!important;height:74px!important}
 
 
-    /* Post header: profile and username left, Follow action right */
-    .post-head{display:flex;align-items:center;gap:10px;padding:10px 14px;min-height:76px}
-    .post-head .avatar{flex:0 0 60px;width:60px!important;height:74px!important}
+    /* Compact edge-to-edge post header */
+    .post-head{width:100%;display:flex;align-items:center;gap:8px;padding:4px 12px;min-height:58px}
+    .post-head .avatar{flex:0 0 44px;width:44px!important;height:54px!important;font-size:17px}
     .post-head .post-user{flex:1;min-width:0}
-    .post-follow{margin-left:auto;flex:0 0 auto;border:1px solid rgba(243,201,107,.55);border-radius:10px;background:rgba(243,201,107,.12);color:var(--gold);padding:8px 15px;font-size:12px;font-weight:800}
+    .post-user strong{font-size:12px}
+    .post-user small{font-size:10px}
+    .post-follow{margin-left:auto;flex:0 0 auto;border:1px solid rgba(243,201,107,.5);border-radius:8px;background:rgba(243,201,107,.1);color:var(--gold);padding:6px 12px;font-size:11px;font-weight:800}
     .post-follow:active{transform:scale(.96)}
 
   </style>
