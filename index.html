@@ -1904,7 +1904,7 @@
     const left=Math.max(12,Math.min(rect.left+(rect.width-width)/2,window.innerWidth-width-12));
     menu.style.width=width+'px';menu.style.left=left+'px';
     menu.style.top=Math.max(12,Math.min(rect.top- menu.offsetHeight-10,window.innerHeight-menu.offsetHeight-12))+'px';
-    menu.addEventListener('click',event=>{
+    menu.addEventListener('click',async event=>{
       const button=event.target.closest('[data-action]');if(!button)return;
       const action=button.dataset.action;closeMessageActionMenu();
       const current=(chats[activeThread]||[])[index];if(!current)return;
@@ -1941,14 +1941,14 @@
     });
   }
   threadMessages.addEventListener('touchstart',event=>{
-    const bubble=event.target.closest('.message-bubble');if(!bubble)return;
+    const bubble=event.target.closest('.message-bubble');if(!bubble||event.target.closest('.meaning-word'))return;
     longPressTriggered=false;clearTimeout(longPressTimer);
     longPressTimer=setTimeout(()=>{longPressTriggered=true;showMessageActionMenu(bubble)},550);
   },{passive:true});
   threadMessages.addEventListener('touchmove',()=>clearTimeout(longPressTimer),{passive:true});
   threadMessages.addEventListener('touchcancel',()=>clearTimeout(longPressTimer),{passive:true});
   threadMessages.addEventListener('contextmenu',event=>{
-    const bubble=event.target.closest('.message-bubble');if(!bubble)return;
+    const bubble=event.target.closest('.message-bubble');if(!bubble||event.target.closest('.meaning-word'))return;
     event.preventDefault();showMessageActionMenu(bubble);
   });
   threadMessages.addEventListener('touchend',()=>{
