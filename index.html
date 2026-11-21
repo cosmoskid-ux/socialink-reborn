@@ -1749,6 +1749,39 @@
     mediaCall.on('close',()=>{if(activeMediaCall===mediaCall){setCallStatus('Call ended');cleanupCallRoom();toast('Call ended')}});
     mediaCall.on('error',error=>{setCallStatus('Call connection error: '+(error.message||'Please try again'));});
   }
+  function armIncomingCallListener(peer){
+    peer.on('call',incoming=>{
+      // Ignore overlapping incoming calls while one is already awaiting a decision.
+      if(incomingMediaCall){try{incoming.close()}catch(error){}return}
+      incomingMediaCall=incoming;
+      const mode=incoming.metadata?.mode==='video'?'video':'voice';
+      activeCallMode=mode;callStageTitle.textContent='Incoming '+mode+' call';
+      callCodeCard.hidden=true;callJoinCard.hidden=true;callIncomingActions.hidden=false;
+      setCallStatus('Incoming '+mode+' call · accept or decline.');
+    });
+  }
+  function restoreHostCallRoom(){
+    if(!callIsHost||!callRoomCode)return;
+    const roomId='si-'+callRoomCode+'-x';
+    if(callPeer){try{callPeer.destroy()}catch(error){}callPeer=null}
+    setCallStatus('Reopening your call room…');
+    window.setTimeout(()=>{
+      if(!callIsHost||!callRoomCode)return;
+      const replacementPeer=new Peer(roomId);
+      callPeer=replacementPeer;
+      replacementPeer.on('open',()=>{
+        callCodeValue.textContent=callRoomCode;
+        callCodeCard.hidden=false;
+        callJoinCard.hidden=true;
+        callIncomingActions.hidden=true;
+        setCallStatus('Your call room is ready. You can receive another call.');
+      });
+      armIncomingCallListener(replacementPeer);
+      replacementPeer.on('error',error=>{
+        setCallStatus(error.type==='unavailable-id'?'Your call room is still resetting. Please wait a moment.':(error.message||'Could not reopen the call room.'));
+      });
+    },650);
+  }
   async function createCallRoom(mode){
     if(!window.Peer){setCallStatus('Call library did not load. Check your connection and refresh.');return}
     cleanupCallRoom();activeCallMode=mode;callIsHost=true;document.getElementById('audio-contact-name').textContent=document.getElementById('thread-title').textContent||'Your connection';document.getElementById('audio-contact-avatar').textContent=document.getElementById('thread-avatar').textContent||'🌙';
@@ -1776,12 +1809,7 @@
       callCodeValue.textContent=callRoomCode;callCodeCard.hidden=false;
       setCallStatus('Your call room is ready. Waiting for someone to join.');
     });
-    callPeer.on('call',incoming=>{
-      incomingMediaCall=incoming;const mode=incoming.metadata?.mode==='video'?'video':'voice';
-      activeCallMode=mode;callStageTitle.textContent='Incoming '+mode+' call';
-      callCodeCard.hidden=true;callJoinCard.hidden=true;callIncomingActions.hidden=false;
-      setCallStatus('Someone with your call code is calling. Accept only if you expected this call.');
-    });
+    armIncomingCallListener(callPeer);
     callPeer.on('error',error=>{
       const message=error.type==='unavailable-id'?'That temporary code is already in use. Close and start a new call.':(error.message||'Could not connect to the call service.');
       setCallStatus(message);
@@ -1840,8 +1868,9 @@
     callAudioAvatar.hidden=true;
     callCodeCard.hidden=false;
     callJoinCard.hidden=true;
-    setCallStatus('Call declined · your room is still open if you want to receive another call.');
     toast('Incoming call declined');
+    // Rebuild the host signalling peer so the same room can accept future calls.
+    restoreHostCallRoom();
   });
   document.getElementById('call-mute').addEventListener('click',()=>{
     if(!localCallStream)return;micEnabled=!micEnabled;localCallStream.getAudioTracks().forEach(track=>track.enabled=micEnabled);
