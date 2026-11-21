@@ -321,6 +321,67 @@
       .reel-card{width:100%}
     }
 
+
+
+    /* Messages + Groups + Galaxy Rooms */
+    .messages-screen{display:none;margin:0 -14px;padding:18px 14px 110px;min-height:72vh;background:linear-gradient(180deg,#100b1d,#090712 72%)}
+    .messages-screen.active{display:block}
+    .messages-heading{display:flex;align-items:center;justify-content:space-between;margin:3px 2px 17px}
+    .messages-heading small,.eyebrow{font-size:10px;letter-spacing:1.8px;font-weight:900;color:#d7b96f!important}
+    .messages-heading h2{margin:3px 0 0;font-size:27px;font-weight:950;letter-spacing:-.8px}
+    .education-btn{width:42px;height:42px;border-radius:14px;border:1px solid rgba(243,201,107,.35);background:linear-gradient(145deg,#2a2040,#171020);font-size:20px;box-shadow:0 5px 18px #0005}
+    .messages-toolbar{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-bottom:22px}
+    .messages-tool{min-width:0;min-height:72px;border:1px solid rgba(255,255,255,.08);border-radius:16px;background:linear-gradient(155deg,#1c1630,#100d1b);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;font-size:11px;font-weight:850}
+    .messages-tool .tool-icon{font-size:21px;color:#f3c96b!important}
+    .messages-tool.active{border-color:rgba(243,201,107,.55);background:linear-gradient(155deg,#302344,#171020);box-shadow:inset 0 0 0 1px rgba(243,201,107,.08)}
+    .messages-section-title{display:flex;align-items:center;justify-content:space-between;margin:18px 3px 11px}
+    .messages-section-title h3{font-size:15px;margin:0;font-weight:900}
+    .messages-section-title small{font-size:10px;color:#b9aecb!important}
+    .conversation-list,.group-list{display:grid;gap:9px}
+    .conversation-row,.group-row{width:100%;display:flex;align-items:center;gap:12px;padding:12px;border:1px solid rgba(255,255,255,.065);border-radius:17px;background:linear-gradient(120deg,#171225,#100d19);text-align:left}
+    .conversation-avatar,.group-avatar{width:48px;height:54px;flex:0 0 48px;border-radius:48%/42%;display:grid;place-items:center;background:linear-gradient(145deg,#49345e,#191326);border:1px solid rgba(243,201,107,.28);font-size:22px}
+    .conversation-copy,.group-copy{flex:1;min-width:0;display:grid;gap:3px}
+    .conversation-copy strong,.group-copy strong{font-size:13px;font-weight:900}
+    .conversation-copy small,.group-copy small{font-size:11px;color:#bcb2ca!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .conversation-meta{display:grid;justify-items:end;gap:6px;font-size:10px;color:#bcb2ca!important}
+    .unread-dot{width:8px;height:8px;border-radius:50%;background:#f3c96b;box-shadow:0 0 10px #f3c96b88}
+    .messages-panel{display:none}
+    .messages-panel.active{display:block}
+    .messages-search{width:100%;height:46px;border:1px solid rgba(243,201,107,.24);border-radius:14px;background:#151020;padding:0 14px;color:#F7FBFD;font:inherit;font-size:12px;outline:none;margin:0 0 12px}
+    .messages-search:focus,.message-compose input:focus,.new-group-form input:focus{border-color:#f3c96b}
+    .group-dashboard-head,.group-detail-head{display:flex;align-items:center;justify-content:space-between;margin:5px 2px 13px}
+    .group-dashboard-head h3,.group-detail-head h3{margin:0;font-size:18px;font-weight:950}
+    .education-link{border:1px solid rgba(243,201,107,.28);border-radius:12px;background:#21182f;padding:8px 11px;font-size:17px}
+    .group-row{cursor:pointer}
+    .group-open-arrow{font-size:22px;color:#d7b96f!important}
+    .group-detail-card,.education-card,.rooms-hero,.thread-card,.new-group-card{border:1px solid rgba(243,201,107,.18);border-radius:20px;background:radial-gradient(ellipse at 85% 0%,rgba(131,77,190,.2),transparent 55%),linear-gradient(145deg,#1a1428,#0e0b17);padding:16px;margin-bottom:12px}
+    .back-link{border:0;background:none;color:#d7b96f!important;font-size:12px;font-weight:850;padding:6px 0 12px}
+    .group-detail-title{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+    .group-detail-title .group-avatar{width:58px;height:64px;flex-basis:58px;font-size:27px}
+    .group-detail-title h3{font-size:17px;margin:0 0 3px}
+    .group-detail-title p{font-size:11px;color:#bcb2ca!important;margin:0}
+    .group-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+    .group-action{min-height:48px;border:1px solid rgba(255,255,255,.09);border-radius:13px;background:#171225;font-size:12px;font-weight:850}
+    .group-action.primary{background:linear-gradient(135deg,#f3d27b,#c18b42);color:#21152b!important;border:0}
+    .rooms-hero{text-align:center;padding:22px 16px;background:radial-gradient(ellipse at 50% 0%,rgba(139,91,220,.28),transparent 70%),linear-gradient(145deg,#1c1730,#0c0b16)}
+    .rooms-orbit{width:72px;height:72px;margin:0 auto 12px;border-radius:50%;display:grid;place-items:center;font-size:32px;background:radial-gradient(circle,#51406c,#1b1429);border:1px solid rgba(243,201,107,.45);box-shadow:0 0 30px rgba(141,91,220,.22)}
+    .rooms-hero h3{font-size:19px;margin:0 0 5px}
+    .rooms-hero p{font-size:11px;color:#c8bfd5!important;margin:0 auto 15px;max-width:260px}
+    .room-list{display:grid;gap:9px}
+    .room-card{display:flex;align-items:center;gap:11px;padding:12px;border:1px solid rgba(255,255,255,.08);border-radius:16px;background:#151020}
+    .room-icon{width:42px;height:42px;flex:0 0 42px;border-radius:13px;display:grid;place-items:center;background:#2b2040;color:#f3c96b!important;font-size:20px}
+    .room-card strong{font-size:12px}.room-card small{display:block;font-size:10px;color:#bcb2ca!important;margin-top:3px}
+    .room-join{margin-left:auto;border:1px solid rgba(243,201,107,.42);border-radius:10px;background:rgba(243,201,107,.1);color:#f3c96b!important;padding:7px 10px;font-size:10px;font-weight:900}
+    .thread-messages{display:grid;gap:10px;max-height:48vh;overflow:auto;padding:5px 0 13px}
+    .message-bubble{max-width:82%;padding:10px 12px;border-radius:14px;background:#211a30;font-size:12px;overflow-wrap:anywhere}
+    .message-bubble.mine{margin-left:auto;background:linear-gradient(135deg,#563c77,#302044);border:1px solid rgba(192,155,255,.2)}
+    .message-compose{display:flex;gap:8px}
+    .message-compose input,.new-group-form input{min-width:0;flex:1;height:43px;border:1px solid rgba(255,255,255,.12);border-radius:13px;background:#151020;color:#F7FBFD;padding:0 12px;font:inherit;font-size:12px;outline:none}
+    .message-compose button,.new-group-form button{border:0;border-radius:12px;background:linear-gradient(135deg,#f3d27b,#c18b42);color:#21152b!important;font-size:11px;font-weight:950;padding:0 15px}
+    .new-group-form{display:flex;gap:8px;margin-top:12px}
+    .empty-state{text-align:center;padding:24px 14px;color:#c8bfd5!important;font-size:12px;border:1px dashed rgba(243,201,107,.22);border-radius:16px}
+    @media(max-width:370px){.messages-toolbar{gap:5px}.messages-tool{font-size:10px;min-height:66px}.messages-tool .tool-icon{font-size:19px}}
+
   </style>
 </head>
 <body>
@@ -384,6 +445,49 @@
       </div>
       <div class="reel-empty-note">You're exploring the Socialink Reels universe ✦</div>
     </section>
+    
+    <section class="messages-screen" id="messages-screen" aria-label="Messages">
+      <div class="messages-heading"><div><small>YOUR CONNECTIONS</small><h2>Messages</h2></div><button class="education-btn" id="education-open" aria-label="Education Dashboard">🎓</button></div>
+      <div class="messages-toolbar">
+        <button class="messages-tool active" data-message-view="inbox"><span class="tool-icon">✉</span><span>Inbox</span></button>
+        <button class="messages-tool" data-message-view="groups"><span class="tool-icon">♧</span><span>Groups</span></button>
+        <button class="messages-tool" data-message-view="search"><span class="tool-icon">⌕</span><span>Search</span></button>
+        <button class="messages-tool" data-message-view="games"><span class="tool-icon">♟</span><span>Games</span></button>
+      </div>
+      <div class="messages-panel active" id="inbox-panel">
+        <div class="messages-section-title"><h3>Recent conversations</h3><small>YOUR ORBIT</small></div>
+        <div class="conversation-list" id="conversation-list">
+          <button class="conversation-row" data-chat="Amara K."><span class="conversation-avatar">🌙</span><span class="conversation-copy"><strong>Amara K. ✦</strong><small>That sounds like a plan! ✨</small></span><span class="conversation-meta">12:08 <i class="unread-dot"></i></span></button>
+          <button class="conversation-row" data-chat="Jayden M."><span class="conversation-avatar">🪐</span><span class="conversation-copy"><strong>Jayden M.</strong><small>Have you seen the new Reel?</small></span><span class="conversation-meta">Yesterday</span></button>
+          <button class="conversation-row" data-chat="Nia W."><span class="conversation-avatar">🦋</span><span class="conversation-copy"><strong>Nia W. ✦</strong><small>Thanks for sharing that 💜</small></span><span class="conversation-meta">Mon</span></button>
+        </div>
+      </div>
+      <div class="messages-panel" id="groups-panel">
+        <div class="group-dashboard-head"><h3>Your Groups</h3><button class="education-link" id="education-groups" aria-label="Open Education Dashboard">🎓</button></div>
+        <div class="group-list" id="group-list">
+          <button class="group-row" data-group="Orbit Crew"><span class="group-avatar">🌌</span><span class="group-copy"><strong>Orbit Crew</strong><small>8 members · Planning, ideas & daily chats</small></span><span class="group-open-arrow">›</span></button>
+          <button class="group-row" data-group="Study Circle"><span class="group-avatar">📚</span><span class="group-copy"><strong>Study Circle</strong><small>6 members · Learn together</small></span><span class="group-open-arrow">›</span></button>
+        </div>
+        <div class="new-group-card" style="margin-top:13px"><strong>Bring your people together</strong><p style="font-size:11px;color:#c8bfd5!important;margin:5px 0 0">Create a group for your favourite conversations.</p><form class="new-group-form" id="new-group-form"><input id="new-group-name" maxlength="32" placeholder="Name your group..." aria-label="New group name" required><button type="submit">Create</button></form></div>
+      </div>
+      <div class="messages-panel" id="search-panel"><input class="messages-search" id="message-search-input" placeholder="Search people and conversations..." aria-label="Search messages"><div class="conversation-list" id="search-results"></div></div>
+      <div class="messages-panel" id="games-panel"><div class="messages-section-title"><h3>Play together</h3><small>IN YOUR CHATS</small></div><div class="group-list"><div class="group-row"><span class="group-avatar">♟</span><span class="group-copy"><strong>Chess</strong><small>Challenge a friend to a thoughtful match</small></span><span class="group-open-arrow">›</span></div><div class="group-row"><span class="group-avatar">⭕</span><span class="group-copy"><strong>Tic-tac-toe</strong><small>A quick game with your people</small></span><span class="group-open-arrow">›</span></div></div></div>
+      <div class="messages-panel" id="group-detail-panel">
+        <button class="back-link" id="groups-back">‹ Back to Groups</button>
+        <div class="group-detail-card"><div class="group-detail-title"><span class="group-avatar" id="detail-group-avatar">🌌</span><div><h3 id="detail-group-name">Orbit Crew</h3><p id="detail-group-meta">8 members · Group chat</p></div></div><div class="group-actions"><button class="group-action" id="group-chat-open">✉ Group chat</button><button class="group-action primary" id="galaxy-rooms-open">✦ Galaxy Rooms</button></div></div>
+        <div class="messages-section-title"><h3>Inside this group</h3><small>CONNECT & CREATE</small></div><div class="empty-state">Your group conversations and shared activities live here.</div>
+      </div>
+      <div class="messages-panel" id="rooms-panel">
+        <button class="back-link" id="rooms-back">‹ Back to Group</button>
+        <div class="rooms-hero"><div class="rooms-orbit">✦</div><h3>Galaxy Rooms</h3><p>Step into smaller spaces inside your group. Every room has its own conversation.</p></div>
+        <div class="room-list"><div class="room-card"><span class="room-icon">💬</span><span><strong>General Orbit</strong><small>Everyday conversations</small></span><button class="room-join" data-room="General Orbit">Open</button></div><div class="room-card"><span class="room-icon">💡</span><span><strong>Ideas Lab</strong><small>Share thoughts and inspiration</small></span><button class="room-join" data-room="Ideas Lab">Open</button></div><div class="room-card"><span class="room-icon">🎯</span><span><strong>Plans & Events</strong><small>Make things happen together</small></span><button class="room-join" data-room="Plans & Events">Open</button></div></div>
+      </div>
+      <div class="messages-panel" id="thread-panel">
+        <button class="back-link" id="thread-back">‹ Back</button><div class="thread-card"><div class="messages-section-title"><h3 id="thread-title">Conversation</h3><small>PRIVATE CHAT</small></div><div class="thread-messages" id="thread-messages"><div class="message-bubble">Welcome to your conversation ✨</div></div><form class="message-compose" id="message-compose"><input id="message-input" maxlength="300" placeholder="Write a message..." aria-label="Write a message" required><button type="submit">Send</button></form></div>
+      </div>
+      <div class="messages-panel" id="education-panel"><button class="back-link" id="education-back">‹ Back</button><div class="rooms-hero"><div class="rooms-orbit">🎓</div><h3>Education Dashboard</h3><p>A dedicated space for learning with your groups.</p></div><div class="room-list"><div class="room-card"><span class="room-icon">📚</span><span><strong>Study rooms</strong><small>Focused group learning</small></span></div><div class="room-card"><span class="room-icon">📝</span><span><strong>Shared notes</strong><small>Keep useful ideas together</small></span></div></div></div>
+    </section>
+
     <section class="screen-note" id="other-screen"><h2 id="screen-title">Reels</h2><p>This part of Socialink is being prepared. The home feed is our first build.</p></section>
   </main>
   <nav class="bottom-nav" aria-label="Main navigation">
@@ -581,12 +685,13 @@
   document.querySelectorAll('.share').forEach(btn=>btn.addEventListener('click',async()=>{try{if(navigator.share)await navigator.share({title:'Socialink',text:'Connect beyond the ordinary.',url:location.href});else{await navigator.clipboard.writeText(location.href);toast('Link copied')}}catch(e){if(e.name!=='AbortError')toast('Sharing is unavailable here')}}));
   document.querySelectorAll('.nav-item').forEach(btn=>btn.addEventListener('click',()=>{
     document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));btn.classList.add('active');
-    const screen=btn.dataset.screen,home=screen==='Home',reels=screen==='Reels';
+    const screen=btn.dataset.screen,home=screen==='Home',reels=screen==='Reels',messages=screen==='Messages';
     document.querySelector('.spotlights').parentElement.style.display=home?'':'none';
     document.querySelector('.discover').parentElement.style.display=home?'':'none';
     document.querySelector('.feed').style.display=home?'':'none';
     document.getElementById('reels-screen').classList.toggle('active',reels);
-    document.getElementById('other-screen').classList.toggle('show',!home&&!reels);
+    document.getElementById('messages-screen').classList.toggle('active',messages);
+    document.getElementById('other-screen').classList.toggle('show',!home&&!reels&&!messages);
     document.getElementById('screen-title').textContent=screen;
   }));
 
@@ -641,6 +746,34 @@
     drawComments();
     form.addEventListener('submit',event=>{event.preventDefault();const value=input.value.trim();if(!value)return;entries.push('You: '+value);try{localStorage.setItem(commentKey,JSON.stringify(entries))}catch(e){}input.value='';drawComments()});
   });
+
+  // Messages, Groups and Galaxy Rooms — local prototype interactions
+  const messagePanels=['inbox-panel','groups-panel','search-panel','games-panel','group-detail-panel','rooms-panel','thread-panel','education-panel'];
+  function showMessagePanel(id){messagePanels.forEach(key=>document.getElementById(key).classList.toggle('active',key===id))}
+  function activateMessageTool(view){document.querySelectorAll('[data-message-view]').forEach(b=>b.classList.toggle('active',b.dataset.messageView===view));showMessagePanel(view==='groups'?'groups-panel':view==='search'?'search-panel':view==='games'?'games-panel':'inbox-panel')}
+  document.querySelectorAll('[data-message-view]').forEach(btn=>btn.addEventListener('click',()=>activateMessageTool(btn.dataset.messageView)));
+  let activeGroup='Orbit Crew',activeThread='Amara K.';
+  const groupMeta={'Orbit Crew':{icon:'🌌',members:'8 members'},'Study Circle':{icon:'📚',members:'6 members'}};
+  document.querySelectorAll('[data-group]').forEach(btn=>btn.addEventListener('click',()=>openGroup(btn.dataset.group)));
+  function openGroup(name){activeGroup=name;const meta=groupMeta[name]||{icon:'✦',members:'1 member'};document.getElementById('detail-group-name').textContent=name;document.getElementById('detail-group-avatar').textContent=meta.icon;document.getElementById('detail-group-meta').textContent=meta.members+' · Group chat';showMessagePanel('group-detail-panel');document.querySelectorAll('[data-message-view]').forEach(b=>b.classList.toggle('active',b.dataset.messageView==='groups'))}
+  document.getElementById('groups-back').addEventListener('click',()=>activateMessageTool('groups'));
+  document.getElementById('galaxy-rooms-open').addEventListener('click',()=>showMessagePanel('rooms-panel'));
+  document.getElementById('rooms-back').addEventListener('click',()=>showMessagePanel('group-detail-panel'));
+  document.getElementById('group-chat-open').addEventListener('click',()=>openThread(activeGroup));
+  document.getElementById('education-open').addEventListener('click',()=>showMessagePanel('education-panel'));
+  document.getElementById('education-groups').addEventListener('click',()=>showMessagePanel('education-panel'));
+  document.getElementById('education-back').addEventListener('click',()=>showMessagePanel('groups-panel'));
+  document.getElementById('new-group-open')?.addEventListener('click',()=>{activateMessageTool('groups');document.getElementById('new-group-name').focus()});
+  document.getElementById('new-group-form').addEventListener('submit',event=>{event.preventDefault();const input=document.getElementById('new-group-name'),name=input.value.trim();if(!name)return;if(groupMeta[name]){toast('That group already exists');return}groupMeta[name]={icon:'✦',members:'1 member'};const row=document.createElement('button');row.className='group-row';row.dataset.group=name;row.innerHTML='<span class="group-avatar">✦</span><span class="group-copy"><strong></strong><small>1 member · Your new group</small></span><span class="group-open-arrow">›</span>';row.querySelector('strong').textContent=name;row.addEventListener('click',()=>openGroup(name));document.getElementById('group-list').append(row);input.value='';openGroup(name);toast('Group created ✨')});
+  const chats={'Amara K.':[],'Jayden M.':[],'Nia W.':[]};
+  function openThread(name){activeThread=name;document.getElementById('thread-title').textContent=name;drawThread();showMessagePanel('thread-panel')}
+  function drawThread(){const box=document.getElementById('thread-messages'),items=chats[activeThread]||[];box.innerHTML=items.length?items.map(item=>{const bubble=document.createElement('div');bubble.className='message-bubble'+(item.mine?' mine':'');bubble.textContent=item.text;return bubble.outerHTML}).join(''):'<div class="empty-state">Start a conversation with '+activeThread+' ✨</div>';box.scrollTop=box.scrollHeight}
+  document.querySelectorAll('[data-chat]').forEach(btn=>btn.addEventListener('click',()=>openThread(btn.dataset.chat)));
+  document.getElementById('thread-back').addEventListener('click',()=>activateMessageTool('inbox'));
+  document.getElementById('message-compose').addEventListener('submit',event=>{event.preventDefault();const input=document.getElementById('message-input'),value=input.value.trim();if(!value)return;(chats[activeThread]||(chats[activeThread]=[])).push({text:value,mine:true});input.value='';drawThread()});
+  document.getElementById('message-search-input').addEventListener('input',event=>{const query=event.target.value.toLowerCase(),results=document.getElementById('search-results');results.innerHTML='';document.querySelectorAll('[data-chat]').forEach(btn=>{if(btn.textContent.toLowerCase().includes(query)){const clone=btn.cloneNode(true);clone.addEventListener('click',()=>openThread(clone.dataset.chat));results.append(clone)}});document.querySelectorAll('[data-group]').forEach(btn=>{if(btn.textContent.toLowerCase().includes(query)){const clone=btn.cloneNode(true);clone.addEventListener('click',()=>openGroup(clone.dataset.group));results.append(clone)}})});
+  document.querySelectorAll('[data-room]').forEach(btn=>btn.addEventListener('click',()=>openThread(activeGroup+' · '+btn.dataset.room)));
+
 </script>
 </body>
 </html>
