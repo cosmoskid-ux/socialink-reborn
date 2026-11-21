@@ -391,6 +391,14 @@
     .conversation-copy small,.group-copy small{font-size:11px;color:#bcb2ca!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .conversation-meta{display:grid;justify-items:end;gap:6px;font-size:10px;color:#bcb2ca!important}
     .unread-dot{width:8px;height:8px;border-radius:50%;background:#f3c96b;box-shadow:0 0 10px #f3c96b88}
+    .message-inbox-preview{margin:2px 0 18px}
+    .message-inbox-preview .messages-section-title{margin:15px 3px 11px}
+    .message-inbox-preview .conversation-row{min-height:76px;padding:10px 12px;border-color:rgba(243,201,107,.13);background:linear-gradient(110deg,#171321,#0e0b17);border-radius:14px}
+    .message-inbox-preview .conversation-avatar{width:48px;height:56px;flex-basis:48px;border-radius:50% / 42%;color:#F7FBFD}
+    .message-inbox-preview .conversation-copy strong{color:#F7FBFD}
+    .message-inbox-preview .conversation-copy small{color:#bcb2ca!important}
+    .message-inbox-preview .conversation-meta{color:#F7FBFD!important}
+    .message-inbox-preview .conversation-row:active{border-color:rgba(243,201,107,.5);transform:scale(.99)}
     .messages-panel{display:none}
     .messages-panel.active{display:block}
     .messages-search{width:100%;height:46px;border:1px solid rgba(243,201,107,.24);border-radius:14px;background:#151020;padding:0 14px;color:#F7FBFD;font:inherit;font-size:12px;outline:none;margin:0 0 12px}
@@ -502,6 +510,16 @@
           <button class="message-person" data-chat="Nia W."><span class="message-person-avatar">🦋<i></i></span><strong>Nia</strong><small>Mon</small></button>
           <button class="message-person" data-chat="Leo R."><span class="message-person-avatar">🌠</span><strong>Leo</strong><small>Sun</small></button>
           <button class="message-person" data-chat="Zuri A."><span class="message-person-avatar">✨</span><strong>Zuri</strong><small>Sat</small></button>
+        </div>
+      </section>
+      <section class="message-inbox-preview" aria-label="Recent messages and people you've texted">
+        <div class="messages-section-title"><h3>Recent messages</h3><small>YOUR CONVERSATIONS</small></div>
+        <div class="conversation-list">
+          <button class="conversation-row" data-chat="Amara K."><span class="conversation-avatar">🌙</span><span class="conversation-copy"><strong>Amara K. ✦</strong><small>That sounds like a plan! ✨</small></span><span class="conversation-meta">12:08 <i class="unread-dot"></i></span></button>
+          <button class="conversation-row" data-chat="Jayden M."><span class="conversation-avatar">🪐</span><span class="conversation-copy"><strong>Jayden M.</strong><small>Have you seen the new Reel?</small></span><span class="conversation-meta">Yesterday <i class="unread-dot"></i></span></button>
+          <button class="conversation-row" data-chat="Nia W. ✦"><span class="conversation-avatar">🦋</span><span class="conversation-copy"><strong>Nia W. ✦</strong><small>Thanks for sharing that 💜</small></span><span class="conversation-meta">Mon</span></button>
+          <button class="conversation-row" data-chat="Leo R."><span class="conversation-avatar">🌠</span><span class="conversation-copy"><strong>Leo R.</strong><small>You: See you later!</small></span><span class="conversation-meta">Sun</span></button>
+          <button class="conversation-row" data-chat="Zuri A."><span class="conversation-avatar">✨</span><span class="conversation-copy"><strong>Zuri A.</strong><small>Sent you a message</small></span><span class="conversation-meta">Sat <i class="unread-dot"></i></span></button>
         </div>
       </section>
       <div class="messages-panel" id="inbox-panel">
