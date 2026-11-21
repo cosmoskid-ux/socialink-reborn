@@ -1172,7 +1172,49 @@
 #messages-screen .thought-own-person .message-person-avatar{border-color:#f3c96b!important}
 @media(max-width:390px){#messages-screen .thought-preview,#messages-screen .thought-compose{padding:20px 16px 15px}}
 
-  </style>
+  
+/* Stable chat layout: composer stays docked; creative panels stay inside chat. */
+#thread-panel.active{position:fixed!important;overflow:hidden!important}
+#thread-panel .message-compose{
+  position:absolute!important;z-index:1005!important;
+  left:9px!important;right:9px!important;bottom:calc(8px + env(safe-area-inset-bottom))!important;
+  transform:none!important;width:auto!important;max-width:none!important;
+  margin:0!important;flex:0 0 auto!important;
+}
+#thread-panel .thread-messages{
+  padding-bottom:calc(var(--chat-compose-height,58px) + 30px + env(safe-area-inset-bottom))!important;
+}
+#thread-panel .reply-preview{
+  position:absolute!important;z-index:1004!important;
+  left:11px!important;right:11px!important;bottom:calc(var(--chat-compose-height,58px) + 20px + env(safe-area-inset-bottom))!important;
+  transform:none!important;width:auto!important;max-width:none!important;
+}
+#thread-panel .creative-tools{
+  position:absolute!important;z-index:10030!important;
+  left:9px!important;right:9px!important;bottom:calc(var(--chat-compose-height,58px) + 24px + env(safe-area-inset-bottom))!important;
+  width:auto!important;max-width:420px!important;margin-inline:auto!important;
+  display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important;
+}
+#thread-panel .creative-tools[hidden]{display:none!important}
+#thread-panel .creative-tool{min-height:62px!important}
+#thread-panel .gif-picker{
+  position:absolute!important;z-index:10031!important;
+  left:9px!important;right:9px!important;bottom:calc(var(--chat-compose-height,58px) + 24px + env(safe-area-inset-bottom))!important;
+  width:auto!important;max-width:420px!important;margin-inline:auto!important;
+  max-height:min(58dvh,470px)!important;overflow:hidden!important;
+}
+#thread-panel .gif-grid{min-height:80px!important;max-height:34dvh!important;overflow-y:auto!important}
+#thread-panel .creative-editor{
+  position:absolute!important;z-index:10032!important;
+  inset:10px 9px calc(var(--chat-compose-height,58px) + 24px + env(safe-area-inset-bottom))!important;
+  max-height:none!important;
+}
+@media(max-width:420px){
+  #thread-panel .creative-tools{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  #thread-panel .creative-tool{min-height:58px!important}
+}
+
+</style>
 </head>
 <body>
 <div class="app">
