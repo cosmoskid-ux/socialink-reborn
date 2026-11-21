@@ -1977,7 +1977,7 @@ button,a,[role="button"]{
         const ticks=[...wave.children];
         const stamp=value=>{if(!Number.isFinite(value))return '0:00';const whole=Math.floor(value);return Math.floor(whole/60)+':'+String(whole%60).padStart(2,'0')};
         const paint=()=>{const ratio=audio.duration?audio.currentTime/audio.duration:0;const pct=Math.round(ratio*100);wave.setAttribute('aria-valuenow',String(pct));ticks.forEach((tick,i)=>tick.classList.toggle('played',i/Math.max(1,ticks.length-1)<=ratio));time.textContent=stamp(audio.currentTime)+' / '+stamp(audio.duration)};
-        play.addEventListener('click',()=>{if(audio.paused){audio.play().then(()=>{play.textContent='Ⅱ';play.setAttribute('aria-label','Pause voice message')}).catch(()=>toast('Could not play this voice message'))}else{audio.pause();play.textContent='▶';play.setAttribute('aria-label','Play voice message')}});
+        play.addEventListener('click',()=>{if(audio.paused){document.querySelectorAll('#thread-panel .voice-message-player audio').forEach(other=>{if(other!==audio){other.pause();other.currentTime=0;const otherPlay=other.parentElement?.querySelector('.voice-play');if(otherPlay){otherPlay.textContent='▶';otherPlay.setAttribute('aria-label','Play voice message')}}});audio.play().catch(()=>toast('Could not play this voice message'))}else{audio.pause()}});
         audio.addEventListener('loadedmetadata',paint);audio.addEventListener('timeupdate',paint);
         audio.addEventListener('play',()=>{play.textContent='Ⅱ';play.setAttribute('aria-label','Pause voice message')});
         audio.addEventListener('pause',()=>{play.textContent='▶';play.setAttribute('aria-label','Play voice message')});
@@ -2788,6 +2788,37 @@ body.socialink-profile-open #profile-screen{
 @media(max-width:360px){
   #thread-panel .message-compose.is-recording .voice-actions{grid-template-columns:repeat(2,minmax(0,1fr))!important}
 }
+
+/* Premium sent voice-message player refinement */
+#thread-panel .voice-audio-bubble{padding:3px!important;background:transparent!important;border:0!important;box-shadow:none!important;max-width:100%!important}
+#thread-panel .voice-message-player{
+  width:min(292px,72vw)!important;min-width:0!important;box-sizing:border-box!important;
+  gap:11px!important;padding:11px 13px!important;border-radius:19px!important;
+  border:1px solid rgba(155,111,255,.48)!important;
+  background:radial-gradient(ellipse at 8% 0%,rgba(151,58,255,.25),transparent 58%),linear-gradient(135deg,#17112c 0%,#0c1528 100%)!important;
+  box-shadow:0 0 17px rgba(115,55,230,.15),inset 0 1px rgba(247,251,253,.08)!important;
+}
+#thread-panel .message-line.mine .voice-message-player{
+  border-color:rgba(38,201,255,.48)!important;
+  background:radial-gradient(ellipse at 95% 0%,rgba(34,190,255,.2),transparent 55%),linear-gradient(135deg,#21143b,#101a31)!important;
+}
+#thread-panel .voice-play{
+  width:42px!important;height:42px!important;flex-basis:42px!important;border-radius:50%!important;
+  background:linear-gradient(145deg,#23d4f4,#963bfa)!important;color:#fff!important;
+  border:1px solid rgba(247,251,253,.25)!important;font-size:16px!important;
+  box-shadow:0 0 15px rgba(52,174,255,.35)!important;
+}
+#thread-panel .voice-player-main{gap:7px!important}
+#thread-panel .voice-player-wave{height:30px!important;gap:3px!important;min-height:30px!important}
+#thread-panel .voice-player-wave i{
+  max-width:5px!important;min-width:2px!important;border-radius:8px!important;
+  background:linear-gradient(180deg,#26dfff 0%,#a044ff 100%)!important;
+  opacity:.38!important;transition:opacity .15s,filter .15s!important;
+}
+#thread-panel .voice-player-wave i.played{opacity:1!important;filter:drop-shadow(0 0 4px rgba(48,205,255,.55))!important}
+#thread-panel .voice-player-meta{align-items:center!important;font-size:10px!important;color:#F7FBFD!important}
+#thread-panel .voice-player-label{font-size:9px!important;letter-spacing:1px!important;color:#d9c8f2!important}
+#thread-panel .message-line.mine .voice-player-label{color:#9deaff!important}
 </style>
 <script>
 /* My Page navigation: force the profile screen into view on mobile and desktop. */
