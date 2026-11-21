@@ -1810,35 +1810,70 @@
   function stopCallTimer(){clearInterval(callTimerInterval);callTimerInterval=null;callConnectedAt=0;callConnectedTimer.hidden=true;callConnectedTimer.textContent='00:00'}
   function stopRingVibration(){clearInterval(ringVibrationInterval);ringVibrationInterval=null;try{if(navigator.vibrate)navigator.vibrate(0)}catch(error){}}
   function startRingVibration(){stopRingVibration();try{if(navigator.vibrate){navigator.vibrate([65,110,65,760]);ringVibrationInterval=setInterval(()=>{try{navigator.vibrate([65,110,65,760])}catch(error){}},1700)}}catch(error){}}
-  // Original Socialink signature call sound: cosmic chimes, warm low notes and a gentle electronic pulse.
+  // Socialink signature v2: a warm, layered three-bar motif with a melodic lead,
+  // soft harmonic bed, rounded bass and a restrained rhythmic sparkle.
   function ensureCallAudio(){
     const AudioContextClass=window.AudioContext||window.webkitAudioContext;
     if(!AudioContextClass)return false;
-    if(!callToneContext){callToneContext=new AudioContextClass();callToneMaster=callToneContext.createGain();callToneMaster.gain.value=0;callToneMaster.connect(callToneContext.destination)}
+    if(!callToneContext){
+      callToneContext=new AudioContextClass();
+      callToneMaster=callToneContext.createGain();
+      callToneMaster.gain.value=0;
+      const limiter=callToneContext.createDynamicsCompressor();
+      limiter.threshold.value=-16;limiter.knee.value=18;limiter.ratio.value=3;
+      limiter.attack.value=.008;limiter.release.value=.22;
+      callToneMaster.connect(limiter);limiter.connect(callToneContext.destination);
+    }
     if(callToneContext.state==='suspended')callToneContext.resume().catch(()=>{});
     return true;
   }
   function scheduleCallTonePhrase(){
     if(!callToneContext||!callToneMaster||callToneContext.state!=='running')return;
-    const now=callToneContext.currentTime;
-    const notes=[659.25,783.99,987.77,783.99,659.25,523.25,659.25,783.99,1046.5,783.99];
-    notes.forEach((frequency,index)=>{
-      const start=now+index*.61;
-      const length=.43;
-      const tone=callToneContext.createOscillator(),harmonic=callToneContext.createOscillator(),gain=callToneContext.createGain();
-      tone.type='sine';tone.frequency.setValueAtTime(frequency,start);
-      harmonic.type='triangle';harmonic.frequency.setValueAtTime(frequency*2.01,start);
-      const filter=callToneContext.createBiquadFilter();filter.type='lowpass';filter.frequency.setValueAtTime(2800,start);
-      gain.gain.setValueAtTime(.0001,start);gain.gain.exponentialRampToValueAtTime(index===8?.105:.078,start+.045);gain.gain.exponentialRampToValueAtTime(.0001,start+length);
-      tone.connect(filter);harmonic.connect(filter);filter.connect(gain);gain.connect(callToneMaster);
-      tone.start(start);harmonic.start(start);tone.stop(start+length+.02);harmonic.stop(start+length+.02);
+    const ctx=callToneContext,now=ctx.currentTime;
+    const beat=.4,phrase=6.4;
+    function voice(freq,at,duration,opts={}){
+      const start=now+at,stop=start+duration;
+      const osc=ctx.createOscillator(),voiceGain=ctx.createGain(),filter=ctx.createBiquadFilter();
+      osc.type=opts.type||'triangle';osc.frequency.setValueAtTime(freq,start);
+      if(opts.detune)osc.detune.setValueAtTime(opts.detune,start);
+      filter.type='lowpass';filter.frequency.setValueAtTime(opts.cutoff||4200,start);filter.Q.value=.55;
+      const peak=opts.level||.045,attack=opts.attack||.035;
+      voiceGain.gain.setValueAtTime(.0001,start);
+      voiceGain.gain.exponentialRampToValueAtTime(peak,start+attack);
+      voiceGain.gain.setTargetAtTime(peak*(opts.sustain||.62),start+attack,.11);
+      voiceGain.gain.setTargetAtTime(.0001,stop-.13,.075);
+      osc.connect(filter);filter.connect(voiceGain);voiceGain.connect(callToneMaster);
+      osc.start(start);osc.stop(stop+.02);
+    }
+    function chord(root,at){
+      [root,root*1.25,root*1.5].forEach((hz,i)=>{
+        voice(hz,at,1.48,{type:'sine',level:i===0?.014:.009,attack:.22,sustain:.78,cutoff:1700});
+        voice(hz*2,at+.025,1.34,{type:'triangle',level:.004,attack:.24,sustain:.65,cutoff:2400});
+      });
+    }
+    // D-major / B-minor colour gives the motif a bright, confident lift.
+    chord(146.83,0);chord(110,1.6);chord(98,3.2);chord(123.47,4.8);
+    const melody=[
+      [587.33,0,.31],[739.99,.4,.28],[880,.8,.46],[739.99,1.4,.25],
+      [659.25,1.8,.3],[739.99,2.2,.28],[987.77,2.6,.48],[880,3.2,.28],
+      [783.99,3.6,.3],[880,4,.28],[1174.66,4.4,.48],[987.77,5,.28],
+      [880,5.4,.3],[739.99,5.8,.43]
+    ];
+    melody.forEach(([hz,at,duration],i)=>{
+      voice(hz,at,duration,{type:'triangle',level:i===6||i===10?.073:.057,attack:.018,sustain:.34,cutoff:5200});
+      voice(hz*2,at+.012,duration*.72,{type:'sine',level:.012,attack:.025,sustain:.2,cutoff:6500});
+      voice(hz*.5,at+.018,duration*.82,{type:'sine',level:.012,attack:.045,sustain:.25,cutoff:1300});
     });
-    [0,1.62,3.24,4.86].forEach((offset,index)=>{
-      const start=now+offset,osc=callToneContext.createOscillator(),gain=callToneContext.createGain();
-      osc.type='sine';osc.frequency.setValueAtTime(index===0?130.81:98,start);
-      gain.gain.setValueAtTime(.0001,start);gain.gain.exponentialRampToValueAtTime(.035,start+.08);gain.gain.exponentialRampToValueAtTime(.0001,start+.62);
-      osc.connect(gain);gain.connect(callToneMaster);osc.start(start);osc.stop(start+.65);
+    // Rounded bass notes and quiet off-beat plucks add movement without sounding like alerts.
+    [[73.42,0],[55,1.6],[49,3.2],[61.74,4.8]].forEach(([hz,at])=>{
+      voice(hz,at,.72,{type:'sine',level:.052,attack:.09,sustain:.5,cutoff:500});
+      voice(hz*2,at+.04,.48,{type:'triangle',level:.014,attack:.035,sustain:.28,cutoff:850});
     });
+    [0.6,1.4,2.2,3,3.8,4.6,5.4,6.0].forEach((at,i)=>{
+      voice([1760,1975,1568,2093][i%4],at,.12,{type:'sine',level:.012,attack:.008,sustain:.08,cutoff:6000});
+    });
+    // A soft swell at the phrase tail bridges naturally into the next repeat.
+    voice(293.66,5.92,.42,{type:'sine',level:.009,attack:.18,sustain:.8,cutoff:1200});
   }
   function startCallTone(){
     stopCallTone();if(!ensureCallAudio())return;
