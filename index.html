@@ -447,6 +447,19 @@
     .empty-state{text-align:center;padding:24px 14px;color:#c8bfd5!important;font-size:12px;border:1px dashed rgba(243,201,107,.22);border-radius:16px}
     @media(max-width:370px){.messages-toolbar{gap:5px}.messages-tool{font-size:10px;min-height:66px}.messages-tool .tool-icon{font-size:19px}}
 
+  
+    /* Remove only the rectangular message rows under Your Conversations.
+       Keep the People dashboard and its oval profile portraits unchanged. */
+    #messages-screen .message-inbox-preview .conversation-list{gap:0!important;background:transparent!important;border:0!important;box-shadow:none!important}
+    #messages-screen .message-inbox-preview .conversation-row{
+      min-height:70px!important;padding:10px 2px!important;
+      background:transparent!important;border:0!important;border-bottom:1px solid rgba(247,251,253,.08)!important;
+      border-radius:0!important;box-shadow:none!important;outline:0!important;
+    }
+    #messages-screen .message-inbox-preview .conversation-row:active{
+      background:rgba(247,251,253,.035)!important;border-color:rgba(247,251,253,.12)!important;transform:none!important;
+    }
+
   </style>
 </head>
 <body>
