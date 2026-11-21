@@ -746,10 +746,10 @@
     #thread-panel .message-content{gap:3px!important}
     #thread-panel .message-compose{align-items:flex-end!important;gap:8px!important}
     #thread-panel .message-compose textarea{
-      display:block;flex:1 1 auto;min-width:0;min-height:40px;max-height:120px;
-      height:40px;resize:none;overflow-y:auto;box-sizing:border-box;
-      border:0;border-radius:20px;background:#263244;color:#F7FBFD;
-      padding:10px 15px;font:inherit;font-size:13px;line-height:20px;outline:none;
+      display:block;flex:1 1 auto;min-width:0;min-height:30px;max-height:90px;
+      height:30px;resize:none;overflow-y:auto;box-sizing:border-box;
+      border:0;border-radius:16px;background:#263244;color:#F7FBFD;
+      padding:5px 12px;font:inherit;font-size:13px;line-height:18px;outline:none;
     }
     #thread-panel .message-compose textarea::placeholder{color:#b5c0d0}
     #thread-panel .message-compose textarea:focus{border:1px solid rgba(243,201,107,.45)}
@@ -1236,7 +1236,7 @@
   document.querySelectorAll('[data-chat]').forEach(btn=>btn.addEventListener('click',()=>openThread(btn.dataset.chat)));
   document.getElementById('thread-back').addEventListener('click',()=>activateMessageTool('inbox'));
   const messageInput=document.getElementById('message-input');
-  function resizeMessageInput(){messageInput.style.height='auto';messageInput.style.height=Math.min(messageInput.scrollHeight,120)+'px';}
+  function resizeMessageInput(){messageInput.style.height='auto';messageInput.style.height=Math.min(messageInput.scrollHeight,90)+'px';}
   messageInput.addEventListener('input',resizeMessageInput);
   document.getElementById('message-compose').addEventListener('submit',event=>{event.preventDefault();const value=messageInput.value.trim();if(!value)return;const message={text:value,mine:true};if(replyTarget)message.replyTo=replyTarget.text;(chats[activeThread]||(chats[activeThread]=[])).push(message);messageInput.value='';resizeMessageInput();replyTarget=null;drawThread()});
   document.getElementById('message-search-input').addEventListener('input',event=>{const query=event.target.value.toLowerCase(),results=document.getElementById('search-results');results.innerHTML='';document.querySelectorAll('[data-chat]').forEach(btn=>{if(btn.textContent.toLowerCase().includes(query)){const clone=btn.cloneNode(true);clone.addEventListener('click',()=>openThread(clone.dataset.chat));results.append(clone)}});document.querySelectorAll('[data-group]').forEach(btn=>{if(btn.textContent.toLowerCase().includes(query)){const clone=btn.cloneNode(true);clone.addEventListener('click',()=>openGroup(clone.dataset.group));results.append(clone)}})});
