@@ -1033,7 +1033,7 @@
 }
 #thread-panel .message-compose textarea{
   min-height:34px!important;
-  height:34px!important;
+  height:var(--chat-input-height,34px)!important;
   max-height:120px!important;
   overflow-y:hidden;
   border:1px solid rgba(185,148,232,.22)!important;
@@ -1753,7 +1753,7 @@
   deleteVoice.addEventListener('click',()=>{voiceSendAfterStop=false;if(voiceRecorder&&voiceRecorder.state!=='inactive')voiceRecorder.stop();else resetVoiceStudio();toast('Recording deleted')});
   sendVoice.addEventListener('click',()=>{if(!voiceRecorder)return;voiceSendAfterStop=true;finishVoiceRecording()});
   const messageInput=document.getElementById('message-input');
-  function resizeMessageInput(){messageInput.style.height='auto';messageInput.style.height=Math.min(messageInput.scrollHeight,120)+'px';messageInput.style.overflowY=messageInput.scrollHeight>120?'auto':'hidden';syncFloatingComposer();}
+  function resizeMessageInput(){const nextHeight=Math.max(34,Math.min(messageInput.scrollHeight,120));document.documentElement.style.setProperty('--chat-input-height',nextHeight+'px');messageInput.style.overflowY=messageInput.scrollHeight>120?'auto':'hidden';syncFloatingComposer();}
   messageInput.addEventListener('input',resizeMessageInput);
   // Keep the composer floating above the on-screen keyboard and track its growing height.
   const chatComposer=document.getElementById('message-compose');
