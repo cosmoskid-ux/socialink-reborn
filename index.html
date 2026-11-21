@@ -942,6 +942,30 @@
     .call-choice strong{font-size:13px;color:#F7FBFD}.call-choice small{font-size:10px;color:#b9afc9}
     .call-choice-arrow{font-size:25px;color:#a99ab9}
 
+
+    /* Socialink peer-to-peer call room */
+    .call-stage-backdrop{position:fixed;inset:0;z-index:1300;background:rgba(3,2,10,.82);backdrop-filter:blur(10px)}
+    .call-stage{position:fixed;z-index:1301;inset:0;display:flex;flex-direction:column;gap:14px;padding:calc(18px + env(safe-area-inset-top)) 16px calc(18px + env(safe-area-inset-bottom));background:radial-gradient(ellipse at 50% 0%,#30204b,#100c1d 54%,#070611);color:#F7FBFD;overflow:auto}
+    .call-stage[hidden],.call-stage-backdrop[hidden]{display:none!important}
+    .call-stage-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
+    .call-stage-head strong{font-size:17px}.call-stage-close{width:38px;height:38px;border:1px solid #ffffff22;border-radius:12px;background:#ffffff0b;color:#F7FBFD;font-size:22px}
+    .call-stage-status{color:#c7badb;font-size:12px;text-align:center;min-height:18px}
+    .call-code-card{padding:18px;border:1px solid #f3c96b44;border-radius:20px;background:linear-gradient(145deg,#211831,#100d1b);text-align:center}
+    .call-code-label{font-size:11px;color:#c7badb}.call-code-value{font-size:30px;font-weight:950;letter-spacing:5px;color:#f3c96b;margin:7px 0 12px;font-variant-numeric:tabular-nums}
+    .call-copy-button,.call-primary-button{height:44px;padding:0 16px;border:0;border-radius:13px;background:linear-gradient(135deg,#f3d27b,#c18b42);color:#21152b;font-weight:900}
+    .call-join-row{display:flex;gap:8px}.call-join-input{min-width:0;flex:1;height:46px;border:1px solid #ffffff25;border-radius:13px;background:#ffffff0b;color:#F7FBFD;padding:0 13px;font:inherit;letter-spacing:2px}
+    .call-join-input::placeholder{color:#9f93b1;letter-spacing:0}
+    .call-video-stage{position:relative;flex:1;min-height:220px;max-height:54vh;border:1px solid #ffffff1c;border-radius:22px;overflow:hidden;background:#05040b}
+    .call-remote-video{width:100%;height:100%;object-fit:cover;background:#05040b}
+    .call-local-video{position:absolute;right:12px;bottom:12px;width:clamp(90px,28vw,132px);aspect-ratio:3/4;object-fit:cover;border:1px solid #f3c96b88;border-radius:15px;background:#171225}
+    .call-audio-avatar{display:grid;place-items:center;flex:1;min-height:200px;font-size:70px}
+    .call-controls{display:flex;justify-content:center;gap:12px;padding:5px 0}
+    .call-control{width:52px;height:52px;border:1px solid #ffffff22;border-radius:17px;background:#ffffff12;color:#F7FBFD;font-size:20px}
+    .call-control.end{background:#b52d50;border-color:#e96c84}
+    .call-incoming-actions{display:flex;gap:10px}.call-incoming-actions button{flex:1}
+    .call-decline{height:44px;border:1px solid #e96c8466;border-radius:13px;background:#9e2945;color:#fff;font-weight:850}
+    .call-stage-note{font-size:10px;line-height:1.5;color:#a99db8;text-align:center}
+
 </style>
 </head>
 <body>
@@ -1071,6 +1095,19 @@
       </div>
       <div class="messages-panel" id="thread-panel" aria-label="Private conversation">
         <header class="chat-screen-head"><button class="chat-screen-back" id="thread-back" aria-label="Back to messages">‹</button><span class="chat-screen-avatar" id="thread-avatar">🌙</span><div class="chat-screen-person"><h3 id="thread-title">Conversation</h3><small>Socialink chat</small></div><button class="chat-call-button" id="chat-call-button" type="button" aria-label="Start a call" title="Call">☎</button><button class="chat-screen-more" type="button" aria-label="More options">⋮</button></header><div class="call-sheet-backdrop" id="call-sheet-backdrop" hidden></div><section class="call-sheet" id="call-sheet" role="dialog" aria-modal="true" aria-label="Call options" hidden><div class="call-sheet-grip"></div><div class="call-sheet-title"><strong>Connect with <span id="call-contact-name">Amara K.</span></strong><small>Choose how you would like to call</small></div><button class="call-choice" type="button" data-call-type="voice"><span class="call-choice-icon">☎</span><span><strong>Voice Call</strong><small>Talk without video</small></span><span class="call-choice-arrow">›</span></button><button class="call-choice" type="button" data-call-type="video"><span class="call-choice-icon video">▣</span><span><strong>Video Call</strong><small>Talk face to face</small></span><span class="call-choice-arrow">›</span></button></section>
+        <div class="call-stage-backdrop" id="call-stage-backdrop" hidden></div>
+        <section class="call-stage" id="call-stage" role="dialog" aria-modal="true" aria-label="Socialink call" hidden>
+          <div class="call-stage-head"><strong id="call-stage-title">Socialink Call</strong><button class="call-stage-close" id="call-stage-close" type="button" aria-label="Close call">×</button></div>
+          <div class="call-stage-status" id="call-stage-status">Preparing your call…</div>
+          <div class="call-code-card" id="call-code-card" hidden><div class="call-code-label">YOUR TEMPORARY CALL CODE</div><div class="call-code-value" id="call-code-value">••••••••</div><button class="call-copy-button" id="call-copy-code" type="button">Copy call code</button><p class="call-stage-note">Share this code only with the person you intend to call. It expires when you close this call room.</p></div>
+          <div id="call-join-card"><div class="call-code-label" style="margin-bottom:8px;text-align:center">Or join someone else's call</div><div class="call-join-row"><input class="call-join-input" id="call-join-input" inputmode="numeric" autocomplete="one-time-code" maxlength="8" placeholder="Enter 8-digit code" aria-label="Enter call code"><button class="call-primary-button" id="call-join-button" type="button">Join</button></div></div>
+          <div class="call-video-stage" id="call-video-stage" hidden><video class="call-remote-video" id="call-remote-video" autoplay playsinline></video><video class="call-local-video" id="call-local-video" autoplay muted playsinline></video></div>
+          <div class="call-audio-avatar" id="call-audio-avatar" hidden>☎</div>
+          <audio id="call-remote-audio" autoplay></audio>
+          <div class="call-incoming-actions" id="call-incoming-actions" hidden><button class="call-primary-button" id="call-accept" type="button">Accept call</button><button class="call-decline" id="call-decline" type="button">Decline</button></div>
+          <div class="call-controls" id="call-controls" hidden><button class="call-control" id="call-mute" type="button" aria-label="Mute microphone">🎙</button><button class="call-control" id="call-camera" type="button" aria-label="Turn camera off">▣</button><button class="call-control end" id="call-hangup" type="button" aria-label="End call">✕</button></div>
+          <div class="call-stage-note">Calls connect directly between devices when the network allows. Microphone and camera access are requested only when you start or accept a call.</div>
+        </section>
         <div class="thread-messages" id="thread-messages"><div class="message-bubble">Welcome to your conversation ✨</div></div>
         <div class="creative-editor" id="draw-editor" hidden><div class="creative-editor-head"><span>Draw something ✨</span><button type="button" data-editor-close="draw" aria-label="Close drawing">×</button></div><canvas id="draw-canvas" aria-label="Drawing canvas"></canvas><div class="draw-colors"><button class="draw-color" data-draw-color="#211735" style="background:#211735" aria-label="Purple"></button><button class="draw-color" data-draw-color="#f3c96b" style="background:#f3c96b" aria-label="Gold"></button><button class="draw-color" data-draw-color="#e85d9e" style="background:#e85d9e" aria-label="Pink"></button><button class="draw-color" data-draw-color="#269bd8" style="background:#269bd8" aria-label="Blue"></button><button class="draw-color" data-draw-color="#F7FBFD" style="background:#F7FBFD" aria-label="Arctic Pearl"></button></div><div class="creative-editor-actions"><button type="button" id="draw-erase">Eraser</button><button type="button" id="draw-clear">Clear</button><button type="button" class="creative-send" id="draw-send">Send drawing</button></div></div><div class="creative-editor" id="cutout-editor" hidden><div class="creative-editor-head"><span>Make a cut-out ✂️</span><button type="button" data-editor-close="cutout" aria-label="Close cut-out">×</button></div><input type="file" id="cutout-file" accept="image/*" hidden><button type="button" id="cutout-choose" class="creative-tool">Choose a photo</button><div class="cutout-preview circle" id="cutout-preview"><span>Choose a photo to start</span></div><div class="cutout-shapes"><button type="button" data-cutout-shape="circle">Circle</button><button type="button" data-cutout-shape="oval">Oval</button><button type="button" data-cutout-shape="square">Square</button></div><div class="creative-editor-actions"><button type="button" id="cutout-change">Change photo</button><button type="button" class="creative-send" id="cutout-send" disabled>Send cut-out</button></div></div><div class="creative-tools" id="creative-tools" hidden><button type="button" class="creative-tool" data-creative-tool="gif"><span class="creative-tool-icon">GIF</span><span>GIF</span></button><button type="button" class="creative-tool" data-creative-tool="cutouts"><span class="creative-tool-icon">✂️</span><span>Cut outs</span></button><button type="button" class="creative-tool" data-creative-tool="stickers"><span class="creative-tool-icon">🌟</span><span>Stickers</span></button><button type="button" class="creative-tool" data-creative-tool="draw"><span class="creative-tool-icon">✏️</span><span>Draw</span></button></div><div class="gif-picker" id="gif-picker" hidden><div class="gif-picker-head"><strong>Find a GIF</strong><button type="button" class="gif-picker-close" id="gif-picker-close" aria-label="Close GIF picker">×</button></div><input class="gif-search" id="gif-search" type="search" placeholder="Search GIFs..." aria-label="Search GIFs"><div class="gif-categories" id="gif-categories"><button type="button" class="gif-category active" data-gif-category="trending">Trending</button><button type="button" class="gif-category" data-gif-category="happy">Happy</button><button type="button" class="gif-category" data-gif-category="love">Love</button><button type="button" class="gif-category" data-gif-category="funny">Funny</button><button type="button" class="gif-category" data-gif-category="celebrate">Celebrate</button><button type="button" class="gif-category" data-gif-category="wow">Wow</button></div><div class="gif-grid" id="gif-grid"><div class="gif-empty">Loading GIFs…</div></div><div class="gif-attribution">Powered by GifJif</div></div><div class="reply-preview" id="reply-preview" hidden><span class="reply-preview-copy"></span><button type="button" id="cancel-reply" aria-label="Cancel reply">×</button></div><form class="message-compose" id="message-compose"><button type="button" class="chat-gif-button" id="chat-gif-button" aria-label="Open creative tools" title="GIF, Cut outs, Stickers and Draw">✦</button><button type="button" class="chat-audio-button" id="chat-audio-button" aria-label="Record voice message" title="Record voice message">🎙</button><textarea id="message-input" maxlength="300" rows="1" placeholder="Message..." aria-label="Write a message"></textarea><button type="submit" aria-label="Send message">➤</button><div class="voice-recording-panel" id="voice-recording-panel" hidden><div class="voice-profile">♙<small>You</small></div><div class="voice-wave-area"><div class="voice-wave" aria-label="Recording waveform"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><span class="voice-recording-time" id="voice-recording-time">0:00</span><span class="voice-recording-status" id="voice-recording-status">Recording</span></div><button type="button" class="voice-control" id="voice-pause" aria-label="Pause recording">Ⅱ</button><button type="button" class="voice-control voice-delete" id="voice-delete" aria-label="Delete recording">×</button><button type="button" class="voice-send" id="voice-send" aria-label="Send voice message">➤</button></div></form>
       </div>
@@ -1116,6 +1153,7 @@
   <button class="spotlight-prev" id="spotlight-prev" aria-label="Previous Spotlight">‹</button>
   <button class="spotlight-next" id="spotlight-next" aria-label="Next Spotlight">›</button>
 </div>
+<script src="https://unpkg.com/peerjs@1.5.5/dist/peerjs.min.js"></script>
 <script>
   const toastEl=document.getElementById('toast');let toastTimer;
   // Spotlight viewer
@@ -1596,20 +1634,141 @@
   document.getElementById('messages-rooms-open').addEventListener('click',()=>{openGroup(activeGroup);showMessagePanel('rooms-panel')});
 
 
-  // Chat call menu — call options are interactive; live calling needs a calling service.
+  // Peer-to-peer voice and video calls using PeerJS + WebRTC.
   const callButton=document.getElementById('chat-call-button');
   const callSheet=document.getElementById('call-sheet');
   const callBackdrop=document.getElementById('call-sheet-backdrop');
   const callContact=document.getElementById('call-contact-name');
+  const callStage=document.getElementById('call-stage');
+  const callStageBackdrop=document.getElementById('call-stage-backdrop');
+  const callStageStatus=document.getElementById('call-stage-status');
+  const callStageTitle=document.getElementById('call-stage-title');
+  const callCodeCard=document.getElementById('call-code-card');
+  const callCodeValue=document.getElementById('call-code-value');
+  const callJoinCard=document.getElementById('call-join-card');
+  const callJoinInput=document.getElementById('call-join-input');
+  const callVideoStage=document.getElementById('call-video-stage');
+  const callAudioAvatar=document.getElementById('call-audio-avatar');
+  const callLocalVideo=document.getElementById('call-local-video');
+  const callRemoteVideo=document.getElementById('call-remote-video');
+  const callRemoteAudio=document.getElementById('call-remote-audio');
+  const callControls=document.getElementById('call-controls');
+  const callIncomingActions=document.getElementById('call-incoming-actions');
+  let callPeer=null,activeMediaCall=null,localCallStream=null,incomingMediaCall=null,activeCallMode='voice',callRoomCode='',callIsHost=false;
+  let micEnabled=true,cameraEnabled=true;
   function closeCallSheet(){callSheet.hidden=true;callBackdrop.hidden=true}
+  function setCallStatus(message){callStageStatus.textContent=message}
+  function openCallStage(){callStageBackdrop.hidden=false;callStage.hidden=false}
+  function stopLocalCallStream(){if(localCallStream){localCallStream.getTracks().forEach(track=>track.stop());localCallStream=null}}
+  function cleanupCallRoom(){
+    if(activeMediaCall){try{activeMediaCall.close()}catch(e){}activeMediaCall=null}
+    if(incomingMediaCall){try{incomingMediaCall.close()}catch(e){}incomingMediaCall=null}
+    stopLocalCallStream();
+    if(callPeer){try{callPeer.destroy()}catch(e){}callPeer=null}
+    callLocalVideo.srcObject=null;callRemoteVideo.srcObject=null;callRemoteAudio.srcObject=null;
+    callStage.hidden=true;callStageBackdrop.hidden=true;callCodeCard.hidden=true;callJoinCard.hidden=false;
+    callVideoStage.hidden=true;callAudioAvatar.hidden=true;callControls.hidden=true;callIncomingActions.hidden=true;
+    callJoinInput.value='';callRoomCode='';callIsHost=false;micEnabled=true;cameraEnabled=true;
+    document.getElementById('call-mute').textContent='🎙';document.getElementById('call-camera').textContent='▣';
+  }
+  async function acquireCallMedia(mode){
+    if(!navigator.mediaDevices?.getUserMedia)throw new Error('Camera and microphone require a secure, supported browser.');
+    return navigator.mediaDevices.getUserMedia({audio:true,video:mode==='video'?{facingMode:'user'}:false});
+  }
+  function attachCallMedia(mediaCall,mode){
+    activeMediaCall=mediaCall;activeCallMode=mode;
+    mediaCall.on('stream',remoteStream=>{
+      if(mode==='video'){callVideoStage.hidden=false;callAudioAvatar.hidden=true;callRemoteVideo.srcObject=remoteStream;callRemoteVideo.play().catch(()=>{})}
+      else{callVideoStage.hidden=true;callAudioAvatar.hidden=false;callRemoteAudio.srcObject=remoteStream;callRemoteAudio.play().catch(()=>{})}
+      if(localCallStream&&mode==='video'){callLocalVideo.srcObject=localCallStream;callLocalVideo.play().catch(()=>{})}
+      callControls.hidden=false;callCodeCard.hidden=true;callJoinCard.hidden=true;callIncomingActions.hidden=true;
+      setCallStatus('Connected · '+document.getElementById('thread-title').textContent);
+    });
+    mediaCall.on('close',()=>{if(activeMediaCall===mediaCall){setCallStatus('Call ended');cleanupCallRoom();toast('Call ended')}});
+    mediaCall.on('error',error=>{setCallStatus('Call connection error: '+(error.message||'Please try again'));});
+  }
+  async function createCallRoom(mode){
+    if(!window.Peer){setCallStatus('Call library did not load. Check your connection and refresh.');return}
+    cleanupCallRoom();activeCallMode=mode;callIsHost=true;
+    callStageTitle.textContent=mode==='video'?'Start a video call':'Start a voice call';
+    callCodeCard.hidden=true;callJoinCard.hidden=false;callControls.hidden=true;callIncomingActions.hidden=true;
+    setCallStatus('Creating your temporary call room…');openCallStage();
+    callRoomCode=String(Math.floor(10000000+Math.random()*90000000));
+    callPeer=new Peer('si-'+callRoomCode+'-x');
+    callPeer.on('open',id=>{
+      callCodeValue.textContent=callRoomCode;callCodeCard.hidden=false;
+      setCallStatus('Your call room is ready. Waiting for someone to join.');
+    });
+    callPeer.on('call',incoming=>{
+      incomingMediaCall=incoming;const mode=incoming.metadata?.mode==='video'?'video':'voice';
+      activeCallMode=mode;callStageTitle.textContent='Incoming '+mode+' call';
+      callCodeCard.hidden=true;callJoinCard.hidden=true;callIncomingActions.hidden=false;
+      setCallStatus('Someone with your call code is calling. Accept only if you expected this call.');
+    });
+    callPeer.on('error',error=>{
+      const message=error.type==='unavailable-id'?'That temporary code is already in use. Close and start a new call.':(error.message||'Could not connect to the call service.');
+      setCallStatus(message);
+    });
+  }
+  async function joinCallRoom(mode,code){
+    if(!window.Peer){setCallStatus('Call library did not load. Check your connection and refresh.');return}
+    if(!/^\\d{8}$/.test(code)){setCallStatus('Enter the full 8-digit call code.');return}
+    callIsHost=false;activeCallMode=mode;callStageTitle.textContent=mode==='video'?'Joining video call':'Joining voice call';
+    callJoinCard.hidden=true;callCodeCard.hidden=true;setCallStatus('Connecting to the call room…');
+    try{
+      const stream=await acquireCallMedia(mode);localCallStream=stream;
+      if(mode==='video'){callVideoStage.hidden=false;callAudioAvatar.hidden=true;callLocalVideo.srcObject=stream;callLocalVideo.play().catch(()=>{})}
+      else{callVideoStage.hidden=true;callAudioAvatar.hidden=false}
+      callPeer=new Peer();
+      callPeer.on('open',()=>{
+        const target='si-'+code+'-x';
+        const mediaCall=callPeer.call(target,stream,{metadata:{mode}});
+        if(!mediaCall){setCallStatus('Could not start the call.');return}
+        setCallStatus('Calling… waiting for the other person to answer.');
+        attachCallMedia(mediaCall,mode);
+      });
+      callPeer.on('error',error=>setCallStatus(error.message||'Call connection failed. Check the code and try again.'));
+    }catch(error){stopLocalCallStream();setCallStatus(error.name==='NotAllowedError'?'Microphone or camera permission was not granted.':'Could not access the microphone or camera: '+error.message);callJoinCard.hidden=false}
+  }
   callButton.addEventListener('click',()=>{callContact.textContent=document.getElementById('thread-title').textContent;callBackdrop.hidden=false;callSheet.hidden=false});
   callBackdrop.addEventListener('click',closeCallSheet);
   callSheet.querySelectorAll('[data-call-type]').forEach(option=>option.addEventListener('click',()=>{
-    const type=option.dataset.callType==='voice'?'Voice':'Video';
-    closeCallSheet();
-    toast(type+' call selected · Live calling is not connected yet');
+    const mode=option.dataset.callType==='video'?'video':'voice';closeCallSheet();createCallRoom(mode);
   }));
-  document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!callSheet.hidden)closeCallSheet()});
+  document.getElementById('call-copy-code').addEventListener('click',async()=>{
+    try{await navigator.clipboard.writeText(callRoomCode);toast('Call code copied')}
+    catch(e){callJoinInput.value=callRoomCode;callJoinInput.focus();toast('Select and copy the code above')}
+  });
+  document.getElementById('call-join-button').addEventListener('click',()=>joinCallRoom(activeCallMode,callJoinInput.value.trim()));
+  document.getElementById('call-join-input').addEventListener('input',event=>{event.target.value=event.target.value.replace(/\\D/g,'').slice(0,8)});
+  document.getElementById('call-accept').addEventListener('click',async()=>{
+    if(!incomingMediaCall)return;
+    const incoming=incomingMediaCall,mode=activeCallMode;
+    try{
+      setCallStatus('Connecting your microphone'+(mode==='video'?' and camera':'')+'…');
+      localCallStream=await acquireCallMedia(mode);
+      if(mode==='video'){callVideoStage.hidden=false;callAudioAvatar.hidden=true;callLocalVideo.srcObject=localCallStream;callLocalVideo.play().catch(()=>{})}
+      else{callVideoStage.hidden=true;callAudioAvatar.hidden=false}
+      incoming.answer(localCallStream);incomingMediaCall=null;attachCallMedia(incoming,mode);
+      setCallStatus('Joining call…');
+    }catch(error){setCallStatus(error.name==='NotAllowedError'?'Permission was not granted.':'Could not access your microphone or camera.');}
+  });
+  document.getElementById('call-decline').addEventListener('click',()=>{if(incomingMediaCall){incomingMediaCall.close();incomingMediaCall=null}setCallStatus('Call declined');callIncomingActions.hidden=true;callJoinCard.hidden=false;});
+  document.getElementById('call-mute').addEventListener('click',()=>{
+    if(!localCallStream)return;micEnabled=!micEnabled;localCallStream.getAudioTracks().forEach(track=>track.enabled=micEnabled);
+    document.getElementById('call-mute').textContent=micEnabled?'🎙':'🔇';
+  });
+  document.getElementById('call-camera').addEventListener('click',()=>{
+    if(!localCallStream)return;cameraEnabled=!cameraEnabled;localCallStream.getVideoTracks().forEach(track=>track.enabled=cameraEnabled);
+    document.getElementById('call-camera').textContent=cameraEnabled?'▣':'◻';
+  });
+  document.getElementById('call-hangup').addEventListener('click',()=>{cleanupCallRoom();toast('Call ended')});
+  document.getElementById('call-stage-close').addEventListener('click',()=>{cleanupCallRoom();toast('Call room closed')});
+  callStageBackdrop.addEventListener('click',()=>{if(!activeMediaCall&&!incomingMediaCall)cleanupCallRoom()});
+  document.addEventListener('keydown',event=>{
+    if(event.key==='Escape'&&!callSheet.hidden)closeCallSheet();
+    else if(event.key==='Escape'&&!callStage.hidden)cleanupCallRoom();
+  });
 
 </script>
 </body>
