@@ -1143,6 +1143,34 @@
   border:0!important;
 }
 
+  
+/* Socialink Thoughts — Messages profile dashboard */
+#messages-screen .message-people-heading{gap:10px}
+#messages-screen .thought-add-button{border:1px solid rgba(243,201,107,.38);background:rgba(243,201,107,.1);color:#F7FBFD;border-radius:11px;padding:6px 10px;font-size:10px;font-weight:850}
+#messages-screen .message-person-avatar{position:relative!important}
+#messages-screen .thought-cloud{position:absolute;left:2px;top:3px;z-index:5;color:#fff!important;font-size:19px;line-height:1;filter:drop-shadow(0 1px 3px #000);background:transparent;border:0;padding:0;cursor:pointer}
+#messages-screen .thought-cloud:focus-visible{outline:2px solid #f3c96b;outline-offset:2px;border-radius:8px}
+#messages-screen .thoughts-backdrop{position:fixed;inset:0;z-index:10020;background:rgba(3,2,9,.76);backdrop-filter:blur(10px)}
+#messages-screen .thought-preview,#messages-screen .thought-compose{position:fixed;z-index:10021;left:50%;top:50%;transform:translate(-50%,-50%);width:min(calc(100vw - 34px),390px);padding:22px 20px 18px;border:1px solid rgba(243,201,107,.25);border-radius:26px;background:radial-gradient(ellipse at 50% 0%,rgba(125,77,175,.35),transparent 54%),linear-gradient(160deg,#21172f,#0e0b18 80%);box-shadow:0 24px 80px #000b;color:#F7FBFD}
+#messages-screen .thought-preview[hidden],#messages-screen .thought-compose[hidden]{display:none!important}
+#messages-screen .thought-close{position:absolute;right:12px;top:9px;border:0;background:transparent;color:#F7FBFD;font-size:26px}
+#messages-screen .thought-preview-profile{display:flex;align-items:center;justify-content:center;gap:10px;margin:8px 0 20px;font-size:16px}
+#messages-screen .thought-preview-profile span{width:48px;height:48px;display:grid;place-items:center;border:2px solid #f3c96b;border-radius:50%;background:#21172f;font-size:24px}
+#messages-screen .thought-nebula{min-height:100px;padding:22px 18px;display:grid;place-items:center;text-align:center;border:1px solid rgba(189,146,255,.28);border-radius:48% 52% 42% 58% / 52% 42% 58% 48%;background:radial-gradient(ellipse at 50% 50%,rgba(142,94,190,.42),rgba(68,43,98,.23) 55%,rgba(18,13,29,.6));box-shadow:0 0 35px rgba(139,86,190,.16),inset 0 0 24px rgba(174,132,220,.12)}
+#messages-screen .thought-nebula p{margin:0;font-size:15px;line-height:1.5;color:#F7FBFD;overflow-wrap:anywhere}
+#messages-screen .thought-song{margin:17px auto 0;padding:11px 14px;border-radius:14px;background:rgba(243,201,107,.09);border:1px solid rgba(243,201,107,.2);color:#f3c96b;font-size:12px;text-align:center}
+#messages-screen .thought-preview-actions{display:flex;justify-content:center;gap:12px;margin-top:18px}
+#messages-screen .thought-preview-actions button{border:1px solid rgba(243,201,107,.28);border-radius:12px;padding:9px 17px;background:#21172f;color:#F7FBFD;font-weight:800;font-size:12px}
+#messages-screen .thought-compose-title{font-size:19px;font-weight:900;margin:7px 0 5px}
+#messages-screen .thought-limit{font-size:11px;color:#c8b9d9;margin:0 0 12px}
+#messages-screen #thought-input,#messages-screen #thought-song-input{width:100%;box-sizing:border-box;border:1px solid rgba(255,255,255,.13);border-radius:14px;background:#100c1b;color:#F7FBFD;padding:13px;font:inherit;outline:none}
+#messages-screen #thought-input{min-height:112px;resize:vertical}
+#messages-screen .thought-song-label{display:block;margin:13px 0 7px;font-size:11px;color:#d6c9e3;font-weight:800}
+#messages-screen .thought-publish{width:100%;margin-top:14px;padding:12px;border:0;border-radius:14px;background:linear-gradient(135deg,#f3d27b,#c18b42);color:#21152b;font-weight:900}
+#messages-screen .thought-feedback{min-height:15px;margin:8px 0 0;font-size:11px;color:#f3c96b}
+#messages-screen .thought-own-person .message-person-avatar{border-color:#f3c96b!important}
+@media(max-width:390px){#messages-screen .thought-preview,#messages-screen .thought-compose{padding:20px 16px 15px}}
+
   </style>
 </head>
 <body>
@@ -1217,6 +1245,26 @@
           <button class="message-person" data-chat="Nia W."><span class="message-person-avatar">🦋<i></i></span><strong>Nia</strong><small>Mon</small></button>
           <button class="message-person" data-chat="Leo R."><span class="message-person-avatar">🌠</span><strong>Leo</strong><small>Sun</small></button>
           <button class="message-person" data-chat="Zuri A."><span class="message-person-avatar">✨</span><strong>Zuri</strong><small>Sat</small></button>
+        </div>
+      </section>
+      <section class="socialink-thoughts" id="socialink-thoughts-v1" aria-label="Thoughts">
+        <div class="thoughts-backdrop" id="thoughts-backdrop" hidden></div>
+        <div class="thoughts-preview" id="thoughts-preview" role="dialog" aria-modal="true" aria-label="Thought preview" hidden>
+          <button class="thought-close" id="thought-close" aria-label="Close thought">×</button>
+          <div class="thought-preview-profile"><span id="thought-preview-avatar">🌙</span><strong id="thought-preview-name">Amara</strong></div>
+          <div class="thought-nebula"><p id="thought-preview-text"></p></div>
+          <div class="thought-song" id="thought-preview-song" hidden>♫ <span id="thought-preview-song-text"></span></div>
+          <div class="thought-preview-actions"><button id="thought-react">♡ React</button><button id="thought-reply">↗ Reply</button></div>
+        </div>
+        <div class="thought-compose" id="thought-compose" role="dialog" aria-modal="true" aria-label="Create a Thought" hidden>
+          <button class="thought-close" id="thought-compose-close" aria-label="Close composer">×</button>
+          <div class="thought-compose-title">Share a Thought <span>💭</span></div>
+          <p class="thought-limit" id="thought-limit">20 words available</p>
+          <textarea id="thought-input" maxlength="500" placeholder="What's on your mind?"></textarea>
+          <label class="thought-song-label" for="thought-song-input">Add a song (optional)</label>
+          <input id="thought-song-input" type="text" maxlength="90" placeholder="Song title · Artist">
+          <button class="thought-publish" id="thought-publish">Share Thought</button>
+          <p class="thought-feedback" id="thought-feedback" aria-live="polite"></p>
         </div>
       </section>
       <section class="message-inbox-preview" aria-label="Recent and older conversations">
@@ -2157,6 +2205,84 @@
       }
     }
   },true);
+})();
+</script>
+
+
+<script>
+/* Socialink Thoughts: local prototype state; cloud appears only for active Thoughts or songs. */
+(function(){
+  const root=document.getElementById('socialink-thoughts-v1');
+  const list=document.querySelector('#messages-screen .message-people-list');
+  if(!root||!list)return;
+  const sample={
+    'Amara K.':{avatar:'🌙',name:'Amara',text:'Make time for the things that make you feel alive ✨',song:'Golden Hour · JVKE'},
+    'Nia W.':{avatar:'🦋',name:'Nia',text:'A little progress is still progress 💜',song:''},
+    'Zuri A.':{avatar:'✨',name:'Zuri',text:'',song:'Snooze · SZA'}
+  };
+  const storeKey='socialink-thoughts-local-v1';
+  let own={};try{own=JSON.parse(localStorage.getItem(storeKey)||'{}')||{}}catch(e){own={}}
+  const weekKey=()=>{const d=new Date(),jan=new Date(d.getFullYear(),0,1);return d.getFullYear()+'-'+Math.floor((d-jan)/604800000)};
+  const activeWeeks=Array.isArray(own.activeWeeks)?own.activeWeeks:[];
+  const wordLimit=Math.min(60,20+Math.max(0,activeWeeks.length-1)*10);
+  const countWords=t=>(t.trim().match(/\S+/g)||[]).length;
+  function addCloud(button,data){
+    const avatar=button.querySelector('.message-person-avatar');
+    if(!avatar||avatar.querySelector('.thought-cloud')||(!data.text&&!data.song))return;
+    const cloud=document.createElement('button');cloud.type='button';cloud.className='thought-cloud';cloud.textContent='💭';cloud.setAttribute('aria-label','View '+data.name+"'s Thought");
+    cloud.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();openPreview(data)});
+    avatar.appendChild(cloud);
+  }
+  function openPreview(data){
+    document.getElementById('thought-preview-avatar').textContent=data.avatar||'✦';
+    document.getElementById('thought-preview-name').textContent=data.name||'You';
+    const text=document.getElementById('thought-preview-text');
+    text.textContent=data.text||'';
+    text.parentElement.hidden=!data.text;
+    const song=document.getElementById('thought-preview-song');
+    song.hidden=!data.song;
+    document.getElementById('thought-preview-song-text').textContent=data.song||'';
+    showModal('thought-preview');
+  }
+  function showModal(id){document.getElementById('thoughts-backdrop').hidden=false;document.getElementById('thought-preview').hidden=id!=='thought-preview';document.getElementById('thought-compose').hidden=id!=='thought-compose'}
+  function closeModals(){document.getElementById('thoughts-backdrop').hidden=true;document.getElementById('thought-preview').hidden=true;document.getElementById('thought-compose').hidden=true}
+  Object.entries(sample).forEach(([key,data])=>{const button=list.querySelector('[data-chat="'+key+'"]');if(button)addCloud(button,data)});
+  const heading=document.querySelector('#messages-screen .message-people-heading');
+  if(heading){
+    const add=document.createElement('button');add.type='button';add.className='thought-add-button';add.textContent='＋ Thought';
+    add.addEventListener('click',()=>{document.getElementById('thought-input').value=own.text||'';document.getElementById('thought-song-input').value=own.song||'';document.getElementById('thought-limit').textContent=wordLimit+' words available';document.getElementById('thought-feedback').textContent='';showModal('thought-compose')});
+    heading.appendChild(add);
+  }
+  function renderOwn(){
+    let button=list.querySelector('.thought-own-person');
+    if(!own.text&&!own.song){if(button)button.remove();return}
+    if(!button){
+      button=document.createElement('button');button.type='button';button.className='message-person thought-own-person';button.innerHTML='<span class="message-person-avatar">✦</span><strong>You</strong><small>Your Thought</small>';
+      list.prepend(button);
+      button.addEventListener('click',()=>openPreview({avatar:'✦',name:'You',text:own.text||'',song:own.song||''}));
+    }
+    addCloud(button,{avatar:'✦',name:'You',text:own.text||'',song:own.song||''});
+  }
+  renderOwn();
+  document.getElementById('thought-input').addEventListener('input',e=>{
+    const words=countWords(e.target.value),limit=wordLimit;
+    document.getElementById('thought-limit').textContent=words+' / '+limit+' words';
+    document.getElementById('thought-feedback').textContent=words>limit?'Please shorten your Thought to '+limit+' words.':'';
+  });
+  document.getElementById('thought-publish').addEventListener('click',()=>{
+    const text=document.getElementById('thought-input').value.trim(),song=document.getElementById('thought-song-input').value.trim(),words=countWords(text),feedback=document.getElementById('thought-feedback');
+    if(!text&&!song){feedback.textContent='Add a Thought or a song first.';return}
+    if(words>wordLimit){feedback.textContent='Your current limit is '+wordLimit+' words.';return}
+    const wk=weekKey();if(!activeWeeks.includes(wk))activeWeeks.push(wk);
+    own={text,song,activeWeeks};try{localStorage.setItem(storeKey,JSON.stringify(own))}catch(e){}
+    renderOwn();closeModals();
+  });
+  document.getElementById('thought-close').addEventListener('click',closeModals);
+  document.getElementById('thought-compose-close').addEventListener('click',closeModals);
+  document.getElementById('thoughts-backdrop').addEventListener('click',closeModals);
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModals()});
+  document.getElementById('thought-react').addEventListener('click',()=>{document.getElementById('thought-react').textContent='♥ Reacted'});
+  document.getElementById('thought-reply').addEventListener('click',()=>{closeModals();const name=document.getElementById('thought-preview-name').textContent;const target=name==='You'?'Amara K.':name+' '+(name==='Amara'?'K.':name==='Nia'?'W.':'A.');if(typeof openThread==='function')openThread(target)});
 })();
 </script>
 
