@@ -894,7 +894,7 @@
 .message-bubble.gif-message img{display:block;width:100%;max-height:220px;object-fit:cover;border-radius:12px}
 .message-bubble.gif-message small{display:block;font-size:9px;color:#F7FBFD;opacity:.75;margin-top:3px}
 
-</style>
+.gif-attribution{text-align:center;padding:7px 0 2px;color:#F7FBFD;font-size:10px;font-weight:700;opacity:.75}\n</style>
 </head>
 <body>
 <div class="app">
@@ -1024,7 +1024,7 @@
       <div class="messages-panel" id="thread-panel" aria-label="Private conversation">
         <header class="chat-screen-head"><button class="chat-screen-back" id="thread-back" aria-label="Back to messages">‹</button><span class="chat-screen-avatar" id="thread-avatar">🌙</span><div class="chat-screen-person"><h3 id="thread-title">Conversation</h3><small>Socialink chat</small></div><button class="chat-screen-more" type="button" aria-label="More options">⋮</button></header>
         <div class="thread-messages" id="thread-messages"><div class="message-bubble">Welcome to your conversation ✨</div></div>
-        <div class="gif-picker" id="gif-picker" hidden><div class="gif-picker-head"><strong>Find a GIF</strong><button type="button" class="gif-picker-close" id="gif-picker-close" aria-label="Close GIF picker">×</button></div><input class="gif-search" id="gif-search" type="search" placeholder="Search GIFs..." aria-label="Search GIFs"><div class="gif-categories" id="gif-categories"><button type="button" class="gif-category active" data-gif-category="trending">Trending</button><button type="button" class="gif-category" data-gif-category="happy">Happy</button><button type="button" class="gif-category" data-gif-category="love">Love</button><button type="button" class="gif-category" data-gif-category="funny">Funny</button><button type="button" class="gif-category" data-gif-category="celebrate">Celebrate</button><button type="button" class="gif-category" data-gif-category="wow">Wow</button></div><div class="gif-grid" id="gif-grid"><div class="gif-empty">Loading GIFs…</div></div></div><div class="reply-preview" id="reply-preview" hidden><span class="reply-preview-copy"></span><button type="button" id="cancel-reply" aria-label="Cancel reply">×</button></div><form class="message-compose" id="message-compose"><button type="button" class="chat-gif-button" id="chat-gif-button" aria-label="Choose a GIF" title="Choose a GIF">GIF</button><button type="button" class="chat-audio-button" id="chat-audio-button" aria-label="Record voice message" title="Record voice message">🎙</button><textarea id="message-input" maxlength="300" rows="1" placeholder="Message..." aria-label="Write a message"></textarea><button type="submit" aria-label="Send message">➤</button><div class="voice-recording-panel" id="voice-recording-panel" hidden><div class="voice-profile">♙<small>You</small></div><div class="voice-wave-area"><div class="voice-wave" aria-label="Recording waveform"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><span class="voice-recording-time" id="voice-recording-time">0:00</span><span class="voice-recording-status" id="voice-recording-status">Recording</span></div><button type="button" class="voice-control" id="voice-pause" aria-label="Pause recording">Ⅱ</button><button type="button" class="voice-control voice-delete" id="voice-delete" aria-label="Delete recording">×</button><button type="button" class="voice-send" id="voice-send" aria-label="Send voice message">➤</button></div></form>
+        <div class="gif-picker" id="gif-picker" hidden><div class="gif-picker-head"><strong>Find a GIF</strong><button type="button" class="gif-picker-close" id="gif-picker-close" aria-label="Close GIF picker">×</button></div><input class="gif-search" id="gif-search" type="search" placeholder="Search GIFs..." aria-label="Search GIFs"><div class="gif-categories" id="gif-categories"><button type="button" class="gif-category active" data-gif-category="trending">Trending</button><button type="button" class="gif-category" data-gif-category="happy">Happy</button><button type="button" class="gif-category" data-gif-category="love">Love</button><button type="button" class="gif-category" data-gif-category="funny">Funny</button><button type="button" class="gif-category" data-gif-category="celebrate">Celebrate</button><button type="button" class="gif-category" data-gif-category="wow">Wow</button></div><div class="gif-grid" id="gif-grid"><div class="gif-empty">Loading GIFs…</div></div><div class="gif-attribution">Powered by GifJif</div></div><div class="reply-preview" id="reply-preview" hidden><span class="reply-preview-copy"></span><button type="button" id="cancel-reply" aria-label="Cancel reply">×</button></div><form class="message-compose" id="message-compose"><button type="button" class="chat-gif-button" id="chat-gif-button" aria-label="Choose a GIF" title="Choose a GIF">GIF</button><button type="button" class="chat-audio-button" id="chat-audio-button" aria-label="Record voice message" title="Record voice message">🎙</button><textarea id="message-input" maxlength="300" rows="1" placeholder="Message..." aria-label="Write a message"></textarea><button type="submit" aria-label="Send message">➤</button><div class="voice-recording-panel" id="voice-recording-panel" hidden><div class="voice-profile">♙<small>You</small></div><div class="voice-wave-area"><div class="voice-wave" aria-label="Recording waveform"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><span class="voice-recording-time" id="voice-recording-time">0:00</span><span class="voice-recording-status" id="voice-recording-status">Recording</span></div><button type="button" class="voice-control" id="voice-pause" aria-label="Pause recording">Ⅱ</button><button type="button" class="voice-control voice-delete" id="voice-delete" aria-label="Delete recording">×</button><button type="button" class="voice-send" id="voice-send" aria-label="Send voice message">➤</button></div></form>
       </div>
       <div class="messages-panel" id="education-panel"><button class="back-link" id="education-back">‹ Back</button><div class="rooms-hero"><div class="rooms-orbit">🎓</div><h3>Education Dashboard</h3><p>A dedicated space for learning with your groups.</p></div><div class="room-list"><div class="room-card"><span class="room-icon">📚</span><span><strong>Study rooms</strong><small>Focused group learning</small></span></div><div class="room-card"><span class="room-icon">📝</span><span><strong>Shared notes</strong><small>Keep useful ideas together</small></span></div></div></div>
     </section>
@@ -1289,25 +1289,30 @@
   });
 
 
-  // GIF picker: trending starter collection, category browsing and live search.
+  // GIF picker powered by GifJif's shared demo key (no personal API key required).
   const gifButton=document.getElementById('chat-gif-button');
   const gifPicker=document.getElementById('gif-picker');
   const gifClose=document.getElementById('gif-picker-close');
   const gifSearch=document.getElementById('gif-search');
   const gifGrid=document.getElementById('gif-grid');
-  const gifApiKey='dc6zaTOxFJIfI';
+  const gifApiKey='DEMO';
   let gifRequest=0,gifCategory='trending',gifSearchTimer=null;
   function showGifEmpty(message){gifGrid.replaceChildren();const empty=document.createElement('div');empty.className='gif-empty';empty.textContent=message;gifGrid.append(empty)}
+  function gifMedia(item){
+    const formats=item.media_formats||{};
+    const media=formats.gif?.url||formats.tinygif?.url||formats.nanowebp?.url||formats.tinywebp?.url;
+    const preview=formats.nanowebp?.url||formats.tinywebp?.url||formats.tinygif?.url||media;
+    return {media,preview};
+  }
   function renderGifResults(items){
     gifGrid.replaceChildren();
     if(!items?.length){showGifEmpty('No GIFs found. Try another search.');return}
     items.forEach(item=>{
-      const media=item.images?.fixed_width?.url||item.images?.downsized?.url||item.images?.original?.url;
-      const preview=item.images?.fixed_width_small?.url||item.images?.fixed_width?.url||media;
-      if(!media)return;
+      const {media,preview}=gifMedia(item);
+      if(!media||!preview)return;
       const button=document.createElement('button');button.type='button';button.className='gif-result';button.setAttribute('aria-label','Send GIF');
-      const img=document.createElement('img');img.src=preview;img.alt=item.title||'GIF';img.loading='lazy';button.append(img);
-      button.addEventListener('click',()=>{(chats[activeThread]||(chats[activeThread]=[])).push({mine:true,gifUrl:media,text:item.title||'GIF'});gifPicker.hidden=true;gifSearch.value='';drawThread()});
+      const img=document.createElement('img');img.src=preview;img.alt=item.title||item.content_description||'GIF';img.loading='lazy';button.append(img);
+      button.addEventListener('click',()=>{(chats[activeThread]||(chats[activeThread]=[])).push({mine:true,gifUrl:media,text:item.title||item.content_description||'GIF'});gifPicker.hidden=true;gifSearch.value='';drawThread()});
       gifGrid.append(button);
     });
     if(!gifGrid.children.length)showGifEmpty('No GIFs found. Try another search.');
@@ -1315,11 +1320,21 @@
   async function loadGifs(query=''){
     const request=++gifRequest;showGifEmpty('Loading GIFs…');
     const term=query.trim()||(gifCategory==='trending'?'':gifCategory);
-    const endpoint=term?'https://api.giphy.com/v1/gifs/search':'https://api.giphy.com/v1/gifs/trending';
-    const params=new URLSearchParams({api_key:gifApiKey,rating:'g',limit:'18',lang:'en'});
-    if(term)params.set('q',term);
-    try{const response=await fetch(endpoint+'?'+params.toString());if(!response.ok)throw new Error('GIF service unavailable');const data=await response.json();if(request===gifRequest)renderGifResults(data.data||[])}
-    catch(error){if(request===gifRequest)showGifEmpty('GIFs could not load right now. Check your connection and try again.')}
+    const endpoint=term?'https://gifjif.com/api/v2/search':'https://gifjif.com/api/v2/featured';
+    const params=new URLSearchParams({key:gifApiKey,limit:'18',contentfilter:'medium',media_filter:'nanowebp,tinywebp,tinygif,gif,gifpreview'});
+    if(term)params.set('q',term);else params.set('sort','week');
+    try{
+      const response=await fetch(endpoint+'?'+params.toString());
+      if(!response.ok){
+        if(response.status===429)throw new Error('GIF search is temporarily busy. Please try again shortly.');
+        if(response.status===401||response.status===403)throw new Error('The GIF service did not accept its shared demo access.');
+        throw new Error('GIF service returned error '+response.status+'.');
+      }
+      const data=await response.json();
+      if(request===gifRequest)renderGifResults(data.results||[]);
+    }catch(error){
+      if(request===gifRequest)showGifEmpty(error.message||'GIFs could not load. Please try again.');
+    }
   }
   gifButton.addEventListener('click',()=>{gifPicker.hidden=!gifPicker.hidden;if(!gifPicker.hidden){gifSearch.focus();loadGifs(gifSearch.value.trim())}});
   gifClose.addEventListener('click',()=>{gifPicker.hidden=true});
