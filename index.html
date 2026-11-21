@@ -1845,7 +1845,7 @@
           const word=document.createElement('button');word.type='button';word.className='meaning-word';word.dataset.meaningWord=part.replace(/^[^\p{L}\p{N}'-]+|[^\p{L}\p{N}'-]+$/gu,'');word.textContent=part;bubble.append(word);
         });
       }content.append(bubble);
-      if(item.translation){const translated=document.createElement('div');translated.className='message-translation';const label=document.createElement('small');label.textContent='TRANSLATION';const value=document.createElement('span');value.textContent=item.translation;translated.append(label,value);content.append(translated)}
+      if(item.translation&&item.translationVisible!==false){const translated=document.createElement('div');translated.className='message-translation';const label=document.createElement('small');label.textContent='TRANSLATION';const value=document.createElement('span');value.textContent=item.translation;translated.append(label,value);content.append(translated)}
       if(item.meaningResult){const meaning=document.createElement('div');meaning.className='message-meaning';const head=document.createElement('strong');head.textContent='MEANING · '+item.meaningResult.word;const definition=document.createElement('span');definition.textContent=item.meaningResult.definition;meaning.append(head,definition);content.append(meaning)}
       const tools=document.createElement('div');tools.className='message-tools';
       const reply=document.createElement('button');reply.type='button';reply.className='message-tool';reply.dataset.replyIndex=index;reply.textContent='↩ Reply';
@@ -1906,6 +1906,7 @@
     const actions=[];
     if(item.mine)actions.push(['edit','✎','Edit']);
     if(item.text&&!item.audioUrl&&!item.imageUrl&&!item.gifUrl&&!item.drawUrl)actions.push(['meaning','?','Meaning']);
+    if(item.translation)actions.push(['toggle-translation',item.translationVisible===false?'◉':'◌',item.translationVisible===false?'Show translation':'Hide translation']);
     actions.push(['translate','文','Translate']);
     actions.push(['pin','⌖',item.pinned?'Unpin':'Pin']);
     if(item.mine)actions.push(['delete','⌫','Delete']);
@@ -1927,12 +1928,15 @@
         editingMessageIndex=index;replyTarget=null;messageInput.value=current.text||'';resizeMessageInput();syncReplyPreview();messageInput.focus();toast('Message loaded into the text box');
       }else if(action==='meaning'){
         meaningSelectionMode=true;document.getElementById('thread-panel').classList.add('meaning-select-mode');toast('Meaning is ready. Tap the word you want explained.');
+      }else if(action==='toggle-translation'){
+        current.translationVisible=current.translationVisible===false;
+        drawThread();toast(current.translationVisible?'Translation shown':'Translation hidden');
       }else if(action==='translate'){
         if((current.translationCount||0)>=6){toast('This message has reached its 6-translation limit.');return}
         current.translationCount=(current.translationCount||0)+1;
         const textToTranslate=current.text||'';
         if(!textToTranslate.trim()){toast('This message has no text to translate.');return}
-        current.translation='Translating…';drawThread();
+        current.translation='Translating…';current.translationVisible=true;drawThread();
         try{
           let translated='';
           const memoryUrl='https://api.mymemory.translated.net/get?q='+encodeURIComponent(textToTranslate)+'&langpair=autodetect|en';
