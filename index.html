@@ -3052,18 +3052,42 @@ body.socialink-profile-open #profile-screen{
     };
     reader.readAsDataURL(file);
   });
-  $('socialink-edit-save').addEventListener('click',()=>{
+  $('socialink-edit-save').addEventListener('click',async()=>{
     const name=$('socialink-edit-name').value.trim();
     const handle=$('socialink-edit-handle').value.trim().replace(/^@/,'').replace(/\s+/g,'');
     const bio=$('socialink-edit-bio').value.trim();
+    const saveButton=$('socialink-edit-save');
     if(!name){alert('Please enter your name.');return;}
     if(!handle){alert('Please choose a username.');return;}
-    const updated={...read(),name,handle,bio,photo:chosenPhoto};
-    try{localStorage.setItem('socialink-profile-v1',JSON.stringify(updated));}
-    catch(e){alert('Your photo is too large to save on this device. Please choose a smaller image.');return;}
-    applyProfile(updated);close();
-    const toast=document.querySelector('.toast');
-    if(toast){toast.textContent='Profile updated ✦';toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),2200);}
+    saveButton.disabled=true;
+    saveButton.textContent='Saving…';
+    try{
+      let photoUrl=chosenPhoto;
+      if(chosenPhoto&&chosenPhoto.startsWith('data:')){
+        const client=window.supabaseClient;
+        if(!client)throw new Error('Socialink cloud connection is not ready. Please refresh and try again.');
+        const session=await window.socialinkSessionReady;
+        const userId=session?.user?.id;
+        if(!userId)throw new Error('Your Socialink session is not ready. Please refresh and try again.');
+        const imageBlob=await (await fetch(chosenPhoto)).blob();
+        const filePath=userId+'/avatar.jpg';
+        const {error:uploadError}=await client.storage.from('socialink-avatars').upload(filePath,imageBlob,{upsert:true,contentType:'image/jpeg',cacheControl:'3600'});
+        if(uploadError)throw uploadError;
+        const {data:publicData}=client.storage.from('socialink-avatars').getPublicUrl(filePath);
+        photoUrl=publicData.publicUrl;
+      }
+      const updated={...read(),name,handle,bio,photo:photoUrl};
+      localStorage.setItem('socialink-profile-v1',JSON.stringify(updated));
+      applyProfile(updated);close();
+      const toast=document.querySelector('.toast');
+      if(toast){toast.textContent='Profile updated ✦';toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),2200);}
+    }catch(error){
+      console.error('Profile save failed:',error);
+      alert('Could not save your profile photo to the cloud: '+(error.message||'Please try again.'));
+    }finally{
+      saveButton.disabled=false;
+      saveButton.textContent='Save changes';
+    }
   });
   const existing=read();if(existing.photo)applyProfile(existing);
 })();
