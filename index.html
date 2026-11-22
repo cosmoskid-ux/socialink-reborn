@@ -3070,9 +3070,13 @@ body.socialink-profile-open #profile-screen{
         const userId=session?.user?.id;
         if(!userId)throw new Error('Your Socialink session is not ready. Please refresh and try again.');
         const imageBlob=await (await fetch(chosenPhoto)).blob();
+        const {data:bucketList,error:bucketListError}=await client.storage.listBuckets();
+        if(bucketListError)throw new Error('Storage API check failed: '+bucketListError.message);
+        const avatarBucket=(bucketList||[]).find(bucket=>bucket.id==='socialink-avatars');
+        if(!avatarBucket)throw new Error('The Storage API does not list socialink-avatars. Buckets visible to the app: '+(bucketList||[]).map(bucket=>bucket.id).join(', '));
         const filePath=userId+'/avatar.jpg';
         const {error:uploadError}=await client.storage.from('socialink-avatars').upload(filePath,imageBlob,{upsert:true,contentType:'image/jpeg',cacheControl:'3600'});
-        if(uploadError)throw uploadError;
+        if(uploadError)throw new Error('Storage upload failed ('+(uploadError.statusCode||'no status')+'): '+uploadError.message);
         const {data:publicData}=client.storage.from('socialink-avatars').getPublicUrl(filePath);
         photoUrl=publicData.publicUrl;
       }
