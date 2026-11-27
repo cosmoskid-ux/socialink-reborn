@@ -1936,7 +1936,7 @@ button,a,[role="button"]{
   }
   function loadCutout(file){
     if(!file||!file.type.startsWith('image/'))return;
-    const reader=new FileReader();reader.onload=()=>{const image=new Image();image.onload=()=>{cutoutImage=image;cutoutScale=1;cutoutX=0;cutoutY=0;cutoutZoom.value='1';cutoutShapesToggle.disabled=false;cutoutTrace.disabled=false;cutoutChange.disabled=false;cutoutZoom.disabled=false;document.getElementById('cutout-zoom-in').disabled=false;document.getElementById('cutout-zoom-out').disabled=false;updateCutoutPreview()};image.src=reader.result};reader.readAsDataURL(file)
+    const reader=new FileReader();reader.onload=()=>{const image=new Image();image.onload=()=>{cutoutImage=image;cutoutShape='freehand';cutoutTracePoints=[];cutoutTracing=false;cutoutTraceLayer.hidden=true;cutoutTraceLine.setAttribute('points','');cutoutScale=1;cutoutX=0;cutoutY=0;cutoutZoom.value='1';cutoutShapesToggle.disabled=false;cutoutTrace.disabled=false;cutoutChange.disabled=false;cutoutZoom.disabled=false;document.getElementById('cutout-zoom-in').disabled=false;document.getElementById('cutout-zoom-out').disabled=false;updateCutoutPreview();cutoutHint.textContent='Tap Select manually, then trace around the subject.'};image.src=reader.result};reader.readAsDataURL(file)
   }
   document.getElementById('cutout-choose').addEventListener('click',()=>cutoutFile.click());
   cutoutChange.addEventListener('click',()=>cutoutFile.click());
@@ -3337,6 +3337,21 @@ header{
 #thread-panel .cutout-shapes,#thread-panel .cutout-adjust,#thread-panel .creative-editor-actions{display:none!important}
 #thread-panel .cutout-trace-layer polyline{stroke:#fff;stroke-width:6;stroke-dasharray:none;fill:rgba(255,255,255,.08);filter:none}
 #thread-panel .cutout-sweep{display:none!important}
+</style>
+
+<style id="socialink-cutout-cleanup">
+/* Cut-out stickers should float in the chat, not sit inside a purple message card. */
+#thread-panel .message-line:has(.message-bubble.gif-message){align-items:flex-end}
+#thread-panel .message-bubble.gif-message{display:inline-flex!important;align-items:center!important;justify-content:center!important;width:auto!important;max-width:min(190px,58vw)!important;min-width:0!important;min-height:0!important;padding:0!important;margin:0!important;background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;overflow:visible!important}
+#thread-panel .message-bubble.gif-message img{display:block!important;width:auto!important;height:auto!important;max-width:min(190px,58vw)!important;max-height:190px!important;object-fit:contain!important;border-radius:0!important;background:transparent!important}
+#thread-panel .cutout-stage-wrap{background:transparent!important;border:0!important;border-radius:14px!important;overflow:hidden!important}
+#thread-panel .cutout-preview{background-color:transparent!important;background-image:linear-gradient(45deg,#24232b 25%,transparent 25%),linear-gradient(-45deg,#24232b 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#24232b 75%),linear-gradient(-45deg,transparent 75%,#24232b 75%)!important;background-size:18px 18px!important;background-position:0 0,0 9px,9px -9px,-9px 0!important}
+#thread-panel .cutout-preview.freehand{cursor:crosshair!important}
+#thread-panel .cutout-preview.result{background:transparent!important}
+#thread-panel .cutout-preview.result img{width:auto!important;height:auto!important;max-width:100%!important;max-height:100%!important;object-fit:contain!important}
+#thread-panel .cutout-trace-layer{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;z-index:5!important;pointer-events:none!important}
+#thread-panel .cutout-trace-layer[hidden]{display:none!important}
+#thread-panel .cutout-hint{text-align:center!important;max-width:360px!important;margin:0 auto!important}
 </style>
 </body>
 </html>
