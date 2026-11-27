@@ -3093,5 +3093,144 @@ body.socialink-profile-open #profile-screen{
 })();
 </script>
 
+
+<style id="socialink-premium-ui-polish">
+/* Radiant Galaxy 2.0 — visual refinement only; existing structure and behavior preserved. */
+:root{
+  --white:#F7FBFD!important;
+  --line:rgba(211,202,225,.105)!important;
+  --panel:#100d1c;
+  --panel2:#171225;
+  --gold:#D6B45D;
+}
+html{background:#070611!important}
+body{
+  color:#F7FBFD!important;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+  background:linear-gradient(180deg,#100b1b 0%,#090712 42%,#070611 100%)!important;
+}
+button,input,textarea,select{font-family:inherit;-webkit-tap-highlight-color:transparent}
+button{ -webkit-font-smoothing:antialiased }
+:focus-visible{outline:2px solid rgba(214,180,93,.82)!important;outline-offset:3px}
+header{
+  border-bottom:1px solid rgba(214,180,93,.13)!important;
+  box-shadow:0 8px 26px rgba(0,0,0,.18);
+}
+.brand{color:#D6B45D!important;letter-spacing:-.8px!important;text-shadow:none!important}
+.icon-btn{
+  border:1px solid rgba(214,180,93,.17)!important;
+  border-radius:14px!important;
+  background:linear-gradient(145deg,#191426,#100d19)!important;
+  box-shadow:inset 0 1px rgba(255,255,255,.045),0 5px 14px rgba(0,0,0,.16);
+  transition:border-color .18s,transform .18s,background .18s;
+}
+.icon-btn:active{transform:scale(.96)}
+.section-head h2{letter-spacing:-.25px;color:#F7FBFD}
+.section-head a,.subtle{color:#AAA2B6!important}
+.person{
+  background:linear-gradient(155deg,#171321,#100d19)!important;
+  border:1px solid rgba(214,180,93,.13)!important;
+  border-radius:18px!important;
+  box-shadow:0 8px 22px rgba(0,0,0,.14),inset 0 1px rgba(255,255,255,.035);
+}
+.person strong,.story-name{color:#F7FBFD!important}
+.follow{
+  border:1px solid rgba(214,180,93,.42)!important;
+  background:rgba(214,180,93,.09)!important;
+  color:#E8CB83!important;
+  border-radius:11px!important;
+  transition:background .18s,border-color .18s,transform .18s;
+}
+.follow:active{transform:scale(.97)}
+.post{
+  background:linear-gradient(160deg,#13101d,#0e0b16)!important;
+  border-color:rgba(211,202,225,.10)!important;
+  box-shadow:0 10px 28px rgba(0,0,0,.2)!important;
+}
+.post-head{border-bottom:1px solid rgba(211,202,225,.055)}
+.post-user strong{color:#F7FBFD!important;letter-spacing:.05px}
+.post-user small{color:#A9A1B4!important}
+.post-art{
+  background:radial-gradient(ellipse at 50% 35%,rgba(113,82,151,.18),transparent 48%),linear-gradient(145deg,#21182d,#100c19 72%,#0b0912)!important;
+}
+.post-art:before,.post-art:after{border-color:rgba(214,180,93,.09)!important}
+.art-copy h3{letter-spacing:-.65px;color:#F7FBFD}
+.art-copy p,.post-caption{color:#D8D2DF!important}
+.post-actions{border-top:1px solid rgba(255,255,255,.035)!important}
+.post-actions .action{transition:color .16s,transform .16s!important}
+.bottom-nav{
+  border-top:1px solid rgba(214,180,93,.14)!important;
+  box-shadow:0 -8px 26px rgba(0,0,0,.2);
+}
+.nav-item{color:#AAA2B6!important;transition:color .16s}
+.nav-item.active,.nav-item.active .nav-icon{color:#E2C477!important}
+.create{
+  background:linear-gradient(145deg,#E8CD83,#BD9145)!important;
+  border:1px solid rgba(255,238,190,.45)!important;
+  box-shadow:0 7px 20px rgba(0,0,0,.28),inset 0 1px rgba(255,255,255,.35)!important;
+}
+.create-menu{
+  border:1px solid rgba(214,180,93,.22)!important;
+  box-shadow:0 20px 55px rgba(0,0,0,.58),inset 0 1px rgba(255,255,255,.045)!important;
+}
+.comments-panel{border-top:1px solid rgba(214,180,93,.11)!important}
+.comment-bubble,.comment-input{
+  border:1px solid rgba(211,202,225,.09)!important;
+  background:#15111f!important;
+}
+.comment-send,.edit-save{
+  background:linear-gradient(135deg,#E8CD83,#BD9145)!important;
+  box-shadow:0 5px 14px rgba(0,0,0,.18),inset 0 1px rgba(255,255,255,.28);
+}
+#profile-screen{
+  background:linear-gradient(180deg,#100d1b,#090711)!important;
+}
+#profile-screen .profile-cover{
+  background:linear-gradient(120deg,#21182f,#151122 55%,#20172c)!important;
+  border-bottom:1px solid rgba(214,180,93,.12)!important;
+}
+#profile-screen .profile-spotlight-card,
+#profile-screen .profile-content,
+#profile-screen .profile-tab{
+  border-color:rgba(211,202,225,.10)!important;
+}
+#socialink-edit-page{
+  background:linear-gradient(180deg,#14101f 0%,#090711 100%)!important;
+}
+#socialink-edit-page .edit-top{
+  border-bottom:1px solid rgba(214,180,93,.13)!important;
+}
+#socialink-edit-page .edit-photo-preview{
+  border:1px solid rgba(214,180,93,.65)!important;
+  box-shadow:0 10px 26px rgba(0,0,0,.22);
+}
+#socialink-edit-page .edit-field input,
+#socialink-edit-page .edit-field textarea{
+  border:1px solid rgba(211,202,225,.13)!important;
+  background:#120f1b!important;
+  color:#F7FBFD!important;
+  transition:border-color .18s,box-shadow .18s;
+}
+#socialink-edit-page .edit-field input:focus,
+#socialink-edit-page .edit-field textarea:focus,
+.comment-input:focus{
+  border-color:rgba(214,180,93,.65)!important;
+  box-shadow:0 0 0 3px rgba(214,180,93,.08);
+}
+#socialink-edit-page .edit-cancel{
+  border:1px solid rgba(211,202,225,.12)!important;
+  background:#15111f!important;
+}
+.toast{
+  border:1px solid rgba(214,180,93,.25)!important;
+  background:#171321!important;
+  color:#F7FBFD!important;
+}
+@media(prefers-reduced-motion:no-preference){
+  .person,.post,.icon-btn,.follow,.nav-item,.action{transition-duration:.18s}
+}
+</style>
+
 </body>
 </html>
