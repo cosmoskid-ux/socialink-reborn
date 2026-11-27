@@ -1943,7 +1943,7 @@ button,a,[role="button"]{
   ['pointerup','pointercancel','lostpointercapture'].forEach(name=>cutoutPreview.addEventListener(name,()=>{cutoutDragging=false;cutoutPointer=null}));
   cutoutCut.addEventListener('click',()=>{
     if(!cutoutImage)return;
-    cutoutCut.disabled=true;cutoutSweep.hidden=false;cutoutPreview.classList.add('cutting');cutoutHint.textContent='Cutting along the selected shape…';
+    cutoutCut.disabled=true;cutoutSweep.className='cutout-sweep '+cutoutShape;cutoutSweep.hidden=false;cutoutPreview.classList.add('cutting');cutoutHint.textContent='Cutting along the selected shape…';
     setTimeout(()=>{
       const size=900,stage=cutoutPreview.getBoundingClientRect(),canvas=document.createElement('canvas');canvas.width=size;canvas.height=size;const ctx=canvas.getContext('2d');
       const baseScale=Math.max(size/cutoutImage.naturalWidth,size/cutoutImage.naturalHeight),drawScale=baseScale*cutoutScale,drawW=cutoutImage.naturalWidth*drawScale,drawH=cutoutImage.naturalHeight*drawScale;
@@ -3298,6 +3298,10 @@ header{
 #thread-panel .cutout-adjust input{flex:1;max-width:230px;accent-color:#D6B45D}
 #thread-panel .cutout-sweep{position:absolute;inset:4%;pointer-events:none;z-index:4;border:2px dashed #E8CD83;border-radius:50%;animation:cutoutTrace .85s linear infinite}
 #thread-panel .cutout-sweep span{position:absolute;top:-13px;left:50%;font-size:24px;animation:cutoutOrbit .85s linear infinite}
+#thread-panel .cutout-sweep.oval{border-radius:50% / 42%}
+#thread-panel .cutout-sweep.square{border-radius:12px}
+#thread-panel .cutout-sweep.star{border-radius:0;clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 94%,50% 72%,21% 94%,32% 57%,2% 35%,39% 35%)}
+#thread-panel .cutout-sweep.heart{border-radius:0;clip-path:polygon(50% 90%,42% 82%,5% 58%,5% 30%,5% 5%,36% 0%,50% 24%,64% 0%,95% 5%,95% 30%,95% 58%,58% 82%)}
 #thread-panel .cutout-sweep[hidden]{display:none!important}
 #thread-panel .cutout-preview.cutting{filter:brightness(1.15)}
 #thread-panel #cutout-cut{background:linear-gradient(135deg,#E8CD83,#BD9145)!important;color:#21162a!important;border:0!important}
