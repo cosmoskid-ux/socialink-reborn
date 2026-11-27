@@ -1918,9 +1918,9 @@ button,a,[role="button"]{
   const cutoutEditor=document.getElementById('cutout-editor'),cutoutFile=document.getElementById('cutout-file'),cutoutPreview=document.getElementById('cutout-preview'),cutoutSend=document.getElementById('cutout-send'),cutoutCut=document.getElementById('cutout-cut'),cutoutSave=document.getElementById('cutout-save'),cutoutHint=document.getElementById('cutout-hint'),cutoutZoom=document.getElementById('cutout-zoom'),cutoutShapes=document.getElementById('cutout-shapes'),cutoutShapesToggle=document.getElementById('cutout-shapes-toggle'),cutoutSweep=document.getElementById('cutout-sweep'),cutoutChange=document.getElementById('cutout-change'),cutoutTrace=document.getElementById('cutout-trace'),cutoutTraceLayer=document.getElementById('cutout-trace-layer'),cutoutTraceLine=document.getElementById('cutout-trace-line');
   let cutoutImage=null,cutoutShape='circle',cutoutResult=null,cutoutScale=1,cutoutX=0,cutoutY=0,cutoutDragging=false,cutoutPointer=null,cutoutTracing=false,cutoutTracePoints=[];
   function openCutoutEditor(){cutoutEditor.hidden=false;creativeTools.hidden=true}
-  function cutoutPath(ctx,size){
+  function cutoutPath(ctx,size,height=size){
     const c=size/2;ctx.beginPath();
-    if(cutoutShape==='freehand'){cutoutTracePoints.forEach((p,i)=>{const x=p.x/1000*size,y=p.y/1000*size;i?ctx.lineTo(x,y):ctx.moveTo(x,y)});ctx.closePath()}
+    if(cutoutShape==='freehand'){cutoutTracePoints.forEach((p,i)=>{const x=p.x/1000*size,y=p.y/1000*height;i?ctx.lineTo(x,y):ctx.moveTo(x,y)});ctx.closePath()}
     else if(cutoutShape==='circle')ctx.arc(c,c,c,0,Math.PI*2);
     else if(cutoutShape==='oval')ctx.ellipse(c,c,size*.38,size*.49,0,0,Math.PI*2);
     else if(cutoutShape==='square'){const pad=size*.06;ctx.roundRect(pad,pad,size-pad*2,size-pad*2,size*.08)}
@@ -1955,10 +1955,10 @@ button,a,[role="button"]{
     if(!cutoutImage)return;
     if(cutoutShape==='freehand'&&cutoutTracePoints.length<8){cutoutHint.textContent='Trace around your subject first.';return}cutoutCut.disabled=true;cutoutSweep.className='cutout-sweep '+(cutoutShape==='freehand'?'circle':cutoutShape);cutoutSweep.hidden=false;cutoutPreview.classList.add('cutting');cutoutHint.textContent='Cutting along the selected shape…';
     setTimeout(()=>{
-      const size=900,stage=cutoutPreview.getBoundingClientRect(),canvas=document.createElement('canvas');canvas.width=size;canvas.height=size;const ctx=canvas.getContext('2d');
-      const baseScale=Math.max(size/cutoutImage.naturalWidth,size/cutoutImage.naturalHeight),drawScale=baseScale*cutoutScale,drawW=cutoutImage.naturalWidth*drawScale,drawH=cutoutImage.naturalHeight*drawScale;
-      const offsetX=(size-drawW)/2+cutoutX*(size/stage.width),offsetY=(size-drawH)/2+cutoutY*(size/stage.height);
-      ctx.save();cutoutPath(ctx,size);ctx.clip();ctx.drawImage(cutoutImage,offsetX,offsetY,drawW,drawH);ctx.restore();
+      const size=900,stage=cutoutPreview.getBoundingClientRect(),canvas=document.createElement('canvas');canvas.width=size;canvas.height=cutoutShape==='freehand'?Math.max(1,Math.round(size*stage.height/stage.width)):size;const outputHeight=canvas.height,ctx=canvas.getContext('2d');
+      const baseScale=cutoutShape==='freehand'?Math.min(size/cutoutImage.naturalWidth,outputHeight/cutoutImage.naturalHeight):Math.max(size/cutoutImage.naturalWidth,size/cutoutImage.naturalHeight),drawScale=baseScale*cutoutScale,drawW=cutoutImage.naturalWidth*drawScale,drawH=cutoutImage.naturalHeight*drawScale;
+      const offsetX=(size-drawW)/2+cutoutX*(size/stage.width),offsetY=(outputHeight-drawH)/2+cutoutY*(outputHeight/stage.height);
+      ctx.save();cutoutPath(ctx,size,outputHeight);ctx.clip();ctx.drawImage(cutoutImage,offsetX,offsetY,drawW,drawH);ctx.restore();
       cutoutResult=canvas.toDataURL('image/png');
       const resultImage=new Image();resultImage.onload=()=>{cutoutPreview.replaceChildren(resultImage);cutoutPreview.className='cutout-preview result';cutoutSweep.hidden=true;cutoutHint.textContent='Your cut-out is ready. Save it to your device or send it in this chat.';cutoutSave.disabled=false;cutoutSend.disabled=false;cutoutCut.disabled=false};resultImage.src=cutoutResult;
     },850);
