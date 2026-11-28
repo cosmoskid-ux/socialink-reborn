@@ -3042,6 +3042,7 @@ body.socialink-profile-open #profile-screen{
     <div class="edit-field"><label for="socialink-edit-name">Name</label><input id="socialink-edit-name" maxlength="40" autocomplete="name" placeholder="Your name"></div>
     <div class="edit-field"><label for="socialink-edit-handle">Username</label><input id="socialink-edit-handle" maxlength="24" autocomplete="username" placeholder="yourusername"><span class="edit-hint">Your username appears with @ on your profile.</span></div>
     <div class="edit-field"><label for="socialink-edit-bio">Bio</label><textarea id="socialink-edit-bio" maxlength="160" placeholder="Tell people a little about yourself"></textarea><span class="edit-hint">Up to 160 characters</span></div>
+    <button type="button" class="atmosphere-open-btn" id="socialink-atmosphere-open"><span>✧</span><span><strong>Profile Atmosphere</strong><small>Choose a background for your universe</small></span><span class="atmosphere-chevron">›</span></button>
     <button type="button" class="edit-save" id="socialink-edit-save">Save changes</button>
     <button type="button" class="edit-cancel" id="socialink-edit-cancel">Cancel</button>
   </div>
@@ -3371,6 +3372,172 @@ header{
 #thread-panel #cutout-cut:disabled,#thread-panel #cutout-trace:disabled{opacity:.42!important;box-shadow:none!important}
 @media(max-height:650px){#thread-panel .cutout-stage-wrap{height:46vh!important;min-height:190px!important}}
 </style>
+
+
+<style id="socialink-profile-atmosphere">
+#socialink-edit-page .atmosphere-open-btn{display:flex;align-items:center;gap:12px;width:100%;padding:13px 14px;border:1px solid rgba(214,180,93,.28);border-radius:15px;background:linear-gradient(115deg,rgba(91,65,122,.25),rgba(20,16,29,.95));color:#F7FBFD;text-align:left}
+#socialink-edit-page .atmosphere-open-btn>span:first-child{width:40px;height:40px;display:grid;place-items:center;border-radius:12px;background:rgba(214,180,93,.13);color:#E8CD83;font-size:22px}
+#socialink-edit-page .atmosphere-open-btn>span:nth-child(2){display:grid;gap:3px;flex:1}
+#socialink-edit-page .atmosphere-open-btn strong{font-size:13px}
+#socialink-edit-page .atmosphere-open-btn small{font-size:10px;color:#AAA2B6}
+#socialink-edit-page .atmosphere-chevron{font-size:24px;color:#D6B45D}
+#socialink-atmosphere-panel{position:fixed;inset:0;z-index:12000;display:none;overflow:auto;background:linear-gradient(180deg,#151020,#080710);color:#F7FBFD;padding:0 0 28px}
+#socialink-atmosphere-panel.open{display:block}
+#socialink-atmosphere-panel .atmo-top{position:sticky;top:0;z-index:3;display:flex;align-items:center;gap:12px;padding:14px 16px;background:rgba(15,12,23,.96);border-bottom:1px solid rgba(214,180,93,.16)}
+#socialink-atmosphere-panel .atmo-back{width:36px;height:36px;border:1px solid rgba(255,255,255,.12);border-radius:50%;background:#211831;color:#fff;font-size:23px}
+#socialink-atmosphere-panel .atmo-top strong{font-size:16px}
+#socialink-atmosphere-panel .atmo-body{width:min(100%,620px);margin:auto;padding:16px;display:grid;gap:17px}
+#socialink-atmosphere-panel .atmo-preview{height:190px;position:relative;overflow:hidden;border:1px solid rgba(214,180,93,.28);border-radius:18px;background:#151020}
+#socialink-atmosphere-panel .atmo-preview:after{content:"";position:absolute;inset:45% 0 0;background:linear-gradient(transparent,rgba(7,6,17,.7));pointer-events:none}
+#socialink-atmosphere-panel .atmo-preview-label{position:absolute;z-index:2;left:14px;bottom:12px;font-size:11px;font-weight:800;letter-spacing:.5px;text-shadow:0 2px 8px #000}
+#socialink-atmosphere-panel .atmo-preview img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;animation:atmoScene 12s infinite;transform:scale(1.04)}
+#socialink-atmosphere-panel .atmo-preview img:nth-child(1){animation-delay:0s}
+#socialink-atmosphere-panel .atmo-preview img:nth-child(2){animation-delay:4s}
+#socialink-atmosphere-panel .atmo-preview img:nth-child(3){animation-delay:8s}
+#socialink-atmosphere-panel .atmo-preview.single img{animation:none;opacity:1;transform:none}
+#socialink-atmosphere-panel .atmo-preview.custom-live img{animation:atmoScene 12s infinite,atmoDrift 12s ease-in-out infinite}
+@keyframes atmoScene{0%,5%{opacity:0}10%,28%{opacity:1}36%,100%{opacity:0}}
+@keyframes atmoDrift{0%,100%{transform:scale(1.02) translate3d(0,0,0)}50%{transform:scale(1.13) translate3d(-1.5%, -1%,0)}}
+#socialink-atmosphere-panel .atmo-section{display:grid;gap:9px}
+#socialink-atmosphere-panel .atmo-section h3{margin:0;font-size:13px}
+#socialink-atmosphere-panel .atmo-section p{margin:0;color:#AAA2B6;font-size:11px;line-height:1.5}
+#socialink-atmosphere-panel .atmo-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+#socialink-atmosphere-panel .atmo-option{min-height:86px;padding:10px;border:1px solid rgba(255,255,255,.12);border-radius:13px;background:#15111f;color:#F7FBFD;text-align:left;display:grid;align-content:end;gap:4px}
+#socialink-atmosphere-panel .atmo-option.active{border-color:#D6B45D;box-shadow:inset 0 0 0 1px rgba(214,180,93,.25)}
+#socialink-atmosphere-panel .atmo-option strong{font-size:12px}
+#socialink-atmosphere-panel .atmo-option small{font-size:10px;color:#AAA2B6}
+#socialink-atmosphere-panel .atmo-option.galaxy{background:radial-gradient(ellipse at 70% 20%,#674b91,transparent 40%),linear-gradient(135deg,#11152e,#251538)}
+#socialink-atmosphere-panel .atmo-option.stars{background:radial-gradient(circle at 20% 30%,#fff 0 1px,transparent 2px),radial-gradient(circle at 70% 60%,#e8cd83 0 1px,transparent 2px),linear-gradient(135deg,#090b20,#211331);background-size:30px 30px,43px 43px,auto}
+#socialink-atmosphere-panel .atmo-option.explosion{background:radial-gradient(ellipse at center,#e8cd83 0,#8c5ab1 12%,#211331 45%,#090711 75%)}
+#socialink-atmosphere-panel .atmo-upload{display:flex;align-items:center;justify-content:center;gap:9px;min-height:45px;border:1px dashed rgba(214,180,93,.55);border-radius:13px;background:rgba(214,180,93,.07);color:#E8CD83;font-size:12px;font-weight:800}
+#socialink-atmosphere-panel .atmo-files{font-size:11px;color:#C8BED3;line-height:1.6}
+#socialink-atmosphere-panel .atmo-premium{padding:12px;border:1px solid rgba(181,139,255,.3);border-radius:14px;background:linear-gradient(120deg,rgba(105,70,145,.2),rgba(17,13,27,.95));display:grid;gap:5px}
+#socialink-atmosphere-panel .atmo-premium strong{font-size:12px}
+#socialink-atmosphere-panel .atmo-premium p{margin:0;color:#BEB2CC;font-size:10px;line-height:1.5}
+#socialink-atmosphere-panel .atmo-premium button{min-height:38px;border:1px solid rgba(214,180,93,.4);border-radius:11px;background:rgba(214,180,93,.1);color:#E8CD83;font-size:11px;font-weight:800}
+#socialink-atmosphere-panel .atmo-actions{display:flex;gap:9px}
+#socialink-atmosphere-panel .atmo-actions button{flex:1;min-height:46px;border-radius:13px;font-size:12px;font-weight:900}
+#socialink-atmosphere-panel .atmo-apply{border:0;background:linear-gradient(135deg,#E8CD83,#BD9145);color:#21162a}
+#socialink-atmosphere-panel .atmo-cancel{border:1px solid rgba(255,255,255,.13);background:#171321;color:#F7FBFD}
+#profile-screen .profile-cover{position:relative;isolation:isolate;overflow:hidden}
+#profile-screen .profile-cover .atmo-layer{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;z-index:-1}
+#profile-screen .profile-cover.atmo-static .atmo-layer:first-child{opacity:1}
+#profile-screen .profile-cover.atmo-live .atmo-layer{animation:atmoScene 12s infinite,atmoDrift 12s ease-in-out infinite}
+#profile-screen .profile-cover.atmo-live .atmo-layer:nth-child(2){animation-delay:4s,0s}
+#profile-screen .profile-cover.atmo-live .atmo-layer:nth-child(3){animation-delay:8s,0s}
+#profile-screen .profile-cover.atmo-live .cover-orbit,#profile-screen .profile-cover.atmo-live:before,#profile-screen .profile-cover.atmo-live:after{display:none}
+@media(prefers-reduced-motion:reduce){#socialink-atmosphere-panel .atmo-preview img,#profile-screen .profile-cover.atmo-live .atmo-layer{animation:none!important;opacity:1!important}}
+</style>
+<section id="socialink-atmosphere-panel" aria-label="Profile Atmosphere" aria-hidden="true">
+  <div class="atmo-top"><button type="button" class="atmo-back" id="socialink-atmo-back" aria-label="Back">‹</button><strong>Profile Atmosphere</strong></div>
+  <div class="atmo-body">
+    <div class="atmo-preview" id="socialink-atmo-preview"><span class="atmo-preview-label" id="socialink-atmo-preview-label">YOUR UNIVERSE</span></div>
+    <div class="atmo-section"><h3>Socialink backgrounds · Free</h3><p>Animated Socialink scenes with one repeating visual loop.</p>
+      <div class="atmo-options">
+        <button type="button" class="atmo-option galaxy active" data-atmo="galaxy"><strong>Moving galaxy</strong><small>Cosmic motion · Loop</small></button>
+        <button type="button" class="atmo-option stars" data-atmo="stars"><strong>Shooting stars</strong><small>Starfield · Loop</small></button>
+        <button type="button" class="atmo-option explosion" data-atmo="explosion"><strong>Exploding star</strong><small>Stellar burst · Loop</small></button>
+        <button type="button" class="atmo-option" data-atmo="still"><strong>Classic midnight</strong><small>Static Socialink background</small></button>
+      </div>
+    </div>
+    <div class="atmo-section"><h3>Your gallery</h3><p>Free gallery backgrounds stay still. Choose one photo for your profile header.</p>
+      <label class="atmo-upload" for="socialink-atmo-files">＋ Upload photos from gallery</label>
+      <input type="file" id="socialink-atmo-files" accept="image/*" multiple hidden>
+      <div class="atmo-files" id="socialink-atmo-files-label">No photos selected · Up to 3 photos, 5 MB each</div>
+    </div>
+    <div class="atmo-premium">
+      <strong>✦ Premium Atmospheres</strong>
+      <p>Premium can animate individual uploaded scenes and blend multiple photos into a smooth, multi-scene atmosphere. This first build includes a motion preview; secure purchases and AI scene animation need a later server-side integration.</p>
+      <button type="button" id="socialink-atmo-premium-preview">Preview multi-scene animation</button>
+    </div>
+    <div class="atmo-actions"><button type="button" class="atmo-cancel" id="socialink-atmo-cancel">Cancel</button><button type="button" class="atmo-apply" id="socialink-atmo-apply">Apply atmosphere</button></div>
+  </div>
+</section>
+<script>
+/* Profile Atmosphere: free animated Socialink loops, still gallery uploads, premium motion preview. */
+(function(){
+  const panel=document.getElementById('socialink-atmosphere-panel');
+  const editor=document.getElementById('socialink-edit-page');
+  const cover=document.querySelector('#profile-screen .profile-cover');
+  if(!panel||!editor||!cover)return;
+  const $=id=>document.getElementById(id);
+  const KEY='socialink-atmosphere-v1';
+  const read=()=>{try{return JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){return {}}};
+  let draft={type:'galaxy',photos:[],premiumPreview:false};
+  let files=[];
+  function close(){panel.classList.remove('open');panel.setAttribute('aria-hidden','true');}
+  function open(){
+    const saved=read();
+    draft={type:saved.type||'galaxy',photos:Array.isArray(saved.photos)?saved.photos:[],premiumPreview:false};
+    files=[];
+    $('socialink-atmo-files').value='';
+    update();
+    panel.classList.add('open');panel.setAttribute('aria-hidden','false');panel.scrollTop=0;
+  }
+  function update(){
+    document.querySelectorAll('[data-atmo]').forEach(b=>b.classList.toggle('active',b.dataset.atmo===draft.type));
+    $('socialink-atmo-files-label').textContent=files.length?files.length+' photo(s) ready · '+files.map(f=>f.name).join(', '):draft.photos.length?draft.photos.length+' saved photo(s) selected':'No photos selected · Up to 3 photos, 5 MB each';
+    const preview=$('socialink-atmo-preview');
+    preview.className='atmo-preview'+(draft.type==='gallery'?' single':'')+(draft.premiumPreview?' custom-live':'');
+    preview.replaceChildren();
+    if(draft.type==='gallery'&&draft.photos.length){
+      draft.photos.slice(0,draft.premiumPreview?3:1).forEach(src=>{const img=document.createElement('img');img.src=src;preview.appendChild(img)});
+    }else{
+      const swatches={galaxy:'radial-gradient(ellipse at 70% 30%,#72529a,transparent 38%),linear-gradient(125deg,#11152e,#251538 55%,#080711)',stars:'radial-gradient(circle at 20% 30%,#fff 0 1px,transparent 2px),radial-gradient(circle at 70% 60%,#e8cd83 0 1px,transparent 2px),linear-gradient(135deg,#090b20,#211331)',explosion:'radial-gradient(ellipse at center,#e8cd83 0,#8c5ab1 12%,#211331 45%,#090711 75%)',still:'linear-gradient(135deg,#151020,#080711)'};
+      preview.style.background=swatches[draft.type]||swatches.galaxy;
+      if(draft.type==='galaxy'||draft.type==='stars'||draft.type==='explosion')preview.classList.add('custom-live');
+    }
+    $('socialink-atmo-preview-label').textContent=draft.premiumPreview?'PREMIUM MOTION PREVIEW':draft.type==='gallery'?'GALLERY PREVIEW':'YOUR UNIVERSE';
+  }
+  function apply(){
+    const data={type:draft.type,photos:draft.photos,premiumPreview:!!draft.premiumPreview};
+    try{localStorage.setItem(KEY,JSON.stringify(data));render(data);close();const toast=document.querySelector('.toast');if(toast){toast.textContent='Profile atmosphere updated ✦';toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),2200);}}
+    catch(e){alert('Could not save this atmosphere in this browser. Try fewer or smaller photos.');}
+  }
+  function render(data){
+    cover.querySelectorAll('.atmo-layer').forEach(n=>n.remove());
+    cover.classList.remove('atmo-live','atmo-static');
+    if(data.type==='gallery'&&data.photos&&data.photos.length){
+      data.photos.slice(0,data.premiumPreview?3:1).forEach(src=>{const img=document.createElement('img');img.className='atmo-layer';img.src=src;img.alt='Profile atmosphere background';cover.insertBefore(img,cover.firstChild)});
+      cover.classList.add(data.premiumPreview?'atmo-live':'atmo-static');
+      return;
+    }
+    const backgrounds={galaxy:'radial-gradient(ellipse at 70% 25%,rgba(114,82,154,.72),transparent 42%),linear-gradient(125deg,#11152e,#251538 55%,#080711)',stars:'radial-gradient(circle at 20% 30%,#fff 0 1px,transparent 2px),radial-gradient(circle at 70% 60%,#e8cd83 0 1px,transparent 2px),linear-gradient(135deg,#090b20,#211331)',explosion:'radial-gradient(ellipse at center,#e8cd83 0,#8c5ab1 12%,#211331 45%,#090711 75%)',still:'linear-gradient(135deg,#151020,#080711)'};
+    cover.style.background=backgrounds[data.type]||backgrounds.galaxy;
+    if(data.type==='galaxy'||data.type==='stars'||data.type==='explosion')cover.classList.add('atmo-live');
+  }
+  $('socialink-atmosphere-open').addEventListener('click',open);
+  $('socialink-atmo-back').addEventListener('click',close);
+  $('socialink-atmo-cancel').addEventListener('click',close);
+  $('socialink-atmo-apply').addEventListener('click',apply);
+  $('socialink-atmo-premium-preview').addEventListener('click',()=>{
+    if(files.length)draft.photos=files.map(f=>f.data);
+    if(!draft.photos.length){alert('Upload at least one photo first to preview a custom Premium Atmosphere.');return;}
+    draft.type='gallery';draft.premiumPreview=true;update();
+  });
+  document.querySelectorAll('[data-atmo]').forEach(b=>b.addEventListener('click',()=>{draft.type=b.dataset.atmo;draft.premiumPreview=false;update()}));
+  $('socialink-atmo-files').addEventListener('change',async e=>{
+    const selected=Array.from(e.target.files||[]).slice(0,3);
+    if(!selected.length)return;
+    try{
+      const converted=[];
+      for(const file of selected){
+        if(!file.type.startsWith('image/'))throw new Error('Please select image files only.');
+        if(file.size>5*1024*1024)throw new Error('Each photo must be 5 MB or smaller.');
+        const data=await new Promise((resolve,reject)=>{
+          const reader=new FileReader();reader.onerror=()=>reject(new Error('A photo could not be read.'));
+          reader.onload=()=>{const img=new Image();img.onerror=()=>reject(new Error('A photo could not be opened.'));
+            img.onload=()=>{const max=720,scale=Math.min(1,max/Math.max(img.width,img.height));const canvas=document.createElement('canvas');canvas.width=Math.round(img.width*scale);canvas.height=Math.round(img.height*scale);canvas.getContext('2d').drawImage(img,0,0,canvas.width,canvas.height);resolve(canvas.toDataURL('image/jpeg',.7));};img.src=reader.result;};
+          reader.readAsDataURL(file);
+        });
+        converted.push({name:file.name,data});
+      }
+      files=converted;draft.photos=converted.map(f=>f.data);draft.type='gallery';draft.premiumPreview=false;update();
+    }catch(err){alert(err.message||'Could not load those photos.');}
+  });
+  const saved=read();if(saved.type)render(saved);
+})();
+</script>
 
 </body>
 </html>
