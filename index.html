@@ -1920,7 +1920,7 @@ button,a,[role="button"]{
   function openCutoutEditor(){cutoutEditor.hidden=false;creativeTools.hidden=true;cutoutFile.value='';cutoutFile.click()}
   function cutoutPath(ctx,size,height=size){
     const c=size/2;ctx.beginPath();
-    if(cutoutShape==='freehand'){const pts=cutoutTracePoints.map(p=>({x:p.x/1000*size,y:p.y/1000*height}));if(!pts.length)return;ctx.moveTo((pts[0].x+pts[1%pts.length].x)/2,(pts[0].y+pts[1%pts.length].y)/2);for(let i=1;i<pts.length;i++){const cur=pts[i],next=pts[(i+1)%pts.length],mid={x:(cur.x+next.x)/2,y:(cur.y+next.y)/2};ctx.quadraticCurveTo(cur.x,cur.y,mid.x,mid.y)}ctx.closePath()}
+    if(cutoutShape==='freehand'){const pts=cutoutTracePoints.map(p=>({x:p.x/1000*size,y:p.y/1000*height}));if(!pts.length)return;const last=pts[pts.length-1];ctx.moveTo((last.x+pts[0].x)/2,(last.y+pts[0].y)/2);for(let i=0;i<pts.length;i++){const cur=pts[i],next=pts[(i+1)%pts.length],mid={x:(cur.x+next.x)/2,y:(cur.y+next.y)/2};ctx.quadraticCurveTo(cur.x,cur.y,mid.x,mid.y)}ctx.closePath()}
     else if(cutoutShape==='circle')ctx.arc(c,c,c,0,Math.PI*2);
     else if(cutoutShape==='oval')ctx.ellipse(c,c,size*.38,size*.49,0,0,Math.PI*2);
     else if(cutoutShape==='square'){const pad=size*.06;ctx.roundRect(pad,pad,size-pad*2,size-pad*2,size*.08)}
