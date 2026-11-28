@@ -1920,7 +1920,7 @@ button,a,[role="button"]{
   function openCutoutEditor(){cutoutEditor.hidden=false;creativeTools.hidden=true;cutoutFile.value='';cutoutFile.click()}
   function cutoutPath(ctx,size,height=size){
     const c=size/2;ctx.beginPath();
-    if(cutoutShape==='freehand'){cutoutTracePoints.forEach((p,i)=>{const x=p.x/1000*size,y=p.y/1000*height;i?ctx.lineTo(x,y):ctx.moveTo(x,y)});ctx.closePath()}
+    if(cutoutShape==='freehand'){const pts=cutoutTracePoints.map(p=>({x:p.x/1000*size,y:p.y/1000*height}));if(!pts.length)return;ctx.moveTo((pts[0].x+pts[1%pts.length].x)/2,(pts[0].y+pts[1%pts.length].y)/2);for(let i=1;i<pts.length;i++){const cur=pts[i],next=pts[(i+1)%pts.length],mid={x:(cur.x+next.x)/2,y:(cur.y+next.y)/2};ctx.quadraticCurveTo(cur.x,cur.y,mid.x,mid.y)}ctx.closePath()}
     else if(cutoutShape==='circle')ctx.arc(c,c,c,0,Math.PI*2);
     else if(cutoutShape==='oval')ctx.ellipse(c,c,size*.38,size*.49,0,0,Math.PI*2);
     else if(cutoutShape==='square'){const pad=size*.06;ctx.roundRect(pad,pad,size-pad*2,size-pad*2,size*.08)}
@@ -1936,7 +1936,7 @@ button,a,[role="button"]{
   }
   function loadCutout(file){
     if(!file||!file.type.startsWith('image/'))return;
-    const reader=new FileReader();reader.onload=()=>{const image=new Image();image.onload=()=>{cutoutImage=image;cutoutShape='freehand';cutoutTracePoints=[];cutoutTracing=false;cutoutTraceLayer.hidden=true;cutoutTraceLine.setAttribute('points','');cutoutScale=1;cutoutX=0;cutoutY=0;cutoutZoom.value='1';cutoutShapesToggle.disabled=false;cutoutTrace.disabled=false;cutoutChange.disabled=false;cutoutZoom.disabled=false;document.getElementById('cutout-zoom-in').disabled=false;document.getElementById('cutout-zoom-out').disabled=false;updateCutoutPreview();cutoutHint.textContent='Tap Select manually, then trace around the subject.'};image.src=reader.result};reader.readAsDataURL(file)
+    if(file.size>15*1024*1024){cutoutHint.textContent='That photo is too large. Choose an image under 15 MB.';return}const reader=new FileReader();reader.onerror=()=>{cutoutHint.textContent='Could not read that photo. Please choose another image.'};reader.onload=()=>{const image=new Image();image.onerror=()=>{cutoutHint.textContent='This image could not be opened. Try another photo.'};image.onload=()=>{cutoutImage=image;cutoutShape='freehand';cutoutTracePoints=[];cutoutTracing=false;cutoutTraceLayer.hidden=true;cutoutTraceLine.setAttribute('points','');cutoutScale=1;cutoutX=0;cutoutY=0;cutoutZoom.value='1';cutoutShapesToggle.disabled=false;cutoutTrace.disabled=false;cutoutChange.disabled=false;cutoutZoom.disabled=false;document.getElementById('cutout-zoom-in').disabled=false;document.getElementById('cutout-zoom-out').disabled=false;updateCutoutPreview();cutoutHint.textContent='Tap Select manually, then trace around one subject. Keep the outline just outside its edges.'};image.src=reader.result};reader.readAsDataURL(file)
   }
   document.getElementById('cutout-choose').addEventListener('click',()=>cutoutFile.click());
   cutoutChange.addEventListener('click',()=>cutoutFile.click());
@@ -1950,7 +1950,7 @@ button,a,[role="button"]{
   document.getElementById('cutout-zoom-out').addEventListener('click',()=>setCutoutZoom(cutoutScale-.15));
   cutoutPreview.addEventListener('pointerdown',e=>{if(!cutoutImage||cutoutResult)return;cutoutPreview.setPointerCapture(e.pointerId);if(cutoutTracing){const r=cutoutPreview.getBoundingClientRect();cutoutTracePoints=[{x:(e.clientX-r.left)/r.width*1000,y:(e.clientY-r.top)/r.height*1000}];cutoutTraceLine.setAttribute('points',cutoutTracePoints.map(p=>p.x+','+p.y).join(' '));return}cutoutDragging=true;cutoutPointer={x:e.clientX-cutoutX,y:e.clientY-cutoutY}});
   cutoutPreview.addEventListener('pointermove',e=>{if(cutoutTracing&&cutoutTracePoints.length){const r=cutoutPreview.getBoundingClientRect();const p={x:Math.max(0,Math.min(1000,(e.clientX-r.left)/r.width*1000)),y:Math.max(0,Math.min(1000,(e.clientY-r.top)/r.height*1000))};const last=cutoutTracePoints[cutoutTracePoints.length-1];if(Math.hypot(p.x-last.x,p.y-last.y)>5){cutoutTracePoints.push(p);cutoutTraceLine.setAttribute('points',cutoutTracePoints.map(q=>q.x+','+q.y).join(' '))}return}if(!cutoutDragging||!cutoutPointer)return;cutoutX=e.clientX-cutoutPointer.x;cutoutY=e.clientY-cutoutPointer.y;cutoutImage.style.transform='translate('+cutoutX+'px,'+cutoutY+'px) scale('+cutoutScale+')'});
-  ['pointerup','pointercancel','lostpointercapture'].forEach(name=>cutoutPreview.addEventListener(name,()=>{if(cutoutTracing&&cutoutTracePoints.length>=8){cutoutTraceLayer.hidden=false;cutoutTraceLine.setAttribute('points',cutoutTracePoints.map(p=>p.x+','+p.y).join(' ')+' '+cutoutTracePoints[0].x+','+cutoutTracePoints[0].y);cutoutTracing=false;cutoutTrace.textContent='Trace again';cutoutCut.disabled=false;cutoutHint.textContent='Outline ready. Tap Cut to create your transparent cut-out.'}cutoutDragging=false;cutoutPointer=null}));
+  cutoutPreview.addEventListener('pointerup',()=>{if(cutoutTracing&&cutoutTracePoints.length>=8){cutoutTraceLayer.hidden=false;cutoutTraceLine.setAttribute('points',cutoutTracePoints.map(p=>p.x+','+p.y).join(' ')+' '+cutoutTracePoints[0].x+','+cutoutTracePoints[0].y);cutoutTracing=false;cutoutTrace.textContent='Trace again';cutoutCut.disabled=false;cutoutHint.textContent='Outline ready. Tap Use sticker to finish, or Trace again to adjust it.'}cutoutDragging=false;cutoutPointer=null});cutoutPreview.addEventListener('pointercancel',()=>{cutoutDragging=false;cutoutPointer=null;if(cutoutTracing){cutoutTracing=false;cutoutTracePoints=[];cutoutTraceLine.setAttribute('points','');cutoutTraceLayer.hidden=true;cutoutTrace.textContent='Select manually';cutoutCut.disabled=true;cutoutHint.textContent='Selection interrupted. Tap Select manually and trace again.'}});
   cutoutCut.addEventListener('click',()=>{
     if(!cutoutImage)return;
     if(cutoutShape==='freehand'&&cutoutTracePoints.length<8){cutoutHint.textContent='Trace around your subject first.';return}cutoutCut.disabled=true;cutoutSweep.className='cutout-sweep '+(cutoutShape==='freehand'?'circle':cutoutShape);cutoutSweep.hidden=false;cutoutPreview.classList.add('cutting');cutoutHint.textContent='Creating your sticker…';
@@ -3353,5 +3353,24 @@ header{
 #thread-panel .cutout-trace-layer[hidden]{display:none!important}
 #thread-panel .cutout-hint{text-align:center!important;max-width:360px!important;margin:0 auto!important}
 </style>
+
+<style id="socialink-cutout-finish-pass">
+/* Final interaction polish for the manual cut-out workflow. */
+#thread-panel .cutout-editor{padding:14px!important;gap:8px!important}
+#thread-panel .cutout-editor .creative-editor-head{display:flex;align-items:center;justify-content:space-between}
+#thread-panel .cutout-editor .creative-editor-head button{width:34px;height:34px;border-radius:50%;border:1px solid rgba(255,255,255,.16);background:#1c1c23;color:#fff;font-size:21px}
+#thread-panel .cutout-stage-wrap{height:min(56vh,460px)!important;min-height:250px!important;margin:6px auto 0!important;border-radius:12px!important;background:#101015!important}
+#thread-panel .cutout-preview{border-radius:12px!important;overflow:hidden!important;touch-action:none!important}
+#thread-panel .cutout-preview img{user-select:none!important;-webkit-user-drag:none!important}
+#thread-panel .cutout-trace-layer{overflow:visible!important}
+#thread-panel .cutout-trace-layer polyline{stroke:#fff!important;stroke-width:5!important;stroke-linecap:round!important;stroke-linejoin:round!important;stroke-dasharray:none!important;fill:rgba(255,255,255,.09)!important;filter:drop-shadow(0 1px 3px rgba(0,0,0,.85))!important}
+#thread-panel .cutout-hint{min-height:34px!important;line-height:1.45!important;padding:7px 12px 10px!important}
+#thread-panel .cutout-top-actions button{min-height:46px!important;font-size:14px!important;letter-spacing:.05px!important}
+#thread-panel #cutout-trace{background:#24242c!important;color:#fff!important;border:1px solid rgba(255,255,255,.13)!important}
+#thread-panel #cutout-cut{background:#405de6!important;color:#fff!important;box-shadow:0 5px 16px rgba(64,93,230,.22)!important}
+#thread-panel #cutout-cut:disabled,#thread-panel #cutout-trace:disabled{opacity:.42!important;box-shadow:none!important}
+@media(max-height:650px){#thread-panel .cutout-stage-wrap{height:46vh!important;min-height:190px!important}}
+</style>
+
 </body>
 </html>
